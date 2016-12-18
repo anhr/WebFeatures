@@ -1,0 +1,146 @@
+/*http://www.03www.ru/2012-12/2012-12-01.htm */
+.uparrowdivred{
+	display:inline;
+	background: red;
+	padding:5px;
+	position:absolute;
+	word-wrap:break-word;
+	-moz-border-radius:5px; /*add some nice CSS3 round corners*/
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	MozBorderRadius:4px;/*Firefox*/
+	margin-bottom:2em;
+	border:2px solid #a0ffFf;
+	cursor:help;
+	color:White
+}
+
+.uparrowdivred:after{ /*arrow added to uparrowdiv DIV*/
+	content:'';
+	display:block;
+	position:absolute;
+	top:-20px; /*should be set to -border-width x 2 */
+	left:10px;
+	width:0;
+	height:0;
+	border-color: transparent transparent red transparent; /*border color should be same as div div background color*/
+	border-style: solid;
+	border-width: 10px;
+}
+
+.uparrowdivyellow{
+	display:inline;
+	background: yellow;
+	padding:5px;
+	position:absolute;
+	word-wrap:break-word;
+	-moz-border-radius:5px; /*add some nice CSS3 round corners*/
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	MozBorderRadius:4px;/*Firefox*/
+	margin-bottom:2em;
+	border:2px solid #a0ffFf;
+	cursor:help;
+}
+
+.uparrowdivyellow:after{ /*arrow added to uparrowdiv DIV*/
+	content:'';
+	display:block;
+	position:absolute;
+	top:-20px; /*should be set to -border-width x 2 */
+	left:10px;
+	width:0;
+	height:0;
+	border-color: transparent transparent yellow transparent; /*border color should be same as div div background color*/
+	border-style: solid;
+	border-width: 10px;
+}
+
+.uparrowdivgreen{
+	display:inline;
+	background: green;
+	padding:5px;
+	position:absolute;
+	word-wrap:break-word;
+	-moz-border-radius:5px; /*add some nice CSS3 round corners*/
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	MozBorderRadius:4px;/*Firefox*/
+	margin-bottom:2em;
+	border:2px solid #a0ffFf;
+	cursor:help;
+	color:White
+}
+
+.uparrowdivgreen:after{ /*arrow added to uparrowdiv DIV*/
+	content:'';
+	display:block;
+	position:absolute;
+	top:-20px; /*should be set to -border-width x 2 */
+	left:10px;
+	width:0;
+	height:0;
+	border-color: transparent transparent green transparent; /*border color should be same as div div background color*/
+	border-style: solid;
+	border-width: 10px;
+}
+
+.downarrowdiv{
+	display:inline;
+	/*width:600px;*/
+	/*min-height:40px;*/ /*min height of DIV should be set to at least 2x the width of the arrow*/
+	background: yellow;
+	/*color:white;*/
+	padding:5px;
+	position:absolute;
+	word-wrap:break-word;
+	-moz-border-radius:5px; /*add some nice CSS3 round corners*/
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	MozBorderRadius:4px;/*Firefox*/
+	margin-bottom:2em;
+	border:2px solid #a0ffFf;
+	/*filter:alpha(Opacity=90);*//*Прозрачность в IE*/
+	cursor:help;
+}
+
+.downarrowdiv:after{ /*arrow added to downarrowdiv DIV*/
+	content:'';
+	display:block;
+	position:absolute;
+	top:100%; /*should be set to 100% */
+	left:10px;
+	width:0;
+	height:0;
+	border-color: yellow transparent transparent transparent; /*border color should be same as div div background color*/
+	border-style: solid;
+	border-width: 10px;
+}
+
+.downarrowdivred{
+	display:inline;
+	background: red;
+	/*color:white;*/
+	padding:5px;
+	position:absolute;
+	word-wrap:break-word;
+	-moz-border-radius:5px; /*add some nice CSS3 round corners*/
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	MozBorderRadius:4px;/*Firefox*/
+	margin-bottom:2em;
+	border:2px solid #a0ffFf;
+}
+
+.downarrowdivred:after{ /*arrow added to downarrowdiv DIV*/
+	content:'';
+	display:block;
+	position:absolute;
+	top:100%; /*should be set to 100% */
+	left:0px;
+	width:0;
+	height:0;
+	border-color: red transparent transparent transparent; /*border color should be same as div div background color*/
+	border-style: solid;
+	border-width: 10px;
+}

@@ -1,0 +1,5 @@
+https://www.frozenmountain.com/downloads#icelink
+D:\My documents\MyProjects\trunk\WebFeatures\WebFeatures\JS\IceLink
+
+тег <video> содается в JavaSript функции
+Документация https://api.frozenmountain.com/icelink2/index.html

@@ -1,0 +1,3 @@
+http://javascript.ru/ajax/server-push/iframe
+
+http://localhost/server-push/iframe.html

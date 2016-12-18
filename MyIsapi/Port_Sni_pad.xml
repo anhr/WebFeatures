@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XML_DIZ_INFO>
+  <MASTER_PAD_VERSION_INFO>
+    <MASTER_PAD_VERSION>3.11</MASTER_PAD_VERSION>
+    <MASTER_PAD_EDITOR>RoboSoft 4.0.756</MASTER_PAD_EDITOR>
+    <MASTER_PAD_EDITOR_URL>http://robosoft.rudenko.com</MASTER_PAD_EDITOR_URL>
+    <MASTER_PAD_INFO>Portable Application Description, or PAD for short, is a data set that is used by shareware authors to disseminate information to anyone interested in their software products. To find out more go to http://www.asp-shareware.org/pad</MASTER_PAD_INFO>
+  </MASTER_PAD_VERSION_INFO>
+  <RoboSoft>
+    <Company_UIN>CMP-00CB18FE816</Company_UIN>
+    <Company_Description>My utility can be useful for web developers and other programmers who are used sockets in his programs. You can use my utility for spying on socket's traffik. For example you can see content of the data exchange between your web browser and web server or your e-mail client and SMTP server.</Company_Description>
+    <Product_UIN>APP-00CB18338FB</Product_UIN>
+    <Search_String>Port Sniffer</Search_String>
+    <Publish_on_CD>TRUE</Publish_on_CD>
+    <Comments_For_Reviewer>My utility can be useful for web developers and other programmers who are used sockets in his programs. You can use my utility for spying on socket's traffik. For example you can see content of the data exchange between your web browser and web server or your e-mail client and SMTP server.</Comments_For_Reviewer>
+    <Press_Release_Search_String>Port Sniffer</Press_Release_Search_String>
+    <NewsFeed_Search_String>Port Sniffer</NewsFeed_Search_String>
+    <Search_Engine_Search_String>Port Sniffer</Search_Engine_Search_String>
+    <Web_Directories_Search_String>Port Sniffer</Web_Directories_Search_String>
+    <RSProductType></RSProductType>
+    <Search_String_Unique></Search_String_Unique>
+    <Backlink></Backlink>
+  </RoboSoft>
+  <Company_Info>
+    <Company_Name>Bonalink</Company_Name>
+    <Address_1>Vabilova 100-2</Address_1>
+    <Address_2></Address_2>
+    <City_Town>Krasnoyarsk</City_Town>
+    <State_Province>Krasnoyarsk</State_Province>
+    <Zip_Postal_Code>660059</Zip_Postal_Code>
+    <Country>Russian Federation</Country>
+    <Company_WebSite_URL>http://bonalink.com/</Company_WebSite_URL>
+    <Contact_Info>
+      <Contact_First_Name>Andrej</Contact_First_Name>
+      <Contact_Last_Name>Hristoliubov</Contact_Last_Name>
+      <Contact_Email>anhr1959@rambler.ru</Contact_Email>
+      <Author_First_Name>Andrej</Author_First_Name>
+      <Author_Last_Name>Hristoliubov</Author_Last_Name>
+      <Author_Email>anhr1959@rambler.ru</Author_Email>
+    </Contact_Info>
+    <Support_Info>
+      <Sales_Email>anhr1959@rambler.ru</Sales_Email>
+      <Support_Email>anhr1959@rambler.ru</Support_Email>
+      <General_Email>anhr1959@rambler.ru</General_Email>
+      <Sales_Phone>+7(391)2687813</Sales_Phone>
+      <Support_Phone>+7(391)2687813</Support_Phone>
+      <General_Phone>+7(391)2687813</General_Phone>
+      <Fax_Phone>+7(391)2687813</Fax_Phone>
+    </Support_Info>
+  </Company_Info>
+  <NewsFeed>
+    <NewsFeed_FORM>Y</NewsFeed_FORM>
+    <NewsFeed_VERSION>1.0</NewsFeed_VERSION>
+    <NewsFeed_URL>http://Submit-Everywhere.com/extensions/NewsFeed.htm</NewsFeed_URL>
+    <NewsFeed_DESCRIPTION>This PAD extension allows you to add your RSS and Atom news feeds info into your PAD file. This info can be used by RSS feed submission software or by feed directories themselves.</NewsFeed_DESCRIPTION>
+    <NewsFeed_Type>RSS 0.90</NewsFeed_Type>
+    <NewsFeed_Language>English</NewsFeed_Language>
+    <NewsFeed_Purpose>News</NewsFeed_Purpose>
+    <NewsFeed_Author_Email>anhr1959@rambler.ru</NewsFeed_Author_Email>
+    <NewsFeed_Author_First_Name>Andrej</NewsFeed_Author_First_Name>
+    <NewsFeed_Author_Last_Name>Hristoliubov</NewsFeed_Author_Last_Name>
+    <NewsFeed_Feed_URL></NewsFeed_Feed_URL>
+    <NewsFeed_Site_Name></NewsFeed_Site_Name>
+    <NewsFeed_Site_URL></NewsFeed_Site_URL>
+    <NewsFeed_Title></NewsFeed_Title>
+    <NewsFeed_Description_70></NewsFeed_Description_70>
+    <NewsFeed_Description_250></NewsFeed_Description_250>
+  </NewsFeed>
+  <Site>
+    <Site_FORM>Y</Site_FORM>
+    <Site_VERSION>1.0</Site_VERSION>
+    <Site_URL>http://Submit-Everywhere.com/extensions/Site.htm</Site_URL>
+    <Site_DESCRIPTION>This PAD extension allows you to add your site info into your PAD file. This info can be used by site submission software or by web directories themselves.</Site_DESCRIPTION>
+    <Site_Contact_Email>anhr1959@rambler.ru</Site_Contact_Email>
+    <Site_Contact_First_Name>Andrej</Site_Contact_First_Name>
+    <Site_Contact_Last_Name>Hristoliubov</Site_Contact_Last_Name>
+    <Site_Site_Title>Port Sniffer</Site_Site_Title>
+    <Site_Site_URL>http://bonalink.com/MyIsapi/PortSniffer.srf</Site_Site_URL>
+    <Site_Description_100>TCP Port Sniffer</Site_Description_100>
+    <Site_Description_250>TCP Port Sniffer</Site_Description_250>
+    <Site_Description_450>TCP Port Sniffer</Site_Description_450>
+    <Site_Keywords>Port Sniffer, debugging, application development, web development, socket, utility, spy</Site_Keywords>
+  </Site>
+  <Program_Info>
+    <Program_Name>Port Sniffer</Program_Name>
+    <Program_Version>1.1</Program_Version>
+    <Program_Release_Month>11</Program_Release_Month>
+    <Program_Release_Day>24</Program_Release_Day>
+    <Program_Release_Year>2012</Program_Release_Year>
+    <Program_Cost_Dollars>0</Program_Cost_Dollars>
+    <Program_Type>Freeware</Program_Type>
+    <Program_Release_Status>New Release</Program_Release_Status>
+    <Program_Install_Support>Install and Uninstall</Program_Install_Support>
+    <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,Win2000,WinOther,Windows2003,Windows Vista Ultimate,Windows Vista Ultimate x64,Windows Vista Starter,Windows Vista Home Basic,Windows Vista Home Premium,Windows Vista Business,Windows Vista Enterprise,Windows Vista Home Basic x64,Windows Vista Home Premium x64,Windows Vista Business x64,Windows Vista Enterprise x64</Program_OS_Support>
+    <Program_Language>English</Program_Language>
+    <Program_Category_Class>Network &amp; Internet::Network Monitoring</Program_Category_Class>
+    <File_Info>
+      <File_Size_Bytes>364032</File_Size_Bytes>
+      <File_Size_K>355</File_Size_K>
+      <File_Size_MB>0.35</File_Size_MB>
+      <Filename_Versioned></Filename_Versioned>
+      <Filename_Previous></Filename_Previous>
+      <Filename_Generic></Filename_Generic>
+      <Filename_Long></Filename_Long>
+    </File_Info>
+    <Expire_Info>
+      <Has_Expire_Info>N</Has_Expire_Info>
+      <Expire_Based_On>Days</Expire_Based_On>
+      <Expire_Count></Expire_Count>
+      <Expire_Other_Info></Expire_Other_Info>
+      <Expire_Month></Expire_Month>
+      <Expire_Day></Expire_Day>
+      <Expire_Year></Expire_Year>
+    </Expire_Info>
+    <Program_Categories>TCP Port sniffer,Monitoring,Network,Internet</Program_Categories>
+    <Limitations>No limitations</Limitations>
+    <Program_Change_Info>New UI</Program_Change_Info>
+    <Program_System_Requirements>No limitations</Program_System_Requirements>
+    <Program_Cost_Other_Code></Program_Cost_Other_Code>
+    <Program_Cost_Other></Program_Cost_Other>
+    <Awards></Awards>
+    <Program_Specific_Category></Program_Specific_Category>
+    <Includes_JAVA_VM></Includes_JAVA_VM>
+    <Includes_VB_Runtime></Includes_VB_Runtime>
+    <Includes_DirectX></Includes_DirectX>
+  </Program_Info>
+  <Web_Info>
+    <Application_URLs>
+      <Application_Info_URL>http://bonalink.com/MyIsapi/PortSniffer.srf</Application_Info_URL>
+      <Application_Screenshot_URL>http://bonalink.com/MyIsapi/images/PortSniffer.jpg</Application_Screenshot_URL>
+      <Application_Icon_URL>http://bonalink.com/MyIsapi/Images/PortSnifferIcon.GIF</Application_Icon_URL>
+      <Application_Order_URL></Application_Order_URL>
+      <Application_XML_File_URL></Application_XML_File_URL>
+    </Application_URLs>
+    <Download_URLs>
+      <Primary_Download_URL>http://bonalink.com/Download.srf?file=../../MyIsapi/PortSnifferSetup2.msi</Primary_Download_URL>
+      <Secondary_Download_URL></Secondary_Download_URL>
+      <Additional_Download_URL_1></Additional_Download_URL_1>
+      <Additional_Download_URL_2></Additional_Download_URL_2>
+    </Download_URLs>
+  </Web_Info>
+  <Permissions>
+    <Distribution_Permissions>Port Sniffer can be freely distributed over the internet in an unchaged form.</Distribution_Permissions>
+    <EULA>http://bonalink.com/MyIsapi/LICENSE_AGREEMENT.htm</EULA>
+  </Permissions>
+  <Press_Release>
+    <Press_Release>My utility can be useful for web developers and other programmers who are used sockets in his programs. You can use my utility for spying on socket's traffik. For example you can see content of the data exchange between your web browser and web server or your e-mail client and SMTP server.</Press_Release>
+    <Headline>TCP Port Sniffer</Headline>
+    <Summary>My utility can be useful for web developers and other programmers who are used sockets in his programs. You can use my utility for spying on socket's traffik.</Summary>
+    <Keywords>Port Sniffer, debugging, application development, web development, socket, utility, spy</Keywords>
+    <Related_URL>http://bonalink.com/MyIsapi/PortSniffer.srf</Related_URL>
+    <Press_Release_Plain></Press_Release_Plain>
+  </Press_Release>
+  <Program_Descriptions>
+    <English>
+      <Keywords>TCP Port sniffer, Web development</Keywords>
+      <Char_Desc_45>TCP Port sniffer, Web development</Char_Desc_45>
+      <Char_Desc_80>TCP Port sniffer, Web development</Char_Desc_80>
+      <Char_Desc_250>TCP Port sniffer, Web development</Char_Desc_250>
+      <Char_Desc_450>TCP Port sniffer, Web development</Char_Desc_450>
+      <Char_Desc_2000>My utility can be useful for web developers and other programmers who are used sockets in his programs. You can use my utility for spying on socket's traffik. For example you can see content of the data exchange between your web browser and web server or your e-mail client and SMTP server.</Char_Desc_2000>
+    </English>
+  </Program_Descriptions>
+</XML_DIZ_INFO>

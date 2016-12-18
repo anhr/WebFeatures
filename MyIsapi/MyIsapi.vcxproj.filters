@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6e705739-d9f2-4a19-a983-5688304fa1ad}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{db6cfd16-579c-4f45-ade5-5fce4569f355}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{4734922b-811a-4e3f-9469-297105d5e11d}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;r</Extensions>
+    </Filter>
+    <Filter Include="Images">
+      <UniqueIdentifier>{5916ca1e-e381-4250-a015-4be5d4336f4a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MyIsapi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MyIsapi.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="ColorSelector.css" />
+    <None Include="ru\content.htm" />
+    <None Include="content.htm" />
+    <None Include="default.htm" />
+    <None Include="ru\default.htm" />
+    <None Include="digitOnly.js" />
+    <None Include="gradient.css" />
+    <None Include="InputKeyFilter.css" />
+    <None Include="bin\MySite.udl" />
+    <None Include="normal.css" />
+    <None Include="..\Database\Signup.sql" />
+    <None Include="spanned.css" />
+    <None Include="style.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyIsapiextension.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\ActiveChat.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\AHPlayer.JPG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\FaxGateway.JPG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\FaxGatewayIcon.GIF">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\Free.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\ItelEmail.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\Label.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\ODBC_32_Explorer.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\PortSniffer.JPG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\PortSnifferIcon.GIF">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\Text.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\search_icon.png">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="Images\subnav_slice.png">
+      <Filter>Images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MyIsapi.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Port_Sni_pad.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>

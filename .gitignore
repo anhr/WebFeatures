@@ -45,3 +45,53 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# My ignored files and folders
+$tf
+.svn
+.vs
+_SYNCAPP
+_UpgradeReport_Files
+AccountIsapi
+Casino
+ConfirmUser
+Database
+Debug
+EmailMe
+Emoji
+Fax
+FaxServer
+ForceLogin
+ForgotPassword
+GoogleSite
+HelloWorld
+jwplayer
+OnlineTV
+packages
+Release
+RemoteAccess
+RemoteControl
+RemoteControlDispatcher
+Root
+RTMP
+rus
+RussianBilling
+Scoreboard
+ShowRequest
+smscoin Для выполнения нужно скопировать в wwwroot папку
+ckeditor guthub
+ckeditor Standard Package
+SignalRChat debug
+*.sql
+Chat.edmx
+ChatHub.cs
+SMSTranslator
+tivenes
+TVchannelCopyTable
+TVchannelFileAndStreamer
+TVChannels
+VCUE
+WebDatabaseService
+WebSiteLib
+WhoIs
+x64

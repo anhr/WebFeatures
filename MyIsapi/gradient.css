@@ -1,0 +1,135 @@
+/*table th {background-color: lightblue;}*/
+.gradient
+	{/*http://htmlbook.ru/css3-na-primerakh/lineinyi-gradient     */
+		background: #CEDFF6; /* Для старых браузров */
+		background: -moz-linear-gradient(top, #CEDFF6, #FFFFFF); /* Firefox 3.6+ */
+		/* Chrome 1-9, Safari 4-5 */
+		background: -webkit-gradient(linear, left top, left bottom, 
+					color-stop(0%,#CEDFF6), color-stop(100%,#FFFFFF));
+		/* Chrome 10+, Safari 5.1+ */
+		background: -webkit-linear-gradient(top, #CEDFF6, #FFFFFF);
+		background: -o-linear-gradient(top, #CEDFF6, #FFFFFF); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #CEDFF6, #FFFFFF); /* IE10 */
+		background: linear-gradient(top, #CEDFF6, #FFFFFF); /* CSS3 */ 
+		padding-bottom: .3em;
+		-moz-border-radius: 5px;/* Firefox */
+		-webkit-border-radius: 5px;/* Safari 4 */
+		border-radius: 5px;/* IE 9, Safari 5, Chrome */
+		filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr='#CEDFF6', endColorStr='#FFFFFF', gradientType='0');/*IE*/
+	}
+.gradient_gray
+	{/*http://htmlbook.ru/css3-na-primerakh/lineinyi-gradient     */
+		/*border: 2px solid #999999;*/
+		background: #cccccc; /* Для старых браузров */
+		background: -moz-linear-gradient(top, #cccccc, #FFFFFF); /* Firefox 3.6+ */
+		/* Chrome 1-9, Safari 4-5 */
+		background: -webkit-gradient(linear, left top, left bottom, 
+					color-stop(0%,#cccccc), color-stop(100%,#FFFFFF));
+		/* Chrome 10+, Safari 5.1+ */
+		background: -webkit-linear-gradient(top, #cccccc, #FFFFFF);
+		background: -o-linear-gradient(top, #cccccc, #FFFFFF); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #cccccc, #FFFFFF); /* IE10 */
+		background: linear-gradient(top, #cccccc, #FFFFFF); /* CSS3 */ 
+		/*filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr='#cccccc', endColorStr='#FFFFFF', gradientType='0');*//*IE Error: I do not see borders in the table headers*/
+		padding: .3em;
+		-moz-border-radius: 5px;/* Firefox */
+		-webkit-border-radius: 5px;/* Safari 4 */
+		border-radius: 5px;/* IE 9, Safari 5, Chrome */
+	}
+.radius
+	{/*http://htmlbook.ru/css3-na-primerakh/lineinyi-gradient     */
+		padding: 10px;
+		/*border: 1px solid #333;*/
+		-moz-border-radius: 5px;/* Firefox */
+		-webkit-border-radius: 5px;/* Safari 4 */
+		border-radius: 5px;/* IE 9, Safari 5, Chrome */
+   }
+.noRadius
+	{/*http://htmlbook.ru/css3-na-primerakh/lineinyi-gradient     */
+		padding: 0px;
+		/*border: 1px solid #333;*/
+		-moz-border-radius: 0px;/* Firefox */
+		-webkit-border-radius: 0px;/* Safari 4 */
+		border-radius: 0px;/* IE 9, Safari 5, Chrome */
+   }
+.myHover:hover
+	{
+		background-color: #F8F8FF;
+	}
+.hover_Row
+	{
+		background-color: #F8F8FF;
+	}
+.clicked_Row
+	{
+		background-color: lightgreen;
+	}
+.streamer:hover
+	{
+		background: -moz-linear-gradient(#FFFFFF, #F8F8FF, #FFFFFF);/*Firefox*/
+		background: -webkit-gradient(linear, 0 0, 0  100%, from(#FFFFFF), to(#FFFFFF), color-stop(0.5, #F8F8FF));/*Ghrome*/
+		background: -o-linear-gradient(top, #FFFFFF, #F8F8FF, #FFFFFF);/* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #F8F8FF, #FFFFFF); /* IE10 edge*/
+		filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr=#F0F0FF, endColorStr='#FFFFFF', gradientType='0');/*IE*/
+		background-color: #F8F8FF;
+	}
+.clicked_streamer
+	{
+		background: -moz-linear-gradient(#FFFFFF, lightgreen, #FFFFFF);/*Firefox*/
+		background: -webkit-gradient(linear, 0 0, 0  100%, from(#FFFFFF), to(#FFFFFF), color-stop(0.5, lightgreen));/*Ghrome*/
+		background: -o-linear-gradient(top, #FFFFFF, lightgreen, #FFFFFF);/* Opera 11.10+ */
+		background: -ms-linear-gradient(top, lightgreen, #FFFFFF); /* IE10 edge*/
+		filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr=#00FF00, endColorStr='#FFFFFF', gradientType='0');/*IE*/
+		background-color: #00FF00;
+	}
+
+/*http://htmlbook.ru/blog/delaem-stilnye-knopki*/
+button
+	{
+		background: -moz-linear-gradient(#DDDDDD, #AAAAAA);/*Firefox*/
+		background: -webkit-gradient(linear, 0 0, 0  100%, from(#DDDDDD), to(#AAAAAA));/*Ghrome*/
+		background: -o-linear-gradient(top, #DDDDDD, #AAAAAA);/* Opera 11.10+ */
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#AAAAAA');
+		padding: 3px 7px;
+		color: #333;
+		-moz-border-radius: 5px;/* Firefox */
+		-webkit-border-radius: 5px;/* Safari 4 */
+		border-radius: 5px;/* IE 9, Safari 5, Chrome */
+	}
+button:hover
+	{
+		background: -moz-linear-gradient(#EBFFFF, #DDDDDD);/*Firefox*/
+		background: -webkit-gradient(linear, 0 0, 0  100%, from(#EBFFFF), to(#DDDDDD));/*Ghrome*/
+		background: -o-linear-gradient(top, #EBFFFF, #DDDDDD); /* Opera 11.10+ */
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EBFFFF', endColorstr='#DDDDDD');
+	}
+button:active
+	{
+		background: -moz-linear-gradient(#DDDDDD, #EBFFFF);/*Firefox*/
+		background: -webkit-gradient(linear, 0 0, 0  100%, from(#DDDDDD), to(#EBFFFF));/*Ghrome*/
+		background: -o-linear-gradient(top, #DDDDDD, #EBFFFF); /* Opera 11.10+ */
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BBBBBB', endColorstr='#EBFFFF');
+	}
+.hide_table
+	{
+		MARGIN: 0px;
+	}
+.hide_table_cell
+	{
+		border: 0px solid #000; /* Параметры рамки */
+		padding: 0px 0px;
+	}
+.myfloat
+	{
+		float: left;
+	}
+.myBorder
+	{
+		border: 1px solid #333;
+	}
+.bodyMargin
+	{
+		/*width: 98%;*/
+		/*padding: 10px 10px 0px 10px;*/
+		/*border: 2px solid #999999;*/
+	}

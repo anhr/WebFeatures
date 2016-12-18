@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml"  lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="iframe.js" type="text/javascript"></script>
+<script src="server_push.js" type="text/javascript"></script>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<script type="text/javascript"><!-- // hide from W3C validator
+
+var SESSIONURL = "";
+var IMGDIR_MISC = "/forum/images/ca_serenity/misc";
+var vb_disable_ajax = parseInt("0", 10);
+// --></script>
+
+
+<title>Бесконечный IFrame</title>
+</head>
+<body>
+<p>Протестировать индикацию загрузки в вашем браузере можно, запустив загрузку бесконечного ифрейма.</p>
+<p>
+	<input id="endless_iframeb1" onclick="endlessFrameRun()" value="Запустить бесконечный iframe" type="button" />
+	<input id="endless_iframeb2" onclick="endlessFrameRun(true)" value="Запустить бесконечный iframe c добавлением пробелов" type="button" />
+	<input disabled="disabled" id="endless_iframeb3" onclick="endlessFrameStop()" value="Остановить" type="button" />
+	<iframe style="height: 1px; width: 1px; visibility: hidden; position: absolute" id="endless_iframe"></iframe>
+</p>
+<div style="font-weight: bold; font-style: italic" id="endless_frame_div">Тут появятся сообщения с сервера (цифры)</div>
+</body>
+</html>

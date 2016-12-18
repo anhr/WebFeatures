@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="IceLink">
+      <UniqueIdentifier>{a700e901-2a85-48a0-b139-8b3f117eea36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WebRTC">
+      <UniqueIdentifier>{4778a4b9-4616-4ea2-a988-85a8ddfd3dbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WebRTC\pubnub">
+      <UniqueIdentifier>{115624a2-6990-42d0-a47c-cbda5cae4352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jquery">
+      <UniqueIdentifier>{29072139-a705-429a-9ba0-c50c18f36763}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jquery\ui">
+      <UniqueIdentifier>{f129b4cc-75dc-4e0a-a708-9ea32606cb10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jquery\ui\1.11.4">
+      <UniqueIdentifier>{7b495ce2-8dd1-4086-a4dc-0d285c30ea7c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="JS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="JS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ColorSelector.js" />
+    <None Include="Common.js" />
+    <None Include="detectFlash.js" />
+    <None Include="detectVLC.js" />
+    <None Include="encoder.js" />
+    <None Include="InputKeyFilter.js" />
+    <None Include="JS.srf" />
+    <None Include="linkToScripts.js" />
+    <None Include="myRequest.js" />
+    <None Include="PluginDetect_Flash.js" />
+    <None Include="PluginDetect_Flash_VLC.js" />
+    <None Include="PluginDetect_Flash_VLC_Debug.js" />
+    <None Include="PluginDetect_Flash_VLC_Readable.js" />
+    <None Include="PluginDetect_VLC.js" />
+    <None Include="PluginDetectAllPlayers.js" />
+    <None Include="screenfull.js" />
+    <None Include="screenfull.min.js" />
+    <None Include="toggle.js" />
+    <None Include="..\Common\js\XMLHttpRequest.js" />
+    <None Include="QueryString.js" />
+    <None Include="IceLink\localMedia.js">
+      <Filter>IceLink</Filter>
+    </None>
+    <None Include="IceLink\signalling.js">
+      <Filter>IceLink</Filter>
+    </None>
+    <None Include="resizer.js" />
+    <None Include="soundmeter.js" />
+    <None Include="WebRTC\pubnub\pubnub.js">
+      <Filter>WebRTC\pubnub</Filter>
+    </None>
+    <None Include="jquery\ui\1.11.4\jquery-ui.css">
+      <Filter>jquery\ui\1.11.4</Filter>
+    </None>
+    <None Include="jquery\ui\1.11.4\jquery-ui.js">
+      <Filter>jquery\ui\1.11.4</Filter>
+    </None>
+    <None Include="WebRTC\DetectRTC.js">
+      <Filter>WebRTC</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>

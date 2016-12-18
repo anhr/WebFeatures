@@ -1,0 +1,398 @@
+input[type=button], input[type=submit], input[type=reset]
+	{
+		/*background: -moz-linear-gradient(#BBBBBB, #DDDDDD, #BBBBBB);*//*Firefox*/
+		background: -moz-linear-gradient(#DDDDDD, #AAAAAA);/*Firefox*/
+		/*background: -webkit-gradient(linear, 0 0, 0  100%, from(#BBBBBB), to(#BBBBBB), color-stop(0.5, #DDDDDD));*//*Ghrome*/
+		background: -webkit-gradient(linear, 0 0, 0  100%, from(#DDDDDD), to(#AAAAAA));/*Ghrome*/
+		/*background: -o-linear-gradient(top, #BBBBBB, #DDDDDD, #BBBBBB);*//* Opera 11.10+ */
+		background: -o-linear-gradient(top, #DDDDDD, #AAAAAA);/* Opera 11.10+ */
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#AAAAAA');
+		padding: 3px 7px;
+		color: #333;
+		/*border: 1px solid #666;*/
+		-moz-border-radius: 5px;/* Firefox */
+		-webkit-border-radius: 5px;/* Safari 4 */
+		border-radius: 5px;/* IE 9, Safari 5, Chrome */
+	}
+input, select
+	{
+		-moz-border-radius: 5px;/* Firefox */
+		-webkit-border-radius: 5px;/* Safari 4 */
+		border-radius: 5px;/* IE 9, Safari 5, Chrome */
+	}
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover
+	{
+		/*background: -moz-linear-gradient(#DDDDDD, #EBFFFF, #EBFFFF);*//*Firefox*/
+		background: -moz-linear-gradient(#EBFFFF, #DDDDDD);/*Firefox*/
+		/*background: -webkit-gradient(linear, 0 0, 0  100%, from(#DDDDDD), to(#DDDDDD), color-stop(0.5, #EBFFFF));*//*Ghrome*/
+		background: -webkit-gradient(linear, 0 0, 0  100%, from(#EBFFFF), to(#DDDDDD));/*Ghrome*/
+		/*background: -o-linear-gradient(top, #DDDDDD, #EBFFFF, #EBFFFF);*/ /* Opera 11.10+ */
+		background: -o-linear-gradient(top, #EBFFFF, #DDDDDD); /* Opera 11.10+ */
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EBFFFF', endColorstr='#DDDDDD');
+	}
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active
+	{
+		/*background: -moz-linear-gradient(#EBFFFF, #BBBBBB, #EBFFFF);*//*Firefox*/
+		background: -moz-linear-gradient(#DDDDDD, #EBFFFF);/*Firefox*/
+		/*background: -webkit-gradient(linear, 0 0, 0  100%, from(#EBFFFF), to(#EBFFFF), color-stop(0.5, #BBBBBB));*//*Ghrome*/
+		background: -webkit-gradient(linear, 0 0, 0  100%, from(#DDDDDD), to(#EBFFFF));/*Ghrome*/
+		/*background: -o-linear-gradient(top, #EBFFFF, #BBBBBB, #EBFFFF);*/ /* Opera 11.10+ */
+		background: -o-linear-gradient(top, #DDDDDD, #EBFFFF); /* Opera 11.10+ */
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BBBBBB', endColorstr='#EBFFFF');
+	}
+html
+	{
+    height: 100%;/*for srolling of TVChannelsArea http://www.cyberforum.ru/html/thread355802.html*/
+	}
+body
+	{
+	background: #ffffff; 
+	color: #000000;
+	font-family: x-small Verdana, Arial, Helvetica, sans-serif;
+	font-size: 80%;
+    height: 100%;/*For srolling of TVChannelsArea http://www.cyberforum.ru/html/thread355802.html*/
+	}
+/*Если применить это, то на странице OnLuneTV ширина окна будет шире ширины окна браузера и внизу появится горизонтальный скролл бар*/
+/*
+div
+	{
+	width: 100%;
+	padding: 4px 8px;
+	}
+*/
+h1, h2, h3, h4
+	{
+	font-family: Helvetica, Arial, Verdana, sans-serif;	
+	color: black; 
+	}
+	
+h1
+	{
+	font-size: 150%;
+	margin-top: .5em;
+	margin-bottom: .5em; 
+	}
+	
+h2
+	{
+	font-size: 125%;
+	margin-top: 1em;
+	margin-bottom: .6em; 
+	}
+	
+h3
+	{
+	font-size: 110%;
+	margin-top: 1em;
+	margin-bottom: .6em;
+	}
+	
+h4
+	{
+	font-size: 100%;
+	margin-top: 1em;
+	margin-bottom: .6em; 
+	}
+
+p
+	{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #000000; 
+	margin-top: .6em;
+	margin-bottom: .6em;
+	}
+
+p.Title
+	{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 200%;
+	color: blue; 
+	margin-top: .6em;
+	margin-bottom: .6em;
+	text-align: right;
+	float: right;
+	}
+
+
+dl
+	{
+	margin-top: 0em; 
+	}
+
+dd
+	{
+	margin-bottom: 0em;  
+	margin-left: 1.9em; 
+	}
+
+dt
+	{
+	margin-top: .6em; 
+	}
+
+dt.Parameter
+	{
+		font-style : italic;
+	}
+
+ul, ol
+	{
+	margin-top: .6em; 	
+	margin-bottom: 0em;
+	}
+	
+ol
+	{
+	margin-left: 1.9em; 
+	}	
+	
+ul
+	{
+	list-style-type: disc; 
+	margin-left: 1.9em; 
+	}
+
+li
+	{
+	margin-bottom: .6em;
+	}
+
+ul ol, ol ol
+	{
+	list-style-type: lower-alpha;
+	}
+
+pre
+	{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	margin-top: .6em;
+ 
+	}
+
+pre.Syntax
+	{
+	font-size: 120%;
+	font-family: "Lucida Console", "Courier New", Courier, mono;
+	background-color : aqua;
+	
+	margin-top: .6em;
+	margin-bottom: .6em; 
+	}
+
+code
+	{
+	font: 100% Lucida Console, Courier New, Courier, mono; 
+	color: #660000;
+	}
+
+table
+	{
+	width: 100%;
+	/*background: #999999;*/
+	margin-top: .3em;
+	margin-bottom: .3em;
+	border-collapse: collapse;
+	}
+		
+th
+	{ 
+	padding: 4px 8px;
+	/*background: #cccccc;*/
+	text-align: left;
+	font-family: x-small Verdana, Arial, Helvetica, sans-serif;
+/*	font-size: 80%;*/
+	font-weight: normal;
+	vertical-align: bottom;
+	border: 2px solid #999999;
+	}
+		
+td
+	{ 
+	padding: 4px 8px;
+	/*background: #ffffff;*/
+	vertical-align: top;
+	font-family: x-small Verdana, Arial, Helvetica, sans-serif;
+/*	font-size: 80%;*/
+	border: 2px solid #999999;
+	}
+
+blockquote
+	{
+	margin-left: 1.9em;
+	margin-right: 3.8em;
+	margin-top: .6em;
+	margin-bottom: .6em;
+	}
+
+sup
+	{
+	text-decoration: none;
+	font-size: smaller; 
+	}
+
+a:link
+	{
+	color: #0066ff;
+	}
+	
+a:visited
+	{
+	color: #996600; 
+	}
+	
+a:hover
+	{
+	color: #cc9900;
+	}
+	
+.label
+	{
+	font-weight: bold; 
+	margin-top: 1em;
+	}
+	
+.tl
+	{
+	margin-bottom: .75em; 
+	}
+	
+.atl
+	{
+	padding-left: 1.5em;
+	padding-bottom: .75em; 
+	}
+	
+.cfe
+	{
+	font-weight: bold; 
+	}
+	
+.mini
+	{
+	font-size: smaller;
+	}
+	
+.dt
+	{
+	margin-bottom: -.6em; 
+	}
+	
+.indent
+	{
+	margin-left: 1.9em; 
+	margin-right: 3.8em;
+	}
+
+.product
+	{
+	text-align: right;
+	color: #333333;
+	font-size: smaller;
+	font-style: italic;
+	background: #cccccc;
+	}
+ a.theLinks
+	{
+		text-decoration:none;
+		color:black;
+		font-family:verdana,arial,sans-serif;
+		font-size:9pt;
+	}
+ .description
+	{
+		color:black;
+        font-weight:normal;
+        font-family:verdana,arial,sans-serif;
+        font-size:8pt;
+    }
+ td.spacer
+	{
+		border-bottom: black 1px solid;
+	}
+ td.activeTab
+	{
+		font-family:verdana,arial,sans-serif;
+        font-size:9pt;
+        font-weight:bold;
+        line-height:20px;
+        background-color:white;
+        border-bottom: #ffffff 1px solid;
+        border-top:black 1px solid;
+        border-right:black 1px solid;
+        border-left:black 1px solid;
+    }
+ td.inactiveTabs
+	{
+		font-family:verdana,arial,sans-serif;
+		font-size:9pt;
+		line-height:20px;
+		background-position: left bottom;  
+		background-image: url(/MyIsapi/Images/subnav_slice.png);
+		cursor: pointer;
+		border-bottom: black 1px solid;
+		border-top:black 1px solid;
+		border-right:black 1px solid;
+		border-left:black 1px solid;
+	}
+ td:hover.inactiveTabs
+	{
+		background-color:white;
+		border-bottom:1pt white; border-style:solid;
+	}
+ td.line
+	{
+		line-height:20px;
+		background-color:white;
+		border-right:black 1px solid;
+		border-left:black 1px solid;
+		border-bottom:black 1px solid;
+	}
+ td.menu
+	{
+		background-position: left bottom;  
+		background-image: url(/MyIsapi/Images/subnav_slice.png);
+	}
+ th.menu
+	{
+		background-color: #CEDFF6
+	}
+.transparent
+	{
+        background-color: white;
+        border: none;
+	}
+.center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+	-webkit-transform: translate(-50%, -50%); /* Для Safari, Chrome, iOS */
+    transform: translate(-50%, -50%);
+}
+.blok{
+    background-color: white;
+    /*border: 2px solid #999999;*/
+    border-radius: 4px;
+    box-shadow: rgba(0,0,0,1.2) -1px -1px 3px;
+    padding: 5px;
+}
+.pointer{
+	cursor: pointer;
+	text-decoration:underline;
+}
+
+/* http://jsfiddle.net/FtL6G/ */
+.b-toggle {
+    opacity: 0;
+    max-height: 0;
+    overflow: auto;/*hidden;*/
+    -moz-transition: opacity 1s, max-height 1s;
+    -ms-transition: opacity 1s, max-height 1s;
+    transition: opacity 1s, max-height 1s;
+    _display: none;
+}
+.expanded {
+    max-height: 1000px;
+    opacity: 1;
+    _display: block;
+}
+

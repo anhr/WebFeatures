@@ -1,0 +1,3 @@
+http://www.asp.net/signalr/overview/getting-started/tutorial-getting-started-with-signalr
+
+http://habrahabr.ru/company/dnevnik_ru/blog/167307/
