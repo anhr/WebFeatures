@@ -165,6 +165,7 @@
 		    elementUsers.style.height = height;
 		    elementChat.style.height = height;
 		    document.getElementById("resizerUsers").style.height = height;
+		    document.getElementById("touch").style.height = height;
 
             //For compatibility with IE6 
 		    elementMessage.style.width = elementSendHide.clientWidth - document.getElementById("send").clientWidth - 50 + 'px';
@@ -470,7 +471,9 @@
             <!-- resize the mesages and users elements http://jsfiddle.net/3jMQD/ 
                 http://stackoverflow.com/questions/8960193/how-to-make-html-element-resizable-using-pure-javascript
             -->
-            <div id="resizerUsers" style="width: 5px; float: right;"></div>
+            <div id="resizerUsers" style="width: 5px; float: right;">
+                <div id="touch" style="width:25px;position:relative;left:-10px;"></div>
+            </div>
             <script type='text/javascript'>
                 function resizeVideos(){
                     var elementUsers = document.getElementById('users');
@@ -506,13 +509,67 @@
                     }
                 }
 
+                function resizeUsers(x){
+                    var elementUsers = document.getElementById("users");
+                    var usersWidth = elementUsers.parentElement.clientWidth - x - 18 + "px";
+                    elementUsers.style.width = usersWidth;
+                    SetCookie("usersWidth", usersWidth);
+                    resizeVideos();
+                }
+
+                var elResizerUsers = document.getElementById('resizerUsers');
+                var elTouch = document.getElementById('touch');
+                elTouch.addEventListener('touchstart', function(event) {
+                    var strEvent = '';
+                    /*
+                    for(var key in event) {
+                        strEvent += ' "' + key + '": ' + event[key];
+                    }
+                    */
+                    consoleLog('touchstart. event: ' + strEvent + ' elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor);
+                    if (event.targetTouches.length == 1) {
+//                        var myclick=event.targetTouches[0]; //Ваш код
+                        elResizerUsers.style.backgroundColor = 'gray';
+                    }
+                }, false);
+
+                elTouch.addEventListener('touchmove', function(event) {
+                    /*
+                    var strEvent = '';
+                    for(var key in event) {
+                        strEvent += ' "' + key + '": ' + event[key];
+                    }
+                    consoleLog('touchmove. event: ' + strEvent);
+                    */
+                    //https://habrahabr.ru/post/118318/
+                    if (event.targetTouches.length == 1) {// Если 1 палец внутри элемента
+                        var touch = event.targetTouches[0];
+                        consoleLog('touchmove. touch.pageX = ' + touch.pageX);
+                        // Place element where the finger is
+//                        elTouch.style.left = touch.pageX + 'px';
+                        resizeUsers(parseInt(touch.pageX));
+                    }
+                }, false);
+
+                elTouch.addEventListener('touchend', function(event) {
+                    consoleLog('touchend. elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor);
+                    if (event.targetTouches.length == 0) {
+                        //                        var myclick=event.targetTouches[0]; //Ваш код
+                        elResizerUsers.style.backgroundColor = '';
+                        consoleLog('elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor)
+                    }
+                }, false);
+
                 resizerX("resizerUsers", function (e) {
                     //consoleLog("mousemove(X = " + e.pageX + ")");
+                    resizeUsers(e.pageX);
+/*
                     var elementUsers = document.getElementById("users");
                     var usersWidth = elementUsers.parentElement.clientWidth - e.pageX - 18 + "px";
                     elementUsers.style.width = usersWidth;
                     SetCookie("usersWidth", usersWidth);
                     resizeVideos();
+*/
                 });
             </script>
 

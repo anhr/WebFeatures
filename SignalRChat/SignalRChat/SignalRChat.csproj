@@ -99,7 +99,6 @@
   <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="Scripts\WebRTC\Camera.js" />
-    <Content Include="Scripts\WebRTC\DetectRTC.js" />
     <Content Include="Scripts\WebRTC\file-hangout.js" />
     <Content Include="Scripts\WebRTC\FileTransfer.js" />
     <Content Include="Scripts\WebRTC\Media.js" />

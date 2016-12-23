@@ -2,7 +2,7 @@
  * The myRequest is Javascript object of the cross-browser XMLHttpRequest wrapper. Your request code to the server is very simple, if you are using myRequest obect.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: https://drive.google.com/file/d/0B5hS0tFSGjBZRXZHVXN5S0VNV28/view?usp=sharing
+ * About me: http://anhr.ucoz.net/AboutMe/
  * source: https://github.com/anhr/myRequest
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov

@@ -2,8 +2,8 @@
  * Javascript code. WebRTC (Web Real-Time Communications) see https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API for details
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: https://drive.google.com/file/d/0B5hS0tFSGjBZRXZHVXN5S0VNV28/view?usp=sharing
- * source: 
+ * About me: http://anhr.ucoz.net/AboutMe/
+ * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
  *

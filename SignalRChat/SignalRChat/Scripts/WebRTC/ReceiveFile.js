@@ -3,8 +3,9 @@
  *      Receive file, picture, video, audio or stream from camera or microphone
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: https://drive.google.com/file/d/0B5hS0tFSGjBZRXZHVXN5S0VNV28/view?usp=sharing
- * source: https://habrahabr.ru/post/187270/
+ * About me: http://anhr.ucoz.net/AboutMe/
+ * source: https://github.com/anhr/WebFeatures
+ *  https://habrahabr.ru/post/187270/
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
  *

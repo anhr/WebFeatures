@@ -2,7 +2,7 @@
  * A Javascript object of the cross-browser Color Selector. You can use my Color Selector instead of <input type="color"> if you want open your web page in an old web browser, that does not supports HTML5, for example IE6.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: https://drive.google.com/file/d/0B5hS0tFSGjBZRXZHVXN5S0VNV28/view?usp=sharing
+ * About me: http://anhr.ucoz.net/AboutMe/
  * source: https://github.com/anhr/ColorSelector
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
