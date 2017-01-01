@@ -27,8 +27,8 @@ function Cameras(cameraTransfers) {
     });
 }
 
-function elementCamera(id) {
-    return getElementMedia('<video' + ((typeof id == 'undefined') ? '' : ' id="' + id + '"') + ' autoplay style="display:none;width:inherit"></video>');
+function elementCamera(id, attributes) {
+    return getElementMedia('<video' + ((typeof id == 'undefined') ? '' : ' id="' + id + '"') + ' autoplay' + ((typeof attributes == 'undefined') ? '' : ' ' + attributes) + ' style="display:none;width:inherit"></video>');
 }
 
 function onRecordVideo(blockId) {

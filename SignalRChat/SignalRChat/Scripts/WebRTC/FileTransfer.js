@@ -275,7 +275,7 @@ function FileTransfer(options) {
     this.showTools = function () {
         var element = this.getBlock().querySelector('#tools');
         var expanded = " expanded";
-        if (element.className.indexOf(expanded) == -1)
+        if (!isBranchExpanded(element))
             element.className += expanded;
         window.setTimeout(function () { resizeVideos() }, 300);//большая задержка нужна для того, что бы успел втянуться обратно толбар перед тем как дать команду изменить размеры блоков
         //consoleLog('FileTransfer.showTools() element.className: ' + element.className);
@@ -542,6 +542,7 @@ closeSessionCauseEnum = {
     , restartLocalMediaNext: 7
     , updateSettings: 8
     , setupMicrophone: 9
+    , notSupported: 10
 }
 
 function getCauseMessage(closeSessionCause) {
@@ -566,8 +567,10 @@ function getCauseMessage(closeSessionCause) {
             return 'update settings';
         case setupMicrophone://9
             return 'setup microphone';
+        case closeSessionCauseEnum.notSupported://10
+            return lang.notSupported;//'Only secure origins are allowed. Please use protocol for secure communication HTTPS for opening this web page.'
         default: consoleError('Unknown closeSessionCause = ' + closeSessionCause);
     }
-    return '';
+    return ''; 
 }
 

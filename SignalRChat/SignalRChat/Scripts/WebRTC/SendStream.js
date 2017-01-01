@@ -78,9 +78,12 @@ function SendStream(options) {
                     this.soundMeter.mic = null;
                     delete this.soundMeter;
                 }
-                //                            var videoID = this.app.videoID;
+/*
                 var blockId = this.getBlockID();
                 var videoSource = document.getElementById(blockId + 'videoSource');
+*/
+                var block = this.getBlock();
+                var videoSource = block.querySelector('#videoSource');
                 if (videoSource) {
                     for (i = 0; i < videoSource.length; i++) {
                         if (videoSource[i].selected) {
@@ -89,15 +92,16 @@ function SendStream(options) {
                         }
                     }
                 }
-                var audioSource = document.getElementById(blockId + 'audioSource');
+//                var audioSource = document.getElementById(blockId + 'audioSource');
+                var audioSource = block.querySelector('#audioSource');
                 if (audioSource) {
                     for (i = 0; i < audioSource.length; i++) {
                         if (audioSource[i].selected) {
-                            SetCookie('curAudioLabel', audioSource[i].innerText);
+                            SetCookie('curAudioLabel' + fileTransfer.options.options.sendMediaName, audioSource[i].innerText);
                             break;
                         }
                     }
-                }
+                } else consoleError('audioSource = ' + audioSource);
                 //остановить трансляцию без закрытия окна трансляции
                 this.cancel(true);
 
@@ -141,7 +145,7 @@ function SendStream(options) {
             if (typeof options.setVideoDevice != 'undefined') {
                 options.setVideoDevice(hints);
             }
-            var curAudioLabel = get_cookie('curAudioLabel');
+            var curAudioLabel = get_cookie('curAudioLabel' + fileTransfer.options.options.sendMediaName);
             for (i = 0; i < DetectRTC.audioInputDevices.length; i++) {
                 var audioInputDevice = DetectRTC.audioInputDevices[i];
                 if (audioInputDevice.label == curAudioLabel) {
@@ -156,6 +160,16 @@ function SendStream(options) {
                 var block = fileTransfer.getBlock();
                 if (block == null)
                     return;//произошло аварийное закрытие блока камеры. Например когда запрещен доступ к камере
+
+                block.addEventListener('touchstart', function (event) {
+                    consoleLog('elementMedia touchstart. event.targetTouches.length = ' + event.targetTouches.length);
+                    if (event.targetTouches.length == 1) {// Если 1 палец внутри элемента
+                        if (isBranchExpanded(fileTransfer.getBlock().querySelector('#tools')))
+                            fileTransfer.hideTools()
+                        else fileTransfer.showTools();
+                    }
+                }, false);
+
                 block.querySelector('#wait').style.display = 'none';
                 fileTransfer.startTime = parseInt(new Date().getTime());
                 fileTransfer.intervalID = window.setInterval(function () {
@@ -186,6 +200,13 @@ function SendStream(options) {
                         fileTransfer.restartLocalMediaTimeout();
                         fileTransfer.closeSessionCause = closeSessionCauseEnum.webcamBusy;
                         return;
+                    case 'NotSupportedError':
+                        if (window.location.protocol == "https:") {
+                            message = err.name + ' ' + err.message;
+                            fileTransfer.closeSessionCause = closeSessionCauseEnum.error;
+                        } else message = lang.notSupported;//'Only secure origins are allowed. Please use protocol for secure communication HTTPS for opening this web page.'
+                        fileTransfer.closeSessionCause = closeSessionCauseEnum.notSupported;
+                        break;
                     case 'PermissionDeniedError':
                         if (window.location.protocol == "https:") {
                             message = lang.permissionDeniedShort + browserSettings();//'Permission to media devices is denied.'
@@ -221,6 +242,11 @@ function SendStream(options) {
             }
 
             function success(stream) {
+                if (!fileTransfer.options.options.isUserMediaSuccess(stream)) {
+                    fileTransfer.loadedmetadata = false;
+                    fileTransfer.cancel();
+                    return;
+                }
                 fileTransfer.stream = stream;
                 options.getUserMediaSuccess(stream);
             }

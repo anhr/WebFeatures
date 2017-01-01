@@ -3,7 +3,7 @@
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
  * About me: http://anhr.ucoz.net/AboutMe/
- * source: https://github.com/anhr/InputKeyFilter https://github.com/anhr/ColorSelector
+ * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
  *
@@ -122,7 +122,9 @@ function getPerformance(text, callback)
     }
     */
     if (window.performance) {
-        var now = (window.performance.now() / 1000).toFixed(3);
+        var now = '';
+        if (typeof window.performance.now != 'undefined')//for ie 9
+            now = (window.performance.now() / 1000).toFixed(3);
         if (typeof g_user != 'undefined')
             now += ' ' + g_user.nickname;//for LJ TV Chrome browser
         text = now + ': ' + text;
@@ -815,6 +817,10 @@ function isBranchExpanded(informer) {
     return informer.className.indexOf(' expanded') != -1;
 }
 
+function isBranchExpandedFast(informer) {
+    return informer.style.display == 'block';
+}
+
 function onbranchelementBase(informer, branch, expand, maxHeight) {
     var expanded = ' expanded';
     if(informer.className.indexOf('b-toggle') == -1)
@@ -824,7 +830,9 @@ function onbranchelementBase(informer, branch, expand, maxHeight) {
         if((expand != null) && (expand == false))
             return;//do not expand
         if(typeof maxHeight == 'undefined')
-            maxHeight = window.screen.height + "px";
+            maxHeight = window.screen.height;// + "px";
+        if(typeof maxHeight == 'number')
+            maxHeight = maxHeight + "px";
         informer.style.maxHeight = maxHeight;
         informer.className += expanded;
         if(branch)

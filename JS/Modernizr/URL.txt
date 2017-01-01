@@ -1,0 +1,12 @@
+файл modernizr-custom.js сгенерирован на странице https://modernizr.com/download/?touchevents-setclasses
+На данный момент туда добавлено:
+	Touch Events - Indicates if the browser supports the W3C Touch Events API.
+
+Source code
+https://github.com/Modernizr/Modernizr
+
+Clone
+D:\My documents\MyProjects\Documents\github\Modernizr
+
+Documents
+https://modernizr.com/docs/#using-modernizr-with-javascripthttps://modernizr.com/download/?touchevents-setclasses

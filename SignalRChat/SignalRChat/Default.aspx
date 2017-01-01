@@ -1,6 +1,17 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="SignalRChat.Default" %>
 <%@ import namespace="System.Data" %>
 <%@ import namespace="System.Data.SqlClient" %>
+<%
+    //https://support.microsoft.com/ru-ru/kb/239875
+    //http://www.w3schools.com/asp/coll_servervariables.asp
+    if (Request.ServerVariables.Get("HTTPS") == "off")
+    {
+        string strQueryString = Request.ServerVariables.Get("QUERY_STRING");
+        if (strQueryString != "")
+            strQueryString = "?" + strQueryString;
+        Response.Redirect("https://" + Request.ServerVariables.Get("SERVER_NAME") + Request.ServerVariables.Get("URL") + strQueryString);
+    }
+%>
 
 <!DOCTYPE html>
 <html>
@@ -135,6 +146,9 @@
             margin-top:5px;
             overflow:auto;
         }
+        .help:hover { 
+            background: initial;
+        }
     </style>
 
     <script type="text/javascript">
@@ -143,9 +157,9 @@
         function onresize() {
 		    if (fatalError)
 		        return;
-		    if(isIE && (ieVersion == 6)){
+		    if(DetectRTC.browser.isIE && (DetectRTC.browser.version < 8)){
 		        loadScript("lang/" + getLanguageCode() + ".js", function() { 
-		            alert(lang.ie6notCompatible);//Your Internet Explorer 6 browser is not compatible with our web page
+		            alert(lang.ieNotCompatible.replace('%s', DetectRTC.browser.version));//Your Internet Explorer browser version %s is too old and not compatible with our web page
 		        });
 		        fatalError = true;
 		    }
@@ -165,7 +179,9 @@
 		    elementUsers.style.height = height;
 		    elementChat.style.height = height;
 		    document.getElementById("resizerUsers").style.height = height;
-		    document.getElementById("touch").style.height = height;
+		    var elTouch = document.getElementById("touch");
+		    if (elTouch != null)
+		        elTouch.style.height = height;
 
             //For compatibility with IE6 
 		    elementMessage.style.width = elementSendHide.clientWidth - document.getElementById("send").clientWidth - 50 + 'px';
@@ -225,12 +241,17 @@
         var emailSubject = "Chat error";
         
         loadScript("lang/" + getLanguageCode() + ".js", function() { 
+            //not compatible with ie7
             var invitationsHeader = document.getElementById("invitationsHeader");
             invitationsHeader.innerHTML = lang.queries;//Queries
             invitationsHeader.title = lang.queriesTitle;//The list of queries to you from visitors of the chat
 
             document.getElementById("noInvitations").innerHTML = lang.noInvitations;//"No invitations"
-
+            document.getElementById("helpHeader").innerHTML = lang.helpHeader;//Help
+            document.getElementById("helpContent").innerHTML = lang.helpContent;
+            if(get_cookie('openHelp', 'true') == 'true')
+                onclickHelp();//Open help once
+            SetCookie('openHelp', 'false');
         });
 
     </script>
@@ -300,6 +321,24 @@
                         <div id="noInvitations"></div>
                     </div>
                 </div>
+                <!-- not compatible with Android Chrome
+                <script type="text/javascript">
+                    loadScript("lang/" + getLanguageCode() + ".js", function() { 
+                        var invitationsHeader = document.getElementById("invitationsHeader");
+                        invitationsHeader.innerHTML = lang.queries;//Queries
+                        invitationsHeader.title = lang.queriesTitle;//The list of queries to you from visitors of the chat
+
+                        document.getElementById("noInvitations").innerHTML = lang.noInvitations;//"No invitations"
+                        document.getElementById("helpHeader").innerHTML = lang.helpHeader;//Help
+alert('help: ' + document.getElementById("helpHeader").innerHTML);
+                        document.getElementById("helpContent").innerHTML = lang.helpContent;
+                        if(get_cookie('openHelp', 'true') == 'true')
+                            onclickHelp();//Open help once
+                        SetCookie('openHelp', 'false');
+                    });
+
+                </script>
+                -->
 <!--
                 <div id="videos" style="display:none">
                     <a href="#" onclick="javascript: onclickVideos()">
@@ -352,29 +391,54 @@
                             <span id="roomsCount"></span>
                         </h1>
                     </a>
-                    <form id="form1" runat="server">
-<!--                        <div id="roomsList" class="b-toggle" style="margin-top:5px;">-->
-                        <div id="roomsList" style="margin-top:5px;display:none">
-                            <asp:ListView ID="RoomsListView" runat="server" DataKeyNames="RoomNameCount" DataSourceID="SqlDataSourceRooms">
-                                <ItemTemplate>
-                                    <% //ATTENTION!!! Do not divide line below to several lines. Also see createElementRoom() function%>
-                                    <div name="itemRoom"><span class="triangle">▶</span><span class="pointer" onclick="javascript: onclickItemRoom(event)"><%# Eval("RoomName") %></span><span style="float: right"><%# Eval("RoomNameCount") %></span></div>
-                                </ItemTemplate>
-                            </asp:ListView>
-                            <asp:SqlDataSource
-                                ID="SqlDataSourceRooms"
-                                runat="server"
-                                ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=DBChat;Integrated Security=True"
-                                ProviderName="System.Data.SqlClient"
-                                >
-                            </asp:SqlDataSource>
+                    <div id="roomsListBranch" style="margin-top:5px;display:none">
+                        <form id="form1" runat="server">
+                            <div id="roomsList">
+                                <asp:ListView ID="RoomsListView" runat="server" DataKeyNames="RoomNameCount" DataSourceID="SqlDataSourceRooms">
+                                    <ItemTemplate>
+                                        <% //ATTENTION!!! Do not divide line below to several lines. Also see createElementRoom() function%>
+                                        <div name="itemRoom"><span class="triangle">▶</span><span class="pointer" onclick="javascript: onclickItemRoom(event)"><%# Eval("RoomName") %></span><span style="float: right"><%# Eval("RoomNameCount") %></span></div>
+                                    </ItemTemplate>
+                                </asp:ListView>
+                                <asp:SqlDataSource
+                                    ID="SqlDataSourceRooms"
+                                    runat="server"
+                                    ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=DBChat;Integrated Security=True"
+                                    ProviderName="System.Data.SqlClient"
+                                    >
+                                </asp:SqlDataSource>
+                            </div>
+                        </form>
+                        <div style="margin-left:10px;">
+                            <!--
+                            <a href="#" onclick="javascript: onclickIRCRooms()">
+                                <h2>
+                                    <span id="branchIRCRooms">▶</span>
+                                    <span id="roomsIRCHeader"></span>
+                                    <span>: </span>
+                                    <span id="roomsIRCCount"></span>
+                                </h2>
+                            </a>
+                            <div id="roomsListIRC" style="margin-left:10px;margin-top:5px;display:none">irc</div>
+                            -->
                         </div>
-                    </form>
+                    </div>
                 </div>
                 <script type="text/javascript">
                     function onclickRooms() {
                         consoleLog("onclickRooms()");
-                        return onbranchFast('roomsList', 'branchRooms');
+                        return onbranchFast('roomsListBranch', 'branchRooms');
+                    };
+
+                    function onclickIRCRooms() {
+                        consoleLog("onclickIRCRooms()");
+                        var informer = document.getElementById('roomsListIRC');
+                        onbranchelementFast(informer, 'branchIRCRooms');
+                        if(isBranchExpandedFast(informer)){
+                            loadScript("Scripts/IRC.js", function (){
+                                new IRC();
+                            });
+                        }
                     };
 
                     function onClickGoToRoom(e) {
@@ -471,9 +535,7 @@
             <!-- resize the mesages and users elements http://jsfiddle.net/3jMQD/ 
                 http://stackoverflow.com/questions/8960193/how-to-make-html-element-resizable-using-pure-javascript
             -->
-            <div id="resizerUsers" style="width: 5px; float: right;">
-                <div id="touch" style="width:25px;position:relative;left:-10px;"></div>
-            </div>
+            <div id="resizerUsers" style="width: 5px; float: right;"></div>
             <script type='text/javascript'>
                 function resizeVideos(){
                     var elementUsers = document.getElementById('users');
@@ -517,48 +579,45 @@
                     resizeVideos();
                 }
 
+                //Indicates if the browser supports the W3C Touch Events API.
+                //https://modernizr.com/docs/#using-modernizr-with-javascript
+                loadScript("/js/Modernizr/modernizr-custom.js", function(){
+                    consoleLog('Modernizr.touchevents = ' + Modernizr.touchevents);
+
+                    if(!Modernizr.touchevents)
+                        return;
+                    window.ontouchstartResizer = function (event){
+                        consoleLog('touchstart. event: ' + strEvent + ' elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor);
+                        if (event.targetTouches.length == 1) {// Если 1 палец внутри элемента
+                            elResizerUsers.style.backgroundColor = 'gray';
+                        }
+                    }
+                    window.ontouchmoveResizer = function (event){
+                        //https://habrahabr.ru/post/118318/
+                        if (event.targetTouches.length == 1) {// Если 1 палец внутри элемента
+                            var touch = event.targetTouches[0];
+                            consoleLog('ontouchmoveResizer. touch.pageX = ' + touch.pageX);
+                            resizeUsers(parseInt(touch.pageX));
+                            if (event.targetTouches.length == 1) {// Если 1 палец внутри элемента
+                                elResizerUsers.style.backgroundColor = 'gray';
+                            }
+                        }
+                    }
+                    window.ontouchendResizer = function (event){
+                        consoleLog('touchend. elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor);
+                        if (event.targetTouches.length == 0) {
+                            elResizerUsers.style.backgroundColor = '';
+                            consoleLog('elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor)
+                        }
+                    }
+                    document.getElementById('resizerUsers').innerHTML
+                        = '<div id="touch" style="width:25px;position:relative;left:-10px;"'
+                        + 'ontouchstart="javascript: ontouchstartResizer(event);"'
+                        + 'ontouchmove="javascript: ontouchmoveResizer(event);"'
+                        + 'ontouchend="javascript: ontouchendResizer(event);"></div>';
+                });
+
                 var elResizerUsers = document.getElementById('resizerUsers');
-                var elTouch = document.getElementById('touch');
-                elTouch.addEventListener('touchstart', function(event) {
-                    var strEvent = '';
-                    /*
-                    for(var key in event) {
-                        strEvent += ' "' + key + '": ' + event[key];
-                    }
-                    */
-                    consoleLog('touchstart. event: ' + strEvent + ' elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor);
-                    if (event.targetTouches.length == 1) {
-//                        var myclick=event.targetTouches[0]; //Ваш код
-                        elResizerUsers.style.backgroundColor = 'gray';
-                    }
-                }, false);
-
-                elTouch.addEventListener('touchmove', function(event) {
-                    /*
-                    var strEvent = '';
-                    for(var key in event) {
-                        strEvent += ' "' + key + '": ' + event[key];
-                    }
-                    consoleLog('touchmove. event: ' + strEvent);
-                    */
-                    //https://habrahabr.ru/post/118318/
-                    if (event.targetTouches.length == 1) {// Если 1 палец внутри элемента
-                        var touch = event.targetTouches[0];
-                        consoleLog('touchmove. touch.pageX = ' + touch.pageX);
-                        // Place element where the finger is
-//                        elTouch.style.left = touch.pageX + 'px';
-                        resizeUsers(parseInt(touch.pageX));
-                    }
-                }, false);
-
-                elTouch.addEventListener('touchend', function(event) {
-                    consoleLog('touchend. elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor);
-                    if (event.targetTouches.length == 0) {
-                        //                        var myclick=event.targetTouches[0]; //Ваш код
-                        elResizerUsers.style.backgroundColor = '';
-                        consoleLog('elResizerUsers.style.backgroundColor = ' + elResizerUsers.style.backgroundColor)
-                    }
-                }, false);
 
                 resizerX("resizerUsers", function (e) {
                     //consoleLog("mousemove(X = " + e.pageX + ")");
@@ -573,7 +632,32 @@
                 });
             </script>
 
-            <div id="messages" class="blok_top blok_shadow" style="overflow:auto;"></div>
+            <div id="messages" class="blok_top blok_shadow" style="overflow:auto;">
+                <div>
+                    <a href="#" onclick="javascript: onclickHelp()">
+                        <h1>
+                            <span id="branchHelp">▶</span>
+                            <span id="helpHeader"></span>
+                        </h1>
+                    </a>
+                    <div id="branchHelpContent" class="b-toggle">
+                        <div id="helpContent"></div>
+
+                        <!-- /Yandex.Metrika counter -->
+                        <script type="text/javascript" src="//yandex.st/share/share.js"
+                                charset="utf-8"></script>
+                        <div class="yashare-auto-init" data-yashareL10n="ru" style="border: 0px; padding: 0px 0px;"
+                             data-yashareType="none" data-yashareQuickServices="facebook,twitter,lj,friendfeed,gplus,vkontakte,odnoklassniki"></div>
+
+                    </div>
+                    <script type="text/javascript">
+                        function onclickHelp() {
+                            consoleLog("onclickHelp()");
+                            return onbranch('branchHelpContent', 'branchHelp', null, window.screen.height * 2);
+                        };
+                    </script>
+                </div>
+            </div>
         </div>
         <div id="send_hide" class="blok_hide" style="width: 100%; overflow:auto; position: fixed; left: 0; bottom: 0;">
             <div id="blok_bottom" class="blok_bottom blok_shadow">
@@ -847,6 +931,8 @@
 
             if (!isEditorReady()){
                 consoleError("Display tollbar failed! CKeditor is not ready.");
+                if(confirm(lang.webPageError))//Internal page error. Do you want reload web page?
+                    location.reload();
                 return;
             }
 
@@ -898,19 +984,20 @@
             contextMenuUsers.style.left = offsetSum.left - contextMenuUsers.clientWidth + menuUsers.clientWidth + 'px';
 
             var elementUsers = document.getElementById('users');
+            if (typeof elementUsers.querySelectorAll != 'undefined'){
+                var videos = elementUsers.querySelectorAll('video');
+                for(i = 0; i < videos.length; i++)
+                    videos[i].style.visibility = "hidden";
 
-            var videos = elementUsers.querySelectorAll('video');
-            for(i = 0; i < videos.length; i++)
-                videos[i].style.visibility = "hidden";
+                var audios = elementUsers.querySelectorAll('audio');
+                for(i = 0; i < audios.length; i++)
+                    audios[i].style.visibility = "hidden";
 
-            var audios = elementUsers.querySelectorAll('audio');
-            for(i = 0; i < audios.length; i++)
-                audios[i].style.visibility = "hidden";
-
-            //плавающие кнопки на панели инструментов не закрываются пунктами меню. Скрываю панель инструментов целиком
-            var tools = elementUsers.querySelectorAll('#tools');
-            for(i = 0; i < tools.length; i++)
-                tools[i].style.visibility = "hidden";
+                //плавающие кнопки на панели инструментов не закрываются пунктами меню. Скрываю панель инструментов целиком
+                var tools = elementUsers.querySelectorAll('#tools');
+                for(i = 0; i < tools.length; i++)
+                    tools[i].style.visibility = "hidden";
+            }
         }
 
         function closeContextMenuUsers() {
@@ -920,17 +1007,19 @@
 
             var elementUsers = document.getElementById('users');
 
-            var videos = elementUsers.querySelectorAll('video');
-            for(i = 0; i < videos.length; i++)
-                videos[i].style.visibility = "visible";
+            if (typeof elementUsers.querySelectorAll != 'undefined'){//for ie7
+                var videos = elementUsers.querySelectorAll('video');
+                for(i = 0; i < videos.length; i++)
+                    videos[i].style.visibility = "visible";
 
-            var audios = elementUsers.querySelectorAll('audio');
-            for(i = 0; i < audios.length; i++)
-                audios[i].style.visibility = "visible";
+                var audios = elementUsers.querySelectorAll('audio');
+                for(i = 0; i < audios.length; i++)
+                    audios[i].style.visibility = "visible";
 
-            var tools = elementUsers.querySelectorAll('#tools');
-            for(i = 0; i < tools.length; i++)
-                tools[i].style.visibility = "visible";
+                var tools = elementUsers.querySelectorAll('#tools');
+                for(i = 0; i < tools.length; i++)
+                    tools[i].style.visibility = "visible";
+            }
         }
 
 
@@ -1018,6 +1107,8 @@
                     value = CKEDITOR.instances.editor.document.getBody().getText();
                 }else {
                     consoleError("Send data failed! CKeditor is not ready.");
+                    if(confirm(lang.webPageError))//Internal page error. Do you want reload web page?
+                        location.reload();
                     data = '<p>' + document.getElementById("editor").value + '</p>';
                     value = data;
                 }
@@ -2669,7 +2760,9 @@
 
             var elementBefore = null;
             if(ConnectionIDBefore != ''){
-                elementBefore = document.getElementById('chatusers').querySelector('#' + CSSescape(ConnectionIDBefore));
+                var elChatusers = document.getElementById('chatusers');
+                if (typeof elChatusers.querySelector != 'undefined')//for ie5
+                    elementBefore = elChatusers.querySelector('#' + CSSescape(ConnectionIDBefore));
                 if(elementBefore)
                     elementBefore = elementBefore.parentElement;
             }
@@ -2828,6 +2921,9 @@
             //consoleLog("init()");
 
             document.getElementById("roomsHeader").innerHTML = lang.rooms;//Rooms
+            var elRoomsIRCHeader = document.getElementById("roomsIRCHeader");
+            if(elRoomsIRCHeader)
+                elRoomsIRCHeader.innerHTML = lang.roomsIRC;//IRC
             document.getElementById("usersHeader").innerHTML = lang.users + ':';//Users
 
             //menu

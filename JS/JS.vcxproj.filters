@@ -31,6 +31,9 @@
     <Filter Include="jquery\ui\1.11.4">
       <UniqueIdentifier>{7b495ce2-8dd1-4086-a4dc-0d285c30ea7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modernizr">
+      <UniqueIdentifier>{a0c8da8d-63e8-4504-8b00-b660ff0a101b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JS.cpp">
@@ -88,6 +91,9 @@
     </None>
     <None Include="WebRTC\DetectRTC.js">
       <Filter>WebRTC</Filter>
+    </None>
+    <None Include="Modernizr\modernizr-custom.js">
+      <Filter>Modernizr</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

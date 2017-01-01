@@ -38,8 +38,15 @@ function SendCamera() {
                         audio: true
                         , video: true
                     }
-                    , elementFileTransfer: function (fileTransfer) { return elementCamera('SendCamera'); }
-                    , sendMedia: function () { new SendCamera();}
+                    , elementFileTransfer: function (fileTransfer) { return elementCamera('SendCamera', 'muted'); }
+                    , sendMedia: function () { new SendCamera(); }
+                    , isUserMediaSuccess: function (stream) {
+                        if (stream.getVideoTracks().length == 0) {
+                            alert(lang.noVideoStream + browserSettings());//Video stream is not detected. Probably your camera is blocked for our web site.
+                            return false;
+                        }
+                        return true;
+                    }
                     , tools: function (fileTransfer) {
                         var blockId = fileTransfer.getBlockID();
                         fileTransfer.onToggleMedia = function () {
@@ -72,11 +79,13 @@ function SendCamera() {
                                 }
 
                                 var audioInputDevices = DetectRTC.audioInputDevices;
-                                elementСameraSettingsBody += '<div><label for="' + blockId + 'audioSource">🎤 ' + lang.audioSource + ': </label>';//Audio source
+//                                elementСameraSettingsBody += '<div><label for="' + blockId + 'audioSource">🎤 ' + lang.audioSource + ': </label>';//Audio source
+                                elementСameraSettingsBody += '<div><label for="audioSource">🎤 ' + lang.audioSource + ': </label>';//Audio source
                                 if (audioTracks.length == 0)
                                     elementСameraSettingsBody += lang.notAwailable;//Not available
                                 else {
-                                    elementСameraSettingsBody += '<select id="' + blockId + 'audioSource" onchange="document.getElementById(\'' + blockId + '\').fileTransfer.restartLocalMedia(' + closeSessionCauseEnum.updateSettings + ')">';
+//                                    elementСameraSettingsBody += '<select id="' + blockId + 'audioSource" onchange="document.getElementById(\'' + blockId + '\').fileTransfer.restartLocalMedia(' + closeSessionCauseEnum.updateSettings + ')">';
+                                    elementСameraSettingsBody += '<select id="audioSource" onchange="document.getElementById(\'' + blockId + '\').fileTransfer.restartLocalMedia(' + closeSessionCauseEnum.updateSettings + ')">';
                                     for (var i = 0; i < audioInputDevices.length; i++) {
                                         var audioInputDevice = audioInputDevices[i];
                                         var label = audioInputDevice.label;
@@ -107,9 +116,12 @@ function SendCamera() {
                                         curVideoLabel = videoTracks[0].label;
                                     }
                                 }
-
+/*
                                 elementСameraSettingsBody += '<div><label for="' + blockId + 'videoSource">📹 ' + lang.videoSource + ': </label>'//Video source
                                 + '<select id="' + blockId + 'videoSource" onchange="document.getElementById(\'' + blockId + '\').fileTransfer.restartLocalMedia(' + closeSessionCauseEnum.updateSettings + ')">';
+*/
+                                elementСameraSettingsBody += '<div><label for="videoSource">📹 ' + lang.videoSource + ': </label>'//Video source
+                                + '<select id="videoSource" onchange="document.getElementById(\'' + blockId + '\').fileTransfer.restartLocalMedia(' + closeSessionCauseEnum.updateSettings + ')">';
                                 var videoInputDevices = DetectRTC.videoInputDevices;
                                 for (var i = 0; i < videoInputDevices.length; i++) {
                                     var label = videoInputDevices[i].label;
@@ -148,7 +160,7 @@ function SendCamera() {
                                     var audioTrackEnabled;
                                     if (audioTracks.length == 0)
                                         audioTrackEnabled = false;//В настройка браузера (Chrome: Settings/Content Settings/Microphone/Do not allow sites to acces to your microphone) запрещен доступ к микрофону
-                                    else oTrackEnabled = audioTracks[0].enabled;
+                                    else audioTrackEnabled = audioTracks[0].enabled;
                                     elementSettings.audioTrackEnabled = audioTrackEnabled;
                                     if (!audioTrackEnabled)
                                         this.onToggleAuidoBase();//Временно включить микрофон что бы был виден уровень звука в окне настроек камеры
@@ -283,21 +295,15 @@ function SendCamera() {
                                         return;//problem of the media stream in the Chrome. For example camera is busy by another application
                                     consoleLog('elementMedia.onloadedmetadata');
                                     block.querySelector('#tools').style.display = 'block';
-//                                    resizeVideos();
                                     fileTransfer.loadedmetadata = true;
                                     g_attemptCamera = 1;
                                     elementMedia.play();
-//                                    fileTransfer.stream = stream;
+//                                    elementMedia.setAttribute('muted', true);
 
                                     block.querySelector('#Message').innerText = '';
 
                                     if (block.querySelector('meter') != null)
                                         window.createSoundMeter(fileTransfer);
-/*
-                                    fileTransfer.stream.onremovetrack = function (event) {
-                                        consoleLog('fileTransfer.stream.onremovetrack()');
-                                    };
-*/
                                     fileTransfer.getCurrentTime = function () {
                                         //consoleLog('getCurrentTime ' + elementMedia.currentTime);
                                         return parseInt(elementMedia.currentTime);//в chrome currentTime неправильное если трансляция с камеры идет с нескольких страниц
@@ -316,21 +322,13 @@ function SendCamera() {
                                 };
                                 elementMedia.src = window.URL.createObjectURL(stream);
 
-//                                var mediaStreamTrack = options.getMediaTracks(stream)[0];
                                 var mediaStreamTrack = stream.getVideoTracks()[0];
                                 if (typeof mediaStreamTrack != "undefined") {
                                     fileTransfer.ended = false;
                                     mediaStreamTrack.onended = function () {//for Chrome, Opera. For Firefox see function (err)
 
-                                        //                               addMedia = getVideoBlock(app.videoID).addMedia;
-                                        //                               consoleLog('mediaStreamTrack.onended(...) addMedia.stoppedMedia = ' + addMedia.stoppedMedia + ' app.peer.unload = ' + app.peer.unload);
                                         consoleLog('mediaStreamTrack.onended()');
                                         fileTransfer.ended = true;
-                                        /*
-                                                                        if (fileTransfer.peer.unload)
-                                                                            return;//Closing of the web page
-                                        */
-                                        //                                    fileTransfer.closeSessionCause = closeSessionCauseEnum.webcamBusy;
                                         //consoleError('mediaStreamTrack.onended(...)');
                                         fileTransfer.restartLocalMediaTimeout();
                                     }
@@ -350,6 +348,7 @@ function SendCamera() {
                                     }, 500);
                                     */
                                 } else {
+/*
                                     var mediaType = getMediaType(app.videoID);
                                     switch (mediaType) {
                                         case 'Microphone':
@@ -368,40 +367,9 @@ function SendCamera() {
                                     mediaStreamTrack = stream.getAudioTracks()[0];
                                     if (typeof mediaStreamTrack != "undefined") {
                                         consoleLog('navigator.getUserMedia() onsuccess mediaStreamTrack.readyState: ' + mediaStreamTrack.readyState);
-                                        /*
-                                                                setTimeout(function () {
-                                                                    var elementToggleMicrophoneID = app.videoID + 'ToggleMicrophone';
-                                                                    onToggleMicrophone(getMicrophoneBlockID(app.videoID), elementToggleMicrophoneID);
-                                                                }, 0);
-                                        */
-                                        /*вроде микрофон можно использовать в разных приложениях
-                                                                setTimeout(function () {
-                                                                    if (mediaStreamTrack.readyState == "ended") {
-                                                                        var captureScreen = undefined;
-                                                                        closeVideoSession(app.videoID, false);
-                                           
-                                                                        var message;
-                                                                        message = lang.freeMicrophone;//'Your webcam is busy by other application. Please free your webcam and try again.';
-                                                                        consoleError(message);
-                                                                        alert(message);
-                                                                    }
-                                                                }, 500);
-                                        */
                                     }
+*/
                                 }
-                                /*
-                                                        var src = URL.createObjectURL(stream);
-                                                        app.peer.onStreamAdded(
-                                                        {
-                                                            userid: 'self',
-                                                            type: 'self',
-                                                            src: src,
-                                                            //                    app: app,
-                                                            stream: stream
-                                                        });
-                                   
-                                                        callback(stream, app);
-                                */
                             }
                         });
                     }

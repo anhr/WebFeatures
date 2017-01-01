@@ -42,6 +42,13 @@ function SendMicrophone() {
 //                        return elementMicrophone('SendMicrophone');
                     }
                     , sendMedia: function () { new SendMicrophone(); }
+                    , isUserMediaSuccess: function (stream) {
+                        if (stream.getAudioTracks().length == 0) {
+                            alert(lang.noAudioStream + browserSettings());//Audio stream is not detected. Probably your microphone is blocked for our web site.
+                            return false;
+                        }
+                        return true;
+                    }
                     , tools: function (fileTransfer) {
                         var blockId = fileTransfer.getBlockID();
                         fileTransfer.onToggleMedia = function () {
@@ -76,8 +83,12 @@ function SendMicrophone() {
                                 }
 
                                 var audioInputDevices = DetectRTC.audioInputDevices;
+/*
                                 elementСameraSettingsBody += '<div><label for="' + blockId + 'audioSource">🎤 ' + lang.audioSource + ': </label>'//Audio source
                                     + '<select id="' + blockId + 'audioSource" onchange="document.getElementById(\'' + blockId + '\').fileTransfer.restartLocalMedia()">';
+*/
+                                elementСameraSettingsBody += '<div><label for="audioSource">🎤 ' + lang.audioSource + ': </label>'//Audio source
+                                    + '<select id="audioSource" onchange="document.getElementById(\'' + blockId + '\').fileTransfer.restartLocalMedia()">';
                                 for (var i = 0; i < audioInputDevices.length; i++) {
                                     var audioInputDevice = audioInputDevices[i];
                                     var label = audioInputDevice.label;

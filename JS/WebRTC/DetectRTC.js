@@ -469,15 +469,18 @@
 
     var isCanvasSupportsStreamCapturing = false;
     var isVideoSupportsStreamCapturing = false;
-    ['captureStream', 'mozCaptureStream', 'webkitCaptureStream'].forEach(function(item) {
-        if (!isCanvasSupportsStreamCapturing && item in document.createElement('canvas')) {
-            isCanvasSupportsStreamCapturing = true;
-        }
+    var objectCaptureStream = ['captureStream', 'mozCaptureStream', 'webkitCaptureStream'];
+    if (typeof objectCaptureStream.forEach != 'undefined') {//for ie5
+        objectCaptureStream.forEach(function (item) {
+            if (!isCanvasSupportsStreamCapturing && item in document.createElement('canvas')) {
+                isCanvasSupportsStreamCapturing = true;
+            }
 
-        if (!isVideoSupportsStreamCapturing && item in document.createElement('video')) {
-            isVideoSupportsStreamCapturing = true;
-        }
-    });
+            if (!isVideoSupportsStreamCapturing && item in document.createElement('video')) {
+                isVideoSupportsStreamCapturing = true;
+            }
+        });
+    }
 
     // via: https://github.com/diafygi/webrtc-ips
     function DetectLocalIPAddress(callback) {
@@ -616,10 +619,8 @@
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
         // Firefox 38+ seems having support of enumerateDevices
         // Thanks @xdumaine/enumerateDevices
-        navigator.enumerateDevices = function(callback) {
-            navigator.mediaDevices.enumerateDevices().then(callback).catch(function() {
-                callback([]);
-            });
+        navigator.enumerateDevices = function (callback) {
+            navigator.mediaDevices.enumerateDevices().then(callback);//.catch(function() {callback([]);});
         };
     }
 
@@ -794,17 +795,20 @@
 
     // --------- Detect if system supports WebRTC 1.0 or WebRTC 1.1.
     var isWebRTCSupported = false;
-    ['RTCPeerConnection', 'webkitRTCPeerConnection', 'mozRTCPeerConnection'
+    var objectRTCPeerConnection = ['RTCPeerConnection', 'webkitRTCPeerConnection', 'mozRTCPeerConnection'
         //, 'RTCIceGatherer'//for edge
-        ].forEach(function (item) {
-        if (isWebRTCSupported) {
-            return;
-        }
+    ];
+    if (typeof objectRTCPeerConnection.forEach != 'undefined') {//for ie5
+        objectRTCPeerConnection.forEach(function (item) {
+            if (isWebRTCSupported) {
+                return;
+            }
 
-        if (item in window) {
-            isWebRTCSupported = true;
-        }
-    });
+            if (item in window) {
+                isWebRTCSupported = true;
+            }
+        });
+    }
     DetectRTC.isWebRTCSupported = isWebRTCSupported;
 
     //-------
@@ -829,19 +833,22 @@
         isCreateMediaStreamSourceSupported: false
     };
 
-    ['AudioContext', 'webkitAudioContext', 'mozAudioContext', 'msAudioContext'].forEach(function(item) {
-        if (webAudio.isSupported) {
-            return;
-        }
-
-        if (item in window) {
-            webAudio.isSupported = true;
-
-            if ('createMediaStreamSource' in window[item].prototype) {
-                webAudio.isCreateMediaStreamSourceSupported = true;
+    var objectAudioContext = ['AudioContext', 'webkitAudioContext', 'mozAudioContext', 'msAudioContext'];
+    if (typeof objectAudioContext.forEach != 'undefined') {//for ie5
+        objectAudioContext.forEach(function (item) {
+            if (webAudio.isSupported) {
+                return;
             }
-        }
-    });
+
+            if (item in window) {
+                webAudio.isSupported = true;
+
+                if ('createMediaStreamSource' in window[item].prototype) {
+                    webAudio.isCreateMediaStreamSourceSupported = true;
+                }
+            }
+        });
+    }
     DetectRTC.isAudioContextSupported = webAudio.isSupported;
     DetectRTC.isCreateMediaStreamSourceSupported = webAudio.isCreateMediaStreamSourceSupported;
 

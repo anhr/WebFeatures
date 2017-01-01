@@ -30,7 +30,8 @@ function ReceiveCamera(user, options) {
                 , noFileTransfer: cameras.transfers.noFileTransfer
 //                , mediaRecordingFunction: 'videoRecording'
                 , elementFileTransfer: function (fileTransfer) {
-                    return elementCamera();
+                    var id;
+                    return elementCamera(id, 'controls');
                 } 
                 , started: function () {
                     return lang.startedVideo;//' has started the broadcast from camera'

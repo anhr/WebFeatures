@@ -250,6 +250,7 @@
     <None Include="linkToScripts.js">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="Modernizr\modernizr-custom.js" />
     <None Include="myRequest.js" />
     <None Include="PluginDetectAllPlayers.js" />
     <None Include="PluginDetect_Flash.js" />
