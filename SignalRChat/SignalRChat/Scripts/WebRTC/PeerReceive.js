@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -23,7 +23,7 @@ function peerReceive(fileTransfer, options) {
     if (typeof fileTransfer.peer != 'undefined')
         consoleError('fileTransfer.peer = ' + fileTransfer.peer);
     loadScript("Scripts/WebRTC/Peer.js", function () {
-        fileTransfer.peer = new peer.peer(dataID, senderId, {
+        fileTransfer.peer = new peer.peer(dataID, fileTransfer.user, {
             start: function (peer) {
                 consoleLog('peerReceive.start()');
                 if (typeof peer == 'undefined')
@@ -38,13 +38,6 @@ function peerReceive(fileTransfer, options) {
                                 })
                                 .then(function () {
                                     peer.sendToReceiver(senderId);
-/*
-                                    // Отправляем другому участнику через сигнальный сервер
-                                    peer.socket.send(senderId, {
-                                        userid: g_user.id,//.nickname,//root.userid,
-                                        sdp: peer.pc.localDescription
-                                    });
-*/
                                 })
                                 .catch(peer.reportError);
                             } catch (e) {
@@ -71,7 +64,7 @@ function peerReceive(fileTransfer, options) {
                     });
                 }
                 peer.socket.send(senderId, {
-                    user: g_user
+                    user: deleteg_IRCuser()
                     , participationRequest: true
                     , stream: ((typeof options != 'undefined') && (typeof options.stream != 'undefined')) ? options.stream : false//true - receive stream, false - receive file
                 });

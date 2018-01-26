@@ -220,15 +220,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MyIsapi.cpp" />
-    <ClCompile Include="StdAfx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Database\Signup.sql" />
     <None Include="bin\MySite.udl">
       <DeploymentContent>true</DeploymentContent>
@@ -247,7 +238,6 @@
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="InputKeyFilter.css" />
-    <None Include="MyIsapi.def" />
     <None Include="normal.css">
       <DeploymentContent>true</DeploymentContent>
     </None>
@@ -307,9 +297,6 @@
     <Image Include="Images\Text.gif">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="MyIsapi.rc" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Port_Sni_pad.xml">

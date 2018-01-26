@@ -2,8 +2,8 @@
  * Contains the dictionary of language entries.
  */
 var lang = {
-    chatRoomPrompt: 'Type a chat room name'
-    , selectChatRoomPrompt: 'or select a room from the list'
+    chatRoomPrompt: 'Type a channel name'
+    , selectChatRoomPrompt: 'or select a channel from the list'
     , typeChatRoom: 'Please type the name of the chat room'
     , defaultString: 'Default'
     , duplicateUsernameInRoom: 'You are already in the "%s" room'
@@ -50,5 +50,32 @@ var lang = {
     , updateProfileOK: 'The profile has been updated successfully'
     , geolocationNotReady: 'Geolocation is not ready'
     , loadMapFailed: 'Load map failed!'
+    , bonalinkChat: 'Bonalink'
+    , connect: 'Connect'
+    , disconnect: 'Disconnect'
+    , disconnected: 'Disconnected'
+    , nickInUse: 'Nickname is already in use. Please quit from another IRC client if this is your nick name or choice another nick.'
+    , nickname: 'Nickname'
+    , fullName: 'User Name'
+    , realName: 'Real Name'
+    , pass: 'Password for registered users'
+    , rememberPassLabel: 'Remember password'
+    , successfulConnection: 'Successful connection'
+    , openServer: 'Open %s Server Page'
+    , signalRChatHeader: 'Connect to our server. All visitors can begin a video conference and share files.'
+
+    , IRCChat: 'IRC'
+    , IRCURLLabel: 'IRC Server URL'
+    , IRCPortLabel: 'Port'
+    , IRCPortTitle: 'IRC Server Port. Can be empty. Default: '
+    , IRCServers: 'IRC Servers'
+    , IRCGroup: 'IRC Group'
+    , IRCServerName: 'IRC Server Name'
+    , IRCURLError: 'Invalid IRC Server URL'
+    , IRCWaitConnectipn: 'Waiting for IRC server connection to complete'
+    , IRCConnectFailed: 'IRC server error:'
+    , IRCServerUsed: 'Server in use'
+    , IRCServerUsed2: "Server %s in use. Please select another IRC server or close the server's web page or type another Nickname."
+    , IRCChatHeader: 'You can connect to any <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat" target="_blank">IRC server</a>. Videoconferencing and file sharing are only available with visitors who use our site as a web-based IRC client.'
 };
 

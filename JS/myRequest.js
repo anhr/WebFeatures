@@ -2,8 +2,9 @@
  * The myRequest is Javascript object of the cross-browser XMLHttpRequest wrapper. Your request code to the server is very simple, if you are using myRequest obect.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/myRequest
+ * example: http://anhr.github.io/myRequest/
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
  *
@@ -134,7 +135,7 @@ if(!isIE){
 					return processStatus200(this);
 				}//200://OK
 				else{
-					ErrorMessage("Invalid XMLHttpRequest status : " + req.status + " url: " + this.url);
+				    ErrorMessage("Invalid XMLHttpRequest status : " + req.status + " url: " + this.url + " req.responseText: " + req.responseText);
 				}
 			}
 			break;
@@ -232,5 +233,6 @@ function getSynchronousResponse(url) {
     }
     , false//Synchronous mode
     );
+    consoleLog('getSynchronousResponse(' + url + ')');
     return response;
 }

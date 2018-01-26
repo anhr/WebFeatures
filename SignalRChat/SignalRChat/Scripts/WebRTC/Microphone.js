@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -25,11 +25,6 @@ function Microphones(microphoneTransfers) {
         , onclickTransfers: 'onclickMicrophoneTransfers'
     });
 }
-/*
-function elementMicrophone(id) {
-    return getElementMedia(elementSoundMeter('style="display:none"'));
-}
-*/
 function onRecordMicrophone(blockId) {
     //    consoleDebug('onRecordMicrophone(' + blockId + ')');
     onRecordMedia(blockId, {

@@ -21,8 +21,6 @@ var initSample = ( function() {
 		        removePlugins: 'elementspath'
 		        , resize_enabled: false
 
-//		        , blockedKeystrokes: [13, CKEDITOR.SHIFT + 13]
-
 		        , on:
 		        {//CKEditor Event List: http://diffpaste.com/#/340/
 		            'instanceReady': function (event) {
@@ -32,101 +30,106 @@ var initSample = ( function() {
 		                onClickSmilesButton();
 		                setTimeout(function () { toggleMenuItems(); }, 500);//Wait while g_user.id is defined
 		                onresize();
-//		                CKEDITOR.instances.editor.focus();
+		                /**
+                         * The textual emoticon to be used for each of the smileys defined in the
+                         * {@link CKEDITOR.config#smiley_images} setting. Each entry in this array list
+                         * must match its relative pair in the {@link CKEDITOR.config#smiley_images}
+                         * setting. User can type this text instead of selecting of smiley.
+                         */
+		                CKEDITOR.config.textual_emoticons = [
+                        	':)',//0 smiley
+                            ':(',//1 sad
+		                    ';)',//2 wink
+		                    ':D',//3 laugh
+		                    ':/',//4 frown
+		                    ':P',//5 cheeky
+		                    ':*)',//6 blush
+		                    ':-o',//7 surprise
+		                    ':|',//8 indecision
+		                    '>:(',//9 angry не конвертируется в смайлик если эта последовательность в начале поля ввода
+		                    'o:)',//10 angel
+		                    '8-)',//11 cool
+		                    '>:-)',//12 devil
+		                    ';(',//13 crying
+		                    '',//14 enlightened
+
+                            '(n)',//15 no or Thumbs Down https://pc.net/emoticons/smiley/thumbs_down
+                            '(y)',//16 yes or Thumbs Up https://pc.net/emoticons/smiley/thumbs_up
+
+                            //https://en.wikipedia.org/wiki/List_of_emoticons#Eastern
+                        	'<3',//17 heart 
+                            '</3',//18 broken heart
+
+                            ':-*',//19 kiss
+		                    ''//20 mail
+		                ];
+		                colorsArray(this);
+
+		                //Если тут вызвать эту функцию то иногда g_user.id = undefined
+		                //Для проверки
+		                //  установить friGate в Chrome 
+                        //
+		                //  Открыть https://bonalink.hopto.org
+		                //  Войти на IRC сервер irc.freenode.net как blink2
+                        //  Войти на канал #bonalink и включть веб камеру
+		                //
+		                //  Открыть еще https://bonalink.hopto.org
+		                //  Войти на IRC сервер irc.freenode.net как blink3
+		                //  Войти на канал #bonalink. Теперь в функции onChannelPageReady() g_user.id = undefined
+		                //
+		                //Для решения проблемы вызываю в IRC.onClient(...)
+		                //onChannelPageReady();
 		            }
 		            , 'change': function (event) {
-		                /*
-                            *		// Use textual emoticons as description.
-                            *		config.smiley_descriptions = [
-                            *			':)', ':(', ';)', ':D', ':/', ':P', ':*)', ':-o',
-                            *			':|', '>:(', 'o:)', '8-)', '>:-)', ';(', '', '', '',
-                            *			'', '', ':-*', ''
-                            *		];
-                        */
 
-		                //call before :\\)
-		                if (textualToSmiley("o:\\)", 10))//angel
+		                // textual emoticon to smiley.
+		                //http://stackoverflow.com/questions/4401469/how-to-select-a-text-range-in-ckeditor-programatically
+		                var sel = CKEDITOR.instances.editor.getSelection();
+		                var range = sel.getRanges()[0];
+		                if (range.endContainer.$.nodeName != "#text")
 		                    return;
+		                var text = range.endContainer.getText();
+		                for (var indexSmiley = CKEDITOR.config.textual_emoticons.length - 1; indexSmiley >=0 ; indexSmiley--) {
+		                    var smileyTextual = CKEDITOR.config.textual_emoticons[indexSmiley];
+		                    if (smileyTextual == '')
+		                        continue;
+		                    smileyTextual = smileyTextual.replace('(', '\\(');
+		                    smileyTextual = smileyTextual.replace(')', '\\)');
+		                    smileyTextual = smileyTextual.replace('*', '\\*');
+		                    smileyTextual = smileyTextual.replace('|', '\\|');
+		                    var Reg = new RegExp("(.*)(" + smileyTextual + ")(.*)");
 
-		                if (textualToSmiley(":\\)", 0))//smiley
-		                    return;
+		                    var smiley = text.match(Reg);
+		                    if (!smiley || (smiley.length != 4))
+		                        continue;
+		                    consoleLog('CKEDITOR change. smiley');
+		                    if ((smiley[1] == "") && (smiley[3] == "") && ("<p>" + text + "</p>\n" == CKEDITOR.instances.editor.getData()))
+		                        CKEDITOR.instances.editor.getCommand("selectAll").exec(CKEDITOR.instances.editor);
+		                    else {
+		                        var startIndex = smiley[1].length;
+		                        range.startOffset = startIndex;
+		                        range.endOffset = startIndex + smiley[2].length;
+		                        sel.selectRanges([range]);
+		                    }
 
-		                //call before :\\(
-		                if (textualToSmiley(">:\\(", 9))//angry
+		                    setTimeout('insertSmiley("' + CKEDITOR.instances.editor.config.smiley_imagesGif[indexSmiley].match(/^(.*).gif/)[1] + '")', 0);
 		                    return;
-
-		                if (textualToSmiley(":\\(", 1))//sad
-		                    return;
-		                if (textualToSmiley(";\\)", 2))//wink
-                            return;
-                        if (textualToSmiley(":D", 3))//laugh
-                            return;
-
-		                //call before :/
-                        if (textualToSmiley("://"))
-                            return;//ignore "://"
-
-                        if (textualToSmiley(":/", 4))//frown
-                            return;
-                        if (textualToSmiley(":P", 5))//cheeky
-                            return;
-                        if (textualToSmiley(":\\*\\)", 6))//blush
-                            return;
-                        if (textualToSmiley(":-o", 7))//surprise
-                            return;
-		                if (textualToSmiley(":\\|", 8))//indecision
-		                    return;
-		                if (textualToSmiley("8-\\)", 11))//cool
-		                    return;
-		                if (textualToSmiley(">:-\\)", 12))//devil
-		                    return;
-		                if (textualToSmiley(";\\(", 13))//crying
-		                    return;
-                        /*
-		                , ''
-		                if (textualToSmiley("", 14))//enlightened
-		                    return;
-		                , ''
-		                if (textualToSmiley("", 15))//no
-		                    return;
-		                , '',
-                        if (textualToSmiley("", 16))//yes
-		                return;
-		                *			''
-		                if (textualToSmiley("", 17))//heart
-		                    return;
-		                , ''
-		                if (textualToSmiley("", 18))//broken_heart
-		                    return;
-                        */
-		                if (textualToSmiley(":-\\*", 19))//kiss
-		                    return;
-                        /*
-		                , ''
-		                if (textualToSmiley("", 20))//mail
-		                    return;
-                        */
-//                        }
+                        }
 		            }
 		            , 'loaded': function (event) {//calls after loading of CKEDITOR
 		                consoleLog("CKEDITOR loaded");
 		                displayChatBody();
 		            }
 		            , 'key': function (event) {//http://ckeditor.com/forums/CKEditor-3.x/Disable-Enter-Key
-		                if (!isToolbarHide())
+		                if (!isSendByEnter())
 		                    return;
 		                if (event.data.keyCode == 13) {//Enter
 		                    consoleLog("CKEDITOR.instances.editor.on( 'key')");
 		                    event.cancel();
 		                    event.stop();//отключил звуковой сигнал во время нажатия клавиши ВВОД
 		                    onClickSend();
-		                } else $.connection.chatHub.server.editorKey(g_chatRoom.RoomName, g_user.id, event.data.keyCode);
+		                } else editorKey(event.data.keyCode);
 		            }
-/*
-		            , 'keydown': function (event) {//http://stackoverflow.com/questions/11123417/key-code-in-ck-editor
-		                consoleLog('CKEDITOR.instances.editor.on("keydown") Keystroke: "' + event.data.getKeystroke() + '", key: "' + event.data.getKey());
-		            }
-*/
 		            , 'setData': function (event) {
 		                consoleLog('CKEDITOR.instances.editor.on("setData")');
 		                CKEDITOR.instances.editor.focus();
@@ -144,67 +147,12 @@ var initSample = ( function() {
 			// TODO we can consider displaying some info box that
 			// without wysiwygarea the classic editor may not work.
 		}
-/*
-	    //http://ckeditor.com/forums/CKEditor/Key-Event
-		var editor = CKEDITOR.instances.editor;
-		editor.on('contentDom', function (event) {
-*/
-/*
-		    editor.document.on('key', function (event) {
-		        consoleLog('my key');
-		    });
-		    editor.document.on('keyup', function (event) {
-		        consoleLog('my keyup');
-		    });
-*/
-/*
-		    editor.document.on('keydown', function (event) {
-//		        consoleLog('my keydown');
-		        var keystroke = event.data.getKeystroke();
-//		        consoleLog('editor.document.on("keydown") Keystroke: "' + keystroke + '", key: "' + event.data.getKey());
-		        if (keystroke == (CKEDITOR.CTRL + 13)) {
-		            if (isToolbarHide())
-		                return;
-		            consoleLog('editor.document.on("keydown") Ctrl + Enter');
-		            event.cancel();
-		            event.stop();//отключил звуковой сигнал во время нажатия клавиши ВВОД
-		            onClickSend();
-                }
-		    });
-*/
-/*
-		    editor.on('keyup', function (event) {
-		        consoleLog('raw keyup');
-		    });
-		    editor.on('keydown', function (event) {
-		        consoleLog('raw keydown');
-		    });
-		    editor.document.on('mouseup', function (event) {
-		        consoleLog('mouseup');
-		    });
-*/
-//		});
-/*
-	    //http://stackoverflow.com/questions/11123417/key-code-in-ck-editor
-		CKEDITOR.instances.editor.on('keydown', function (event) {
-		    consoleLog('CKEDITOR.instances.editor.document.on("keydown") Keystroke: "' + event.data.getKeystroke() + '", key: "' + event.data.getKey());
-		});
-*/
         //for compatibility with IE6
 		setTimeout(function () {
 		    if (isEditorReady())
 		        return;
-
-		    CKEDITOR.remove(CKEDITOR.instances.editor);
-		    document.getElementById("editor").style.visibility = "visible";
-		    document.getElementById("toolbarButton").style.display = "none";
-		    document.getElementById("smilesButton").style.display = "none";
-
-		    displayChatBody();
-//		    onresize();
-		    
-		    alert(lang.incompatibleBrowser);//'Unfortunately your web browser is not compatible with our web page.'
-		}, 7000);//5000 for compatibility with Samsung S5 Chrome and 7000 for FireFox in Windows Server 2012R2
+		    console.error("Load ckeditor timeout");
+		}, 15000);//5000 for compatibility with Samsung S5 Chrome and 7000 for FireFox in Windows Server 2012R2
 	};
 
 	function isWysiwygareaAvailable() {
@@ -217,12 +165,6 @@ var initSample = ( function() {
 		return !!CKEDITOR.plugins.get( 'wysiwygarea' );
 	}
 } )();
-
-function displayChatBody() {
-//    MessageElement("");
-    document.getElementById("openpage").style.display = "none";
-    document.getElementById("chatbody").style.visibility = "visible";
-}
 
 function isEditorReady() {
     //CKeditor is not ready in IE6
@@ -239,40 +181,19 @@ function insertSmiley(smileyName) {
 
     insertSmile(CKEDITOR.instances.editor.ui.get(smileyName));
 }
+function displayChatBody() {
+    document.getElementById("openpage").style.display = "none";
+    document.getElementById("chatbody").style.visibility = "visible";
 
-function textualToSmiley(smileyTextual, indexSmiley) {
-
-    //http://stackoverflow.com/questions/4401469/how-to-select-a-text-range-in-ckeditor-programatically
-    var sel = CKEDITOR.instances.editor.getSelection();
-    var range = sel.getRanges()[0];
-    if (range.endContainer.$.nodeName != "#text")
-        return;
-
-//    var Reg = new RegExp("(.*)( " + smileyTextual + ")( |&nbsp;)(.*)");
-    var Reg = new RegExp("(.*)(" + smileyTextual + ")(.*)");
-
-    //Uncompatible with IE5
-    //var text = range.endContainer.$.wholeText;
-    var text = range.endContainer.getText();
-    var smiley = text.match(Reg);
-    if (!smiley || (smiley.length != 4))
-        return false;
-
-    if (typeof indexSmiley == 'undefined')
-        return true;//ignore smileyTextual
-
-    consoleLog('CKEDITOR change. smiley');
-    if ((smiley[1] == "") && (smiley[3] == "") && ("<p>" + text + "</p>\n" == CKEDITOR.instances.editor.getData()))
-        CKEDITOR.instances.editor.getCommand("selectAll").exec(CKEDITOR.instances.editor);
-    else{
-        var startIndex = smiley[1].length;
-        range.startOffset = startIndex;
-        range.endOffset = startIndex + smiley[2].length;// + smiley[3].length;
-        sel.selectRanges([range]);
-//        selectRangesSmiley(sel, [range]);
-    }
-
-    setTimeout('insertSmiley("' + CKEDITOR.instances.editor.config.smiley_imagesGif[indexSmiley].match(/^(.*).gif/)[1] + '")', 0);
-    return true;
+    //Speech
+    setTimeout(function () {
+        var openSpeech = 'openSpeech';
+        if (get_cookie(openSpeech, 'true') == 'true')
+            myTreeView.onclickBranch(document.getElementById('speechBranch').querySelector('.treeView'));//Open speech dialog once
+        SetCookie(openSpeech, 'false');
+        var cookieSpeech = get_cookie('speech');
+        if ((cookieSpeech == '')//по умолчанию Speech загружается
+            || (JSON.parse(cookieSpeech).speech == true))
+            loadScript("Scripts/Speech/Speech.js", function () { speech.synth.cancel(); });
+    }, 1000);
 }
-

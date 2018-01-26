@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -22,7 +22,7 @@ function ReceiveMicrophone(user, options) {
         var microphones = new Microphones(options.fileTransfers);
         loadScript("Scripts/WebRTC/Media.js", function () {
             ReceiveFile(user, options, {
-                header: '🎤 ' + '<span id="header">' + lang.microphoneOf + '</span>'//'Microphone of '
+                header: '🎤 ' + '<span id="header">' + lang.microphoneOf + '</span>'//'Turn on microphone from '
                 , headerEnd: elementMediaHeader(lang.listenersNumber)//Listeners number'
                 , informerFileTransfers: 'informerMicrophoneTransfers'
                 , fileTransfers: options.fileTransfers
@@ -85,13 +85,13 @@ function ReceiveMicrophone(user, options) {
                     if (isBranchExpanded(elementToggle)) {
                         consoleLog('stop receive stream. this.ID: ' + this.ID);
                         fileTransfer.stopRecording();
-                        header = lang.microphoneOf;//'Turn on microphone from '
+                        header = lang.microphoneOf;//'Listen microphone from '//'Turn on microphone from '
                         message = lang.broadcastingCanceled;//'The broadcasting canceled.'
                         fileTransfer.disconnect();
                     } else {
                         consoleLog('Start receive stream. this.ID: ' + this.ID);
 
-                        header = lang.cancelStream;//'Cancel broadcast from '
+                        header = lang.cancelStream;//'Cancel stream receiving'//'Cancel Broadcast from '
                         message = lang.connectionWaiting;//'Connection waiting.'
 
                         //Peer connection
@@ -101,7 +101,8 @@ function ReceiveMicrophone(user, options) {
                         });
                     }
                     elementBlock.querySelector('#header').innerText = header;
-                    elementBlock.querySelector('#Message').innerText = message;
+//                    elementBlock.querySelector('#Message').innerText = message;not compatible with Safari
+                    elementBlock.querySelector('.Message').innerText = message;
                     elementBlock.querySelector('#wait').style.display = 'inline';
                     onbranchelement(elementToggle);
                 }

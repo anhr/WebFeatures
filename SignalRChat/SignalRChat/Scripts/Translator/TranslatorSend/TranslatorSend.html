@@ -1,0 +1,12 @@
+﻿<hr />
+<span onclick="javascript: onClickTranslatorButton()" id="close" class="sendButton">X</span>
+<select id="languageSource" onchange="javascript: translatorSend.translatorBase.onchangeLanguage(event)" style="float:right;padding-top:5px"></select>
+<span onclick="javascript: translatorSend.onclickTranslateDown(event)" id="translateDown" class="sendButton" style="margin-right:10px">↓</span>
+<span onclick="javascript: speechRecognitionToggle(event)" id="speechRecognitionTranslate" class="float_right float_background" style="width:0px">🎤</span>
+<span id="speechRecognitionIn" class="float_right float_hide" style="background:white; height:20px;"></span>
+<span onclick="javascript: translatorSend.translatorBase.onclickDefault(event)" id="default" class="sendButton">⥀</span>
+<span onclick="javascript: translatorSend.translatorBase.onclickSwapLanguage(event)" id="translateSwapLanguages" class="sendButton">⇅</span>
+<div style="overflow:auto; padding:4px;">
+    <input type="text" id="text" style="width:100%;float:left;border:0px">
+</div>
+<div><a href="http://translate.yandex.ru/" target="_blank" id="translateYanrexRef"></a></div>

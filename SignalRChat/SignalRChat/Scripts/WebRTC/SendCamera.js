@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -304,10 +304,6 @@ function SendCamera() {
 
                                     if (block.querySelector('meter') != null)
                                         window.createSoundMeter(fileTransfer);
-                                    fileTransfer.getCurrentTime = function () {
-                                        //consoleLog('getCurrentTime ' + elementMedia.currentTime);
-                                        return parseInt(elementMedia.currentTime);//в chrome currentTime неправильное если трансляция с камеры идет с нескольких страниц
-                                    }
                                     if (typeof fileTransfer.onSwitchAuido != 'undefined') {
                                         //for camera. Sets the mute audio buttom to unmute mode if microphone is not detected
                                         var audioTrackEnabled = fileTransfer.stream.getAudioTracks().length != 0;

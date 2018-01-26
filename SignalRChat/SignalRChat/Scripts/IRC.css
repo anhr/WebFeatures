@@ -1,0 +1,75 @@
+﻿.col {
+    border: 0px;
+	padding:0 0 0 5px;
+    /*
+    overflow:hidden;
+    display: inline-block;
+    white-space: nowrap;
+    */
+}
+.colName {
+    /*width:80px;*/
+}
+.colUsers {
+    /*width:20px;*/
+}
+.colTopic {
+}
+
+.colHeader {
+	cursor: pointer;
+}
+.colHeader:hover {
+	background: #cccccc;
+	background: -moz-linear-gradient(top, #cccccc, #FFFFFF);
+	background: -webkit-gradient(linear, left top, left bottom, 
+				color-stop(0%,#cccccc), color-stop(100%,#FFFFFF));
+	background: -webkit-linear-gradient(top, #cccccc, #FFFFFF);
+	background: -o-linear-gradient(top, #cccccc, #FFFFFF);
+	background: -ms-linear-gradient(top, #cccccc, #FFFFFF);
+	background: linear-gradient(top, #cccccc, #FFFFFF);
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+.row {
+	/*cursor: pointer;*/
+}
+.row:hover {
+	/*cursor: pointer;*/
+	background: #eeeeee;
+}
+/*mIRC control codes*/
+.bg0 { background-color: white; }
+.bg1 { background-color: black; }
+.bg2 { background-color: navy; }
+.bg3 { background-color: green; }
+.bg4 { background-color: red; }
+.bg5 { background-color: brown; }
+.bg6 { background-color: purple; }
+.bg7 { background-color: orange; }
+.bg8 { background-color: yellow; }
+.bg9 { background-color: lime; }
+.bg10 { background-color: teal; }
+.bg11 { background-color: lightcyan; }
+.bg12 { background-color: blue; }
+.bg13 { background-color: pink; }
+.bg14 { background-color: grey; }
+.bg15 { background-color: lightgrey; }
+.fg0 { color: white; }
+.fg1 { color: black; }
+.fg2 { color: navy; }
+.fg3 { color: green; }
+.fg4 { color: red; }
+.fg5 { color: brown; }
+.fg6 { color: purple; }
+.fg7 { color: orange; }
+.fg8 { color: yellow; }
+.fg9 { color: lime; }
+.fg10 { color: teal; }
+.fg11 { color: lightcyan; }
+.fg12 { color: blue; }
+.fg13 { color: pink; }
+.fg14 { color: grey; }
+.fg15 { color: lightgrey; }
+

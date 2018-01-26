@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -106,66 +106,6 @@ var media = {
         block.querySelector(elementDisabledName).disabled = true;
     }
 }
-/*
-function setMicrophoneContainerWidth(audioContainerId) {
-    var audioID = audioContainerId.replace("Container", "");
-    var elementMicrophone = getMicrophoneBlock(audioID);
-    var audioContainer = document.getElementById(audioContainerId)
-    var audio = getAudioFromContainer(audioContainer);
-    if (audio) {
-        if (typeof audio == "undefined")
-            return;
-        if (audio.tagName != "AUDIO") {
-            consoleError('setMicrophoneContainerWidth(' + audioContainerId + ') audio.tagName = ' + audio.tagName);
-            return;
-        }
-        audio.style.width = audioContainer.clientWidth + 'px';
-    }
-    var elementRecord = document.getElementById(getRecordID(audioID));
-    var toolsWidth = document.getElementById(getToolsID(audioID)).clientWidth;
-    elementRecord.style.width = (toolsWidth - 10) + 'px';
-    var recordedAudio = elementMicrophone.querySelector('audio#recorded');
-    if (recordedAudio) {
-        recordedAudio.style.width = (toolsWidth - 10) + 'px';
-    }
-    var width = getMicrophoneBlock(audioID).clientWidth - 20 + 'px';
-    var elementMicrophoneSettings = document.getElementById(getMicrophoneSettingsID());
-    if (elementMicrophoneSettings)
-        elementMicrophoneSettings.style.width = width;
-    var waitMicrophonePermission = elementMicrophone.querySelector('div#waitMicrophonePermission');
-    if (waitMicrophonePermission)
-        waitMicrophonePermission.style.width = width;
-};
-
-function showVideoBlockTools(videoID) {
-    var element = document.getElementById(getToolsID(videoID));
-    if (!element)
-        return;
-    var expanded = " expanded";
-    if (element.className.indexOf(expanded) == -1)
-        element.className += expanded;
-    //consoleLog('showVideoBlockTools(videoID = ' + videoID + ') element.className: ' + element.className);
-    setTimeout(function () { resizeVideos(); }, 100);
-}
-
-function hideVideoBlockTools(videoID) {
-    hideMediaBlockTools(videoID, function () {
-        var cameraSettings = document.getElementById(getСameraSettingsID());
-        var cameraSettingsExpanded = false;
-        if (cameraSettings)
-            cameraSettingsExpanded = cameraSettings.className.indexOf('expanded') != -1;
-        if (
-                cameraSettingsExpanded
-            ||
-                document.getElementById(getSnapshotID(videoID)).className.indexOf('expanded') != -1
-            ||
-                document.getElementById(getRecordID(videoID)).className.indexOf('expanded') != -1
-            )
-            return false;//do not hide tools if tools blocks is visible
-        return true;
-    })
-}
-*/
 function hideMicrophoneBlockTools(microphoneID) {
     hideMediaBlockTools(microphoneID, function () {
         var microphoneSettings = document.getElementById(getMicrophoneSettingsID());
@@ -181,7 +121,6 @@ function hideMicrophoneBlockTools(microphoneID) {
         return true;
     })
 }
-
 function hideMediaBlockTools(mediaID, isHide) {
     //consoleLog('hideVideoBlockTools(mediaID = ' + mediaID + ')');
     var element = document.getElementById(getToolsID(mediaID));
@@ -278,7 +217,9 @@ function toggleMediaRecording(blockId, MediaRecording) {
 
 function getElementMedia(media) {
     return '<img id="wait" src="../img/Wait.gif" alt="wait" style="width:12px; height:12px;display:none" />'
-        + '<span id="Message"></span>'
+        + '<span id="Message"'
+        + ' class="Message"'//for Safari
+        + '></span>'
         + media
     ;
 }

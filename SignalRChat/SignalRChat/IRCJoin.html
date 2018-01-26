@@ -1,0 +1,24 @@
+﻿<span onclick="javascript: g_IRC.onclickIRCJoin(event)" class="sendButton IRCCloseJoin">X</span>
+<!--<span onclick="javascript: myTreeView.onclickCloseBranch()" class="sendButton IRCCloseJoin">X</span>-->
+<h3 class="IRCJoinHeader" align="center"></h3>
+<div><label class="IRCChannelNameLabel" for="IRCChannelName"></label><input class="IRCChannelName" onchange="javascript: g_IRC.onchangeIRCChannelName(event)" /></div>
+<div class="AdditionallyTree"></div>
+<div class="Additionally b-toggle">
+    <div>
+        <label class="IRCJoinPassLabel" for="IRCJoinPass"></label><input type="password" class="IRCJoinPass" onkeyup='javascript: g_IRC.onkeyupIRCJoinPass()' />
+    </div>
+    <div>
+        <input type="checkbox" class="IRCJoinRememberPass" onclick='javascript: onclickIRCJoinRememberPass()' />
+        <label class="IRCJoinRememberPassLabel" for="IRCJoinRememberPass"></label>
+    </div>
+    <hr>
+    <div class="IRCChannelOwner"></div>
+    <ul style="margin-left:0px;padding-left:15px;padding-right:0px">
+        <!-- http://www.geekshed.net/2012/03/using-channel-keys/ -->
+        <li class="help"><label class="IRCChannelKeyLabel" for="IRCChannelKey"></label><input type="password" class="IRCChannelKey" /></li>
+        <li class="help"><label class="IRCChannelTopicLabel" for="IRCChannelTopic"></label><input class="IRCChannelTopic" /></li>
+    </ul>
+</div>
+<!--<input type="button" class="join" onclick="javascript: g_IRC.onclickChannelToggle(event)" />-->
+<a class="channelToggle"><input type="button" class="join" onclick="javascript: g_IRC.onclickChannelToggle(event)"></a>
+<span class="wait"></span>

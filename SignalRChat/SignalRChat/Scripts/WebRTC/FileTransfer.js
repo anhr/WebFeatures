@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -33,7 +33,7 @@ AppFileTransfer.prototype = Object.create(AppRoot.prototype);
 */
 function FileTransfer(options) {
 
-    consoleLog('FileTransfer("' + this.ID + '")');
+    consoleLog('FileTransfer("' + options.transferIDName + '")');
 
     this.options = options;
     this.closeSessionCause = closeSessionCauseEnum.defaultCause;
@@ -284,15 +284,15 @@ function FileTransfer(options) {
     this.hideTools = function () {
         var block = this.getBlock();
 
-        var settings = block.querySelector('#Settings');
-        var snapshot = block.querySelector('#Snapshot');
-        var record = block.querySelector('#Record');
+        var settings = block.querySelector('#Settings'),
+            snapshot = block.querySelector('#Snapshot'),
+            record = block.querySelector('#Record'),
+            receivers = block.querySelector('.receivers');
         if (
-                (settings && (settings.className.indexOf('expanded') != -1))
-            ||
-                (snapshot && (snapshot.className.indexOf('expanded') != -1))
-            ||
-                (record && (record.className.indexOf('expanded') != -1))
+               (settings && (settings.className.indexOf('expanded') != -1))
+            || (snapshot && (snapshot.className.indexOf('expanded') != -1))
+            || (record && (record.className.indexOf('expanded') != -1))
+            || (receivers && (receivers.querySelector('.branch') != null))
             )
             return;//do not hide tools if tool's blocks is visible
 
@@ -319,7 +319,7 @@ function FileTransfer(options) {
             if ((this.fileInput == null) || (this.fileInput.files.length > 0)) {
                 if ((typeof this.loadedmetadata == 'undefined')//'не видеокамера
                         || (this.loadedmetadata == true))//видеокамера открылась успешно
-                    $.connection.chatHub.server.fileTransferCancel(JSON.stringify(g_user), this.ID, g_chatRoom.RoomName);
+                    $.connection.chatHub.server.fileTransferCancel(this.ID, fTRoomName());
             }
             if (!noCloseBlock)
                 element.parentElement.removeChild(element);
@@ -339,6 +339,8 @@ function FileTransfer(options) {
             this.ID = g_user.id + options.options.sendMediaName;//включить мою камеру или микрофон
         else {
             g_fileTransferID++;
+            if (typeof g_user.id == 'undefined')
+                consoleError('g_user.id: ' + g_user.id);
             this.ID = g_user.id + g_fileTransferID + options.transferIDName;
         }
     }
@@ -410,14 +412,14 @@ function FileTransfer(options) {
     this.toggleFileTransfer();
 }
 
-function closeFileTransfer(userID) {
-    consoleLog('closeFileTransfer("' + userID + '")');
+function closeFileTransfer(nickname) {
+    consoleLog('closeFileTransfer("' + nickname + '")');
     var fileTransfers = document.getElementsByName('fileTransfer');
     for (i = fileTransfers.length - 1; i >= 0; i--) {
         var fileTransfer = fileTransfers[i];
         if (typeof fileTransfer.fileTransfer.user == 'undefined')
             continue;
-        if (fileTransfer.fileTransfer.user.id == userID) {
+        if (fileTransfer.fileTransfer.user.nickname == nickname) {
             fileTransfer.fileTransfer.cancel();
             delete fileTransfer.fileTransfer;
         }
@@ -459,7 +461,7 @@ function Transfers(transfersID, options) {
         element = document.createElement('div');
         element.id = transfersID;
         element.innerHTML =
-              '<a href="#" onclick="javascript: ' + options.onclickTransfers + '()">'
+              '<a href="#" onclick="javascript: return ' + options.onclickTransfers + '()">'
                 + '<h1>'
                     + '<span id="' + this.branchTransfers + '">▼</span>'
                     + '<span>' + options.branchName + '</span>'
@@ -498,7 +500,6 @@ function Pictures(pictureTransfers) {
 
 function onclickPictureTransfers(expand) {
     return onbranchFast('informerPictureTransfers', 'branchPictureTransfers');
-//    return onbranch('informerPictureTransfers', 'branchPictureTransfers', expand, document.getElementById("users").clientHeight + "px");
 };
 
 function Videos(videoTransfers) {
@@ -523,12 +524,10 @@ function Audios(audioTransfers) {
         , branchName: lang.audioTransfers//Audioclips
         , onclickTransfers: 'onclickAudioTransfers'
     });
-//    onclickAudioTransfers(true);
 }
 
 function onclickAudioTransfers(expand) {
     return onbranchFast('informerAudioTransfers', 'branchAudioTransfers', expand, document.getElementById("users").clientHeight + "px");
-//    return onbranch('informerAudioTransfers', 'branchAudioTransfers', expand, document.getElementById("users").clientHeight + "px");
 };
 
 closeSessionCauseEnum = {
@@ -537,7 +536,8 @@ closeSessionCauseEnum = {
     , setupWebcam: 2
     , webcamBusy: 3
     , error: 4
-    , incompatibleBrowser: 5
+//See D:\My documents\MyProjects\trunk\WebFeatures\WebFeatures\SignalRChat\ckeditor\samples\js\sample.js alert(lang.incompatibleBrowser);
+//    , incompatibleBrowser: 5
     , restartLocalMedia: 6
     , restartLocalMediaNext: 7
     , updateSettings: 8
@@ -557,8 +557,9 @@ function getCauseMessage(closeSessionCause) {
             return lang.MediaBusy;//Media device is busy.
         case closeSessionCauseEnum.error://4
             return lang.MediaError;//'Error of the media device.'
-        case closeSessionCauseEnum.incompatibleBrowser://5
-            return lang.incompatibleBrowser;//'Incompatible browser.'
+//See D:\My documents\MyProjects\trunk\WebFeatures\WebFeatures\SignalRChat\ckeditor\samples\js\sample.js alert(lang.incompatibleBrowser);
+//        case closeSessionCauseEnum.incompatibleBrowser://5
+//            return lang.incompatibleBrowser;//'Incompatible browser.'
         case closeSessionCauseEnum.restartLocalMedia://6
             return lang.restartLocalMedia;//'Restart media device.'
         case closeSessionCauseEnum.restartLocalMediaNext://7

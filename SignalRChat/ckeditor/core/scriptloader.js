@@ -49,7 +49,7 @@ CKEDITOR.scriptLoader = ( function() {
 		 * @param {Boolean} [showBusy] Changes the cursor of the document while
 		 * the script is loaded.
 		 */
-		load: function( scriptUrl, callback, scope, showBusy ) {
+	    load: function (scriptUrl, callback, scope, showBusy) {
 			var isString = ( typeof scriptUrl == 'string' );
 
 			if ( isString )

@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -171,11 +171,6 @@ function SendMicrophone() {
                                 var block = fileTransfer.getBlock();
 
                                 var elementMedia = block.querySelector('#' + getSoundMeterID());//для камеры это video тег
-
-                                fileTransfer.getCurrentTime = function () {
-                                    return parseInt((parseInt(new Date().getTime()) - fileTransfer.startTime) / 1000);
-                                }
-
                                 fileTransfer.mediaSuccess(elementMedia);
                             }
                         });

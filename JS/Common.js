@@ -2,7 +2,7 @@
  * Common Javascript code. I use it in my different projects
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -64,21 +64,27 @@ if(!isOpera){
 	}
 }
 
-function MessageElement(Message){
-	var element = document.getElementById('Message');
+function MessageElement(Message, noCloseButton){
+    if(typeof Message == 'undefined')
+        Message = '';
+    var element = document.getElementById('Message');
 	if(element == null)	{
 		alert('ERROR: element Message == null. ' + Message);
 		return;
 	}
 	if(element.innerHTML != Message)//Если я не буду делать эту проверку, то таблица ТВ каналов в Windows Phone IE будет шире экрана
 	{
-//consoleLog('Message: ' + Message);
-	    element.innerHTML = Message + '<hr><div align="center"><input type="button" onclick="javascript: return MessageElement(\'\')" value="' + (isRussian() ? 'Закрыть' : 'Close') + '" style="margin-top:5px;" /></div>';
+	    //consoleLog('Message: ' + Message);
+	    element.innerHTML = Message
+            + ((typeof noCloseButton != 'undefined') ? '' : '<hr><div align="center"><input type="button" onclick="javascript: return MessageElement(\'\')" value="' + (isRussian() ? 'Закрыть' : 'Close') + '" style="margin-top:5px;" /></div>');
 	    if (Message == "")
 	        element.style.display = "none";
         else element.style.display = "block";
     }
 }
+
+//http://www.htmlhelp.com/reference/html40/entities/special.html
+function stringToSpecialEntities(string) {return string.replace(/</g, '&lt;').replace(/>/g, '&gt;');}
 
 var emailSubject = "Scoreboard error";
 function ErrorMessage(message, emailMe, StackTrace){
@@ -145,7 +151,11 @@ function consoleLog(){
     arguments[0] = getPerformance(arguments[0], function(text, boSendToClients, roomName){
         if(roomName == '')
             roomName = 'Chat';//for Chat web page
-        $.connection.chatHub.server.consoleLog(text, boSendToClients, roomName);
+        try{
+            $.connection.chatHub.server.consoleLog(text, boSendToClients, roomName);
+        } catch (e) {//Do not works in WP
+            console.error(e.message);
+        }
     });
     try{
         console.log.apply(null, arguments);
@@ -293,6 +303,18 @@ var parseQueryString = function () {
 
 //http://javascript.ru/ui/offset
 function getOffsetSum(elem) {
+    if (elem.getBoundingClientRect) {
+        var box = elem.getBoundingClientRect()
+        var body = document.body
+        var docElem = document.documentElement
+        var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop
+        var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft
+        var clientTop = docElem.clientTop || body.clientTop || 0
+        var clientLeft = docElem.clientLeft || body.clientLeft || 0
+        var top  = box.top +  scrollTop - clientTop
+        var left = box.left + scrollLeft - clientLeft
+        return { top: Math.round(top), left: Math.round(left) }
+    }
     var top=0, left=0
     while(elem) {
         top = top + parseFloat(elem.offsetTop)
@@ -346,17 +368,18 @@ function getBorderWidth(border) {
     }
     ErrorMessage("Unknown border width: " + border);
 }
-
-function getFullSize(element) {
-    var style;
+function getStyle(element) {
     if (typeof window.getComputedStyle != 'undefined')
-        style = window.getComputedStyle(element, null);
+        return window.getComputedStyle(element, null);
     else if (typeof element.currentStyle != 'undefined')
-        style = element.currentStyle;//IE7
-    else {
-        ErrorMessage("element.currentStyle is undefined\n\n" + window.navigator.appName + " " + window.navigator.appVersion);
+        return element.currentStyle;//IE7
+    ErrorMessage("element.currentStyle is undefined\n\n" + window.navigator.appName + " " + window.navigator.appVersion);
+    return null;
+}
+function getFullSize(element) {
+    var style = getStyle(element);
+    if(style == null)
         return;
-    }
     return {
         height: element.offsetHeight
             + getMargin(style.marginTop)
@@ -412,14 +435,15 @@ function getLanguageCode() {
         locale = parts[2];
     return lang;
 }
-/*
-function loadScript(url) {
-    var script = document.createElement('script');
+
+function loadScriptSynchronous(fileName) { loadScriptBase(function(script){ script.innerHTML = getSynchronousResponse(fileName);}); }
+function loadScriptBase(callback, appendTo) {
+    script = document.createElement('script');
     script.setAttribute("type", 'text/javascript');
-    script.setAttribute("src", url);
-    document.getElementsByTagName("head")[0].appendChild(script);
+    callback(script);
+    if (!appendTo) appendTo = document.getElementsByTagName('head')[0];
+    appendTo.appendChild(script);
 }
-*/
 //http://javascript.ru/forum/events/21439-dinamicheskaya-zagruzka-skriptov.html
 //https://learn.javascript.ru/onload-onerror
 var loadScript = function (src, onload, onerror, appendTo) {
@@ -442,24 +466,15 @@ var loadScript = function (src, onload, onerror, appendTo) {
             return;
         }
     }
+    loadScriptBase(function(script){
+        script.setAttribute("id", src);
 
-    script = document.createElement('script');
-    script.setAttribute("type", 'text/javascript');
-    script.setAttribute("id", src);
-
-    if (onload) {
+        //    if (onload) {
         if (script.readyState && !script.onload) {
             // IE, Opera
             script.onreadystatechange = function () {
-//                alert('script.readyState: ' + script.readyState);
-/*
-                                if (script.readyState == "loaded" || script.readyState == "complete") {
-                    script.onreadystatechange = null;
-                    onload();
-                }
-*/
                 if (script.readyState == "complete") { // на случай пропуска loaded
-                    onload(); // (2)
+                    if (onload) onload(); // (2)
                 }
 
                 if (script.readyState == "loaded") {
@@ -474,7 +489,7 @@ var loadScript = function (src, onload, onerror, appendTo) {
             // Rest
             function _onload() {
                 consoleLog('loadScript.onload() ' + this.src);
-                onload();
+                if (onload) onload();
             }
             script.onload = _onload;
 
@@ -484,10 +499,50 @@ var loadScript = function (src, onload, onerror, appendTo) {
                 consoleError('loadScript: "' + this.src + '" failed');
             };
         }
+        //    }
+
+        script.src = src;
+    });
+/*
+    script = document.createElement('script');
+    script.setAttribute("type", 'text/javascript');
+    script.setAttribute("id", src);
+
+//    if (onload) {
+    if (script.readyState && !script.onload) {
+        // IE, Opera
+        script.onreadystatechange = function () {
+            if (script.readyState == "complete") { // на случай пропуска loaded
+                if (onload) onload(); // (2)
+            }
+
+            if (script.readyState == "loaded") {
+                setTimeout(onload, 0);  // (1)
+
+                // убираем обработчик, чтобы не сработал на complete
+                this.onreadystatechange = null;
+            }
+        }
     }
+    else {
+        // Rest
+        function _onload() {
+            consoleLog('loadScript.onload() ' + this.src);
+            if (onload) onload();
+        }
+        script.onload = _onload;
+
+        if (onerror)
+            script.onerror = onerror;
+        else script.onerror = function () {
+            consoleError('loadScript: "' + this.src + '" failed');
+        };
+    }
+//    }
 
     script.src = src;
     appendTo.appendChild(script);
+*/
 }
 
 function isRussian() {
@@ -714,8 +769,9 @@ function get_cookie ( cookie_name, defaultValue)
  
     if ( results )
         return ( unescape ( results[2] ) );
-    else
-        return defaultValue;
+    if (typeof defaultValue == 'undefined')
+        return '';
+    return defaultValue;
 }
 
 //альтернатива window.localStorage http://ustimov.org/posts/16/
@@ -793,40 +849,72 @@ function getElementByClassName(parentElement, className) {
     }
     return null;
 }
+function readableTimestamp(timestamp) {
 
+    var timestamp2 = parseInt(timestamp / 60);
+    var seconds = parseInt(timestamp - timestamp2 * 60);
+
+    timestamp = timestamp2;
+    timestamp2 = parseInt(timestamp / 60);
+    var minutes = parseInt(timestamp - timestamp2 * 60);
+
+    timestamp = timestamp2;
+    var days = parseInt(timestamp / 24);
+    var hours = parseInt(timestamp - days * 24);
+    return ((days == 0) ? '' : (days + ', ')) + ((hours == 0) ? '' : (hours + ':')) + minutes + ':' + ((seconds < 10) ? '0' : '') + seconds
+}
+//Не смог настроить. Показания зависят от часового пояса и от летнего времени. Так же от браузера тоже завист. Смотри C:\inetpub\wwwroot\timestamp
+//сейчас использую readableTimestamp(timestamp)
+function timestampToString(time/*milliseconds*/) {
+
+    time = (((3*60 + 15)*60)*1000);
+    var dateCur = new Date();
+    var timezoneOffset = dateCur.getTimezoneOffset() * 60000;
+        var date = new Date(time + timezoneOffset);
+    return date.toLocaleTimeString() + ' UTCDate='  + dateCur.getUTCDate() + ' Date=' + dateCur.getDate() + ' Hours=' + dateCur.getHours();
+}
 function displayDuration(startTime, elementDuration, suffix) {
     var dateCur = new Date();
     elementDuration.time = dateCur.getTime() - startTime;
-    var timezoneOffset = dateCur.getTimezoneOffset() * 60000;
-    var date = new Date(elementDuration.time + timezoneOffset);
-    //consoleLog('displayDuration() startTime = ' + startTime + ' time = ' + time + ' timezoneOffset = ' + timezoneOffset + ' date = ' + date + ' dateCur = ' + dateCur);
-    var year = date.getFullYear();//нужно анализировать для случая Time Zone < 0 (Американское время)
-    if (year == 1969)
-        var date = new Date(elementDuration.time + timezoneOffset + 1000 * 60 * 60);
-    else if ((year == 1970) && (date.getHours() == 1))
-        var date = new Date(elementDuration.time + timezoneOffset - 1000 * 60 * 60);
-    var hour = date.getHours();
-    var minute = date.getMinutes();
-    var seconds = date.getSeconds();
-    if (typeof suffix == 'undefined')
-        suffix = '';
-    elementDuration.innerText = ((hour == 0) ? '' : (hour + ':')) + minute + ':' + ((seconds < 10) ? '0' : '') + seconds + suffix;
+    elementDuration.innerText = readableTimestamp(elementDuration.time / 1000) + ((typeof suffix == 'undefined') ? '' : suffix);
 }
 
 function isBranchExpanded(informer) {
+    if(typeof informer == "string")
+        informer = document.getElementById(informer);
     return informer.className.indexOf(' expanded') != -1;
 }
 
 function isBranchExpandedFast(informer) {
-    return informer.style.display == 'block';
+    return (informer.style.display == 'block') || informer.style.display == '';
 }
+
+function onbranchFast(informerId, branchId) {
+    return onbranchelementFast(document.getElementById(informerId), branchId);
+}
+
+function onbranchelementFast(informer, branchId) {
+    //consoleLog("onbranchelementFast(" + informer.id + ', ' + branchId + ")");
+    var branch = document.getElementById(branchId);
+    if(informer.style.display == 'none')
+    {
+        informer.style.display = 'block';
+        if(branch)
+            branch.innerHTML = "▼"<!-- http://htmlbook.ru/samhtml/tekst/spetssimvoly http://unicode-table.com/ru/#box-drawing -->
+    } else {
+        informer.style.display = 'none';
+        if(branch)
+            branch.innerHTML = "▶"<!-- http://htmlbook.ru/samhtml/tekst/spetssimvoly http://unicode-table.com/ru/#box-drawing -->
+    }
+    // Stop the browser following the link
+    return false;
+};
 
 function onbranchelementBase(informer, branch, expand, maxHeight) {
     var expanded = ' expanded';
     if(informer.className.indexOf('b-toggle') == -1)
-        consoleError('informer.className: ' + informer.className);
-    if(!isBranchExpanded(informer))
-    {
+        consoleError('informer.id: "' + informer.id + '" informer.className: "' + informer.className + '" Please add "b-toggle" in to class name');
+    if(!isBranchExpanded(informer)) {
         if((expand != null) && (expand == false))
             return;//do not expand
         if(typeof maxHeight == 'undefined')
@@ -837,14 +925,15 @@ function onbranchelementBase(informer, branch, expand, maxHeight) {
         informer.className += expanded;
         if(branch)
             branch.innerHTML = "▼"<!-- http://htmlbook.ru/samhtml/tekst/spetssimvoly http://unicode-table.com/ru/#box-drawing -->
-        return false;
+    } else {
+        if((expand != null) && (expand == true))
+            return;//do not close
+        informer.style.maxHeight = "0px";
+        informer.className = informer.className.replace(expanded, '');
+        if(branch)
+            branch.innerHTML = "▶"<!-- http://htmlbook.ru/samhtml/tekst/spetssimvoly http://unicode-table.com/ru/#box-drawing -->
     }
-    if((expand != null) && (expand == true))
-        return;//do not close
-    informer.style.maxHeight = "0px";
-    informer.className = informer.className.replace(expanded, '');
-    if(branch)
-        branch.innerHTML = "▶"<!-- http://htmlbook.ru/samhtml/tekst/spetssimvoly http://unicode-table.com/ru/#box-drawing -->
+    // Stop the browser following the link
     return false;
 };
 
@@ -853,13 +942,57 @@ function onbranchelement(informer, branchId, expand, maxHeight) {
 };
 
 function onbranch(informerId, branchId, expand, maxHeight) {
-    onbranchelement(document.getElementById(informerId), branchId, expand, maxHeight);
+    return onbranchelement(document.getElementById(informerId), branchId, expand, maxHeight);
 }
-
 function CSSescape(id) {
     //Attention!!! CSS.escape is not compatible with Safari, IE and Opera
     //id = CSS.escape(id);
     if(isNaN(parseInt(id[0])))
         return id;
     return '\\3' + id[0] + ' ' + id.substring(1);
+}
+
+//compatibility with Firefox
+//-----------------------
+//https://gist.github.com/DavidBruant/1016007
+if (typeof NodeList.prototype.forEach == 'undefined'){
+    NodeList.prototype.forEach = Array.prototype.forEach; 
+    HTMLCollection.prototype.forEach = Array.prototype.forEach; // Because of https://bugzilla.mozilla.org/show_bug.cgi?id=14869
+}
+//https://github.com/duckinator/innerText-polyfill
+loadScript("../../innerText-polyfill/innertext.js");
+//------------------
+function getElementFromEvent(event) {
+    if (!event) event = window.event;//for IE6
+    return event.target || event.srcElement;
+}
+
+//https://stackoverflow.com/questions/221294/how-do-you-get-a-timestamp-in-javascript
+function timeStampInMs() { return window.performance && window.performance.now && window.performance.timing && window.performance.timing.navigationStart ? window.performance.now() + window.performance.timing.navigationStart : Date.now();}
+
+function loadCSS(href) { 
+    //<link rel="stylesheet" href="Scripts/IRC.css" type="text/css">
+    var elLink = document.createElement('link');
+    elLink.setAttribute("rel", 'stylesheet');
+    elLink.setAttribute("href", href);
+    elLink.setAttribute("type", "text/css");
+    document.head.appendChild(elLink);
+}
+function scriptTest(){
+    var ScriptProblem = document.getElementById('ScriptProblem');
+    if (ScriptProblem == null)
+        alert('ERROR: ScriptProblem == null');
+    else {
+        ScriptProblem.innerHTML = '';
+        ScriptProblem.style.display = 'none';
+    }
+}
+//https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
+function is_touch_device() {  
+    try {  
+        document.createEvent("TouchEvent");  
+        return true;  
+    } catch (e) {  
+        return false;  
+    }  
 }

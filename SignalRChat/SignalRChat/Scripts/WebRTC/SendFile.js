@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -37,7 +37,7 @@ function SendDataStream(options) {
 
     function leftButton(fileTransfer) {
         //если не использовать element, то возвратит undefined
-        var element = '<span   onclick="javascript: getFileTransfer(\'' + fileTransfer.getBlockID() + '\').cancel()" class="sendButton"'
+        var element = '<span onclick="javascript: getFileTransfer(\'' + fileTransfer.getBlockID() + '\').cancel()" class="sendButton"'
             + ' title="' + (((typeof fileTransfer.options.options != 'undefined') && (typeof fileTransfer.options.options.cancelTitle != 'undefined')) ?
                 fileTransfer.options.options.cancelTitle
                 : lang.cancelSendFile)//Cancel file transfer
@@ -68,27 +68,6 @@ function SendDataStream(options) {
         , user: user
         , options: options
     });
-/*
-    fileTransfer.cancelTransfer = function (noCloseBlock) {
-        consoleLog('fileTransfer.cancelTransfer()');
-
-        var element;
-        element = this.getBlock();
-        if (element) {//cancel File Transfer
-            if ((this.fileInput == null) || (this.fileInput.files.length > 0)) {
-                if ((typeof this.loadedmetadata == 'undefined')//'не видеокамера
-                        || (this.loadedmetadata == true))//видеокамера открылась успешно
-                    $.connection.chatHub.server.fileTransferCancel(JSON.stringify(g_user), this.ID, g_chatRoom.RoomName);
-            }
-            if (!noCloseBlock)
-                element.parentElement.removeChild(element);
-            else delete element.fileTransfer;
-        } else {//Сюда попадает когда посетитель покидает комнату
-            return;
-        }
-        this.toggleFileTransfer();
-    }
-*/
     fileTransfer.cancel = fileTransfer.cancelTransfer;
 
     if ((typeof options != 'undefined')) {
@@ -151,7 +130,7 @@ navigator.getUserMedia({ video: true, audio: true }, function (stream) {
 */
     }
 
-    fileTransfer.sendFileBase = function (currentTime)
+    fileTransfer.sendFileBase = function (currentTime, callback)
     {
         var fileTransfers;
         if (typeof this.options.options != 'undefined') {
@@ -172,17 +151,24 @@ navigator.getUserMedia({ video: true, audio: true }, function (stream) {
             fileTransfer.name = file.name;
             fileTransfer.size = file.size;
         }
-        consoleLog('SendFile.sendFile() this.ID: ' + this.ID + ' fileTransfer: ' + JSON.stringify(fileTransfer));
+        consoleLog('fileTransfer.sendFileBase() this.ID: ' + this.ID + ' fileTransfer: ' + JSON.stringify(fileTransfer));
+        if (callback == undefined)
+            privMsgFileTransfer(fileTransfer);
+        else callback(fileTransfer);
         return fileTransfer;
     }
-    fileTransfer.sendFile = function (currentTime)//, callback)
+    fileTransfer.sendFile = function (currentTime)
     {
-/*
-        if (typeof callback != 'undefined')
-            callback(fileTransfer);
-        else
-*/
-            $.connection.chatHub.server.sendFile(JSON.stringify(g_user), JSON.stringify(this.sendFileBase(currentTime)), g_chatRoom.RoomName);
+        $.connection.chatHub.server.sendFile(JSON.stringify(deleteg_IRCuser()), JSON.stringify(this.sendFileBase(currentTime)), fTRoomName());
+    }
+    fileTransfer.getCurrentTime = function () {
+        //consoleLog('getCurrentTime ' + elementMedia.currentTime);
+
+        //в chrome currentTime неправильное если трансляция с камеры идет с нескольких страниц
+        //return parseInt(elementMedia.currentTime);
+
+//        return (new Date().getTime() - this.startTime) / 1000;
+        return parseInt((parseInt(new Date().getTime()) - fileTransfer.startTime) / 1000);
     }
 }
 
@@ -256,7 +242,7 @@ function sendFile(dataID, receiver, options)
         return;
     }
 
-    fileTransfer.peers[receiverId] = new peer.peer(dataID, receiverId, {
+    fileTransfer.peers[receiverId] = new peer.peer(dataID, receiver, {
         start: function (peer) {
             consoleLog('sendFile.start() 2');
             if (typeof peer == 'undefined') {//Send file

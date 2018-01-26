@@ -18,17 +18,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MyIsapi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StdAfx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="MyIsapi.def">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="ColorSelector.css" />
     <None Include="ru\content.htm" />
     <None Include="content.htm" />
@@ -94,11 +83,6 @@
     <Image Include="Images\subnav_slice.png">
       <Filter>Images</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="MyIsapi.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Port_Sni_pad.xml" />

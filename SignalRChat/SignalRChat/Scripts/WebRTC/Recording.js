@@ -2,8 +2,9 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
- * source: https://developers.google.com/web/updates/2016/01/mediarecorder
+ * About me: http://anhr.github.io/AboutMe/
+ * source: https://github.com/anhr/WebFeatures
+            https://developers.google.com/web/updates/2016/01/mediarecorder
             https://webrtc.github.io/samples/src/content/getusermedia/record/
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -68,20 +69,41 @@ function Recording(blockId, options) {
         var stream = this.block.fileTransfer.stream;
 
         var options = { mimeType: this.options.clipType + '/webm;codecs=vp9' };
-        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        if (typeof window.MediaRecorder == 'undefined') {
+
+            //Попытка использовать https://github.com/anhr/audio-recorder-polyfill
+            //D:\My documents\MyProjects\trunk\WebFeatures\WebFeatures\GoogleSite\WebRTC\audio-recorder-polyfill
+            // для получения window.MediaRecorder в брузере Edge
+            //Работающий пример https://ai.github.io/audio-recorder-polyfill/
+            //На локальном сервере попробовал запустить http://localhost/WebRTC/audio-recorder-polyfill/audio-recorder-polyfill/test/demo/
+            //Этот демо отличается от работающего примера
+            // Получил ошибку:
+            //SCRIPT5009: 'require' is not defined
+            //Кажется это потому что мне не удалось запустить 
+            //npm install --save audio-recorder-polyfill
+            //согласно инструкции https://github.com/anhr/audio-recorder-polyfill/blob/master/README.md
+            //
+            //document.write(unescape('%3Cscript src="../WebRTC/audio-recorder-polyfill/polyfill.js">%3C/script>'));
+
+            var error = 'MediaRecorder: ' + typeof window.MediaRecorder;
+            consoleError(error);
+            alert(lang.uncompatibleBrowser.replace("%s", error));//'Your web browser is not compatible with your web site.\n\n%s\n\n Please use Google Chrome or Mozilla Firefox or Opera web browser.';
+            return;
+        }
+        if (!window.MediaRecorder.isTypeSupported(options.mimeType)) {
             consoleLog(options.mimeType + ' is not Supported');
             options = { mimeType: this.options.clipType + '/webm;codecs=vp8' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            if (!window.MediaRecorder.isTypeSupported(options.mimeType)) {
                 consoleLog(options.mimeType + ' is not Supported');
                 options = { mimeType: this.options.clipType + '/webm' };
-                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                if (!window.MediaRecorder.isTypeSupported(options.mimeType)) {
                     consoleLog(options.mimeType + ' is not Supported');
                     options = { mimeType: '' };
                 }
             }
         }
         try {
-            this.mediaRecorder = new MediaRecorder(stream, options);
+            this.mediaRecorder = new window.MediaRecorder(stream, options);
         } catch (e) {
             consoleError('Exception while creating MediaRecorder: ' + e);
             var message = lang.mediaRecorderError;//'MediaRecorder is not supported by this browser.\n\n%s\n\nTry Firefox 29 or later, or Chrome 47 or later, with Enable experimental Web Platform features enabled from chrome://flags.'

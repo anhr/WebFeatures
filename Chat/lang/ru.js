@@ -2,12 +2,12 @@
  * Contains the dictionary of language entries.
  */
 var lang = {
-    chatRoomPrompt: 'Введите название комнаты чата'
-    , selectChatRoomPrompt: 'или выберите комнату из списка'
+    chatRoomPrompt: 'Введите название канала чата'
+    , selectChatRoomPrompt: 'или выберите канал из списка'
     , typeChatRoom: 'Пожалуйста, введите название комнаты чата'
     , defaultString: 'По умолчанию'
     , duplicateUsernameInRoom: 'Вы уже находитесь в комнате "%s"'
-    , myProfile: "Мой профайл"
+    , myProfile: "Мой профиль"
     , welcomeToChat: "Добро пожаловать в чат"
     , updatePrifile: "Обновить профайл"
     , updatePrifileOK: "Профайл был успешно обновлен"
@@ -50,5 +50,32 @@ var lang = {
     , updateProfileOK: 'Ваш профиль был успешно обновлен'
     , geolocationNotReady: 'Геолокация не готова'
     , loadMapFailed: 'Не удалось загрузить карту!'
+    , bonalinkChat: 'Bonalink'
+    , connect: 'Соединиться'
+    , disconnect: 'Отсоединиться'
+    , disconnected: 'Отключено'
+    , nickInUse: 'Ник уже занят. Пожалуйста, выйдите из другого клиента IRC если это ваш ник или выбрите другой ник.'
+    , nickname: 'Ник'
+    , fullName: 'Имя пользователя'
+    , realName: 'Реальное имя'
+    , pass: 'Пароль для зарегистрированных пользователей'
+    , rememberPassLabel: 'Запомнить пароль'
+    , successfulConnection: 'Успешное соединение'
+    , openServer: 'Открыть страницу %s сервера'
+    , signalRChatHeader: 'Подключитесь к нашему серверу. Все посетители могут начать видеоконференцию и обмениваться файлами.'
+
+    , IRCChat: 'IRC'
+    , IRCURLLabel: 'Адрес IRC сервера'
+    , IRCPortLabel: 'Порт'
+    , IRCPortTitle: 'Номер порта IRC сервера. Может быть пустым. По умолчанию '
+    , IRCServers: 'Серверы IRC'
+    , IRCGroup: 'IRC группа'
+    , IRCServerName: 'Имя IRC сервера'
+    , IRCURLError: 'Недопустимый URL-адрес сервера IRC'
+    , IRCWaitConnectipn: 'Ожидание завершения подключения к IRC серверу'
+    , IRCConnectFailed: 'Ошибка IRC сервера:'
+    , IRCServerUsed: 'Сервер используется'
+    , IRCServerUsed2: "Сервер %s используется. Пожалуйста выберите другой IRC сервер или закройте веб-страницу сервера или введите другой ник."
+    , IRCChatHeader: 'Вы можете подключиться к любому <a href="https://ru.wikipedia.org/wiki/IRC" target="_blank">IRC-серверу</a>. Видеоконференции и совместное использование файлов доступны только для посетителей, которые используют наш сайт в качестве веб-клиента IRC.'
 };
 

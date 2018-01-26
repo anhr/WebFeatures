@@ -28,9 +28,14 @@ namespace SignalRChat
         public virtual DbSet<DBUser> DBUsers { get; set; }
         public virtual DbSet<DBConnection> DBConnections { get; set; }
         public virtual DbSet<DBRooms> DBRooms { get; set; }
-        public virtual DbSet<ViewRoom> ViewRooms { get; set; }
-        public virtual DbSet<ViewRoomList> ViewRoomList { get; set; }
         public virtual DbSet<DBPosition> DBPositions { get; set; }
         public virtual DbSet<DBCoords> DBCoords { get; set; }
+        public virtual DbSet<DBIRCServers> DBIRCServers { get; set; }
+        public virtual DbSet<DBIRCChats> DBIRCChats { get; set; }
+        public virtual DbSet<DBIRCUsers> DBIRCUsers { get; set; }
+        public virtual DbSet<DBIRCMessages> DBIRCMessages { get; set; }
+        public virtual DbSet<ViewRoomList> ViewRoomLists { get; set; }
+        public virtual DbSet<ViewRoom> ViewRooms { get; set; }
+        public virtual DbSet<DBIRCGroups> DBIRCGroups { get; set; }
     }
 }

@@ -3,7 +3,7 @@
  *      Receive file, picture, video, audio or stream from camera or microphone
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  *  https://habrahabr.ru/post/187270/
  * Licences: GPL, The MIT License (MIT)
@@ -21,42 +21,38 @@
 
 function ReceiveFileStart(JSONUser, JSONFileTransfer) {
     consoleLog('ReceiveFileStart(' + JSONUser + ', ' + JSONFileTransfer + ')');
-    ReceiveFileStart2(JSON.parse(JSONUser), JSON.parse(JSONFileTransfer));
-}
-
-function ReceiveFileStart2(user, fileTransfer) {
-    consoleLog('ReceiveFileStart2(...)');
+    var user = JSON.parse(JSONUser), fileTransfer = JSON.parse(JSONFileTransfer);
     loadScript("Scripts/WebRTC/FileTransfer.js", function () {
         if (typeof fileTransfer.fileTransfers == 'undefined') {
             Files();
             new ReceiveFile(user, fileTransfer);
             return;
         }
-        switch (fileTransfer.fileTransfers) {
-            case 'pictureTransfers':
-                new ReceivePicture(user, fileTransfer);
-                break;
-            case 'videoTransfers':
-                new ReceiveVideo(user, fileTransfer);
-                break;
-            case 'audioTransfers':
-                new ReceiveAudio(user, fileTransfer);
-                break;
-            case 'cameraTransfers':
-                loadScript("Scripts/WebRTC/ReceiveCamera.js", function () {
-                    new ReceiveCamera(user, fileTransfer);
-                });
-                break;
-            case 'microphoneTransfers':
-                loadScript("Scripts/WebRTC/ReceiveMicrophone.js", function () {
-                    new ReceiveMicrophone(user, fileTransfer);
-                });
-                break;
-            default: consoleError('fileTransfer.fileTransfers: ' + fileTransfer.fileTransfers);
-        }
+        //если тут не поставить setTimeout то не все fileTransfer будут отображаться у посетителя, котороый вошел в комнату уже после того
+        // как другие посетители начали fileTransfer
+        // Для теститования:
+        //      Зайти в комнату двумя посетителями и открыть видео трансляцияю у обоих
+        //      Зайти третьим посетиелем. 
+        // Если бы не было setTimeout, то появилась бы ошибка
+        // Uncaught ReferenceError: ReceiveCamera is not defined
+        // Внимание!!! Во время теститрования третьим посетителем надо заходить открывая новую вкладку браузера а не обновляяя уже сушествующую вкладку
+        //      Иначе будеть работать без ошибок и без setTimeout
+        // Я думаю эта ошибка происходит потому что ReceiveFileStart2 вызывается несколько раз и во время второго вызова
+        // вызывается  new ReceiveCamera еще до того как скачался файл ReceiveCamera.js
+        setTimeout(function () {
+            switch (fileTransfer.fileTransfers) {
+                case 'pictureTransfers': new ReceivePicture(user, fileTransfer); break;
+                case 'videoTransfers': new ReceiveVideo(user, fileTransfer); break;
+                case 'audioTransfers': new ReceiveAudio(user, fileTransfer); break;
+                case 'cameraTransfers':
+                    loadScript("Scripts/WebRTC/ReceiveCamera.js", function () { new ReceiveCamera(user, fileTransfer); }); break;
+                case 'microphoneTransfers':
+                    loadScript("Scripts/WebRTC/ReceiveMicrophone.js", function () { new ReceiveMicrophone(user, fileTransfer); }); break;
+                default: consoleError('fileTransfer.fileTransfers: ' + fileTransfer.fileTransfers);
+            }
+        }, 0);
     });
 }
-
 function ReceiveFile(user, file, options) {
     consoleLog('ReceiveFile(...)');
     function setFileInput(fileTransfer, elementBlock) {
@@ -74,11 +70,14 @@ function ReceiveFile(user, file, options) {
         }
         //если не использовать element, то возвратит undefined
         var element =
-          '<h2 onclick="javascript: getFileTransfer(\'' + fileTransfer.getBlockID() + '\').receiveFile()" style="float:none;margin:0px;" class="sendButton">'
-            + header
+          '<div>'
+            + '<span onclick="javascript: getFileTransfer(\'' + fileTransfer.getBlockID() + '\').receiveFile()"'
+                    + ' style="float:none;margin:0px;padding:0px;" class="sendButton">'
+                + header
+            + '</span>'
             + '<span id="user"></span>'
             + headerEnd
-        + '</h2>'
+        + '</div>'
         //+ '<a onclick="javascript: receiveStream(\'' + fileTransfer.ID + '\', \'' + fileTransfer.user.id + '\')">RF</a>'
         //+ '<a onclick="javascript: receiveFile(\'' + fileTransfer.ID + '\', \'' + fileTransfer.user.id + '\')">RF</a>'
         return element;
@@ -156,7 +155,7 @@ function ReceiveFile(user, file, options) {
     }
 
     fileTransfer.onaddstream = function (event, mediaTagName) {
-        consoleDebug('fileTransfer.onaddstream(...)');
+        //consoleDebug('fileTransfer.onaddstream(...)');
         this.stream = event.stream
         resizeVideos();
         var mediaBlock = getVideoBlock(fileTransfer.ID);
@@ -251,24 +250,21 @@ function ReceiveFile(user, file, options) {
 
     fileTransfer.disconnect = function () {
         consoleLog('fileTransfer.disconnect()');
-        if (typeof this.peer != 'undefined') {
-            //see Disconnecting the peers of https://developer.mozilla.org/ru/docs/Web/API/WebRTC_API/Simple_RTCDataChannel_sample
-            if (typeof this.peer.channel != 'undefined')
-                this.peer.channel.close();//file receiving
-            else if (typeof this.stream != 'undefined') {
-                this.stream.getTracks().forEach(function (track) {
-                    track.stop();
-                });
-                this.peer.socket.send(this.user.id, {
-                    //                    user: g_user
-                    userLeft: true
-                    , userid: g_user.id
-                    //                    , stream: ((typeof options != 'undefined') && (typeof options.stream != 'undefined')) ? options.stream : false//true - receive stream, false - receive file
-                });
-            } else consoleError('fileTransfer.disconnect() failed!');
-            this.peer.pc.close();
-            delete this.peer;
-        }
+        if (typeof this.peer == 'undefined') return;
+        //see Disconnecting the peers of https://developer.mozilla.org/ru/docs/Web/API/WebRTC_API/Simple_RTCDataChannel_sample
+        if (typeof this.peer.channel != 'undefined') this.peer.channel.close();//file receiving
+        else if (typeof this.stream != 'undefined') {
+            this.stream.getTracks().forEach(function (track) {
+                track.stop();
+            });
+            this.peer.socket.send(this.user.id, {
+                userLeft: true
+                , userid: g_user.id
+            });
+        } else consoleError('fileTransfer.disconnect() failed!');
+        if (this.peer.pc) this.peer.pc.close();
+        else consoleError('fileTransfer.disconnect() this.peer.pc: ' + this.peer.pc);
+        delete this.peer;
     }
 
     fileTransfer.onFileReceived = function () {

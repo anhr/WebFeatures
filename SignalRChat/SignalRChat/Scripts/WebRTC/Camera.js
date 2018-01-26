@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -123,22 +123,6 @@ function elementCameraTools(fileTransfer, options) {
             + '</div>'
     });
 }
-/*
-function getVideoFromContainer(elementContainer) {
-    if (elementContainer == null)
-        return;
-    var element = elementContainer.querySelector('video');
-    if (!element) {
-        element = document.createElement('video');
-        elementContainer.appendChild(element);
-    }
-    return element;
-}
-
-function getVideo(blockId) {
-    return getVideoFromContainer(document.getElementById(blockId).querySelector('.fileTransferContainer'));
-}
-*/
 function VideoRecording(blockId) {
     consoleLog('VideoRecording(' + blockId + ')');
     this.recording = new Recording(blockId, {

@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -26,31 +26,6 @@ var g_user = {
             this[key] = user[key];
         }
     }
-    , query: function () {
-        var queryString = new QueryString();
-        var browserID = queryString.value('browserID');
-        if (typeof browserID != 'undefined') {
-            this.browserID = browserID;
-            return;
-        }
-        var JSONuser;
-        if (navigator.cookieEnabled)
-            JSONuser = get_cookie("User");
-        else JSONuser = queryString.value('user');
-        if (typeof JSONuser == 'undefined') {
-            consoleError('g_user.query() failed!');
-/*
-            var browserID = queryString.value('browserID');
-            if (typeof browserID == 'undefined') {
-                consoleError('g_user.query() failed!');
-                return;
-            }
-            this.browserID = browserID;
-*/
-            return;
-        }
-        this.updateProfile(JSON.parse(JSONuser));
-    }
     , nickname: ""
     , browserID: ""
 }
@@ -60,27 +35,27 @@ var g_chatRoom = {
     , PrivateID: ""
     , privateUserId: ""
     , privateRoomName: ""
+    , getRoomName: function () {
+        var chatRoom = this.RoomName;
+/*не работает в приватной странице IRC. Сейчас private пищу перед названием страницы в documentTitlePrefix()
+        if (this.isPrivate())
+            chatRoom = chatRoom + " " + lang.strPrivate;//private
+*/
+        return chatRoom;
+    }
+    , isPrivate: function () { return (typeof g_chatRoom.PrivateID != 'undefined') && (g_chatRoom.PrivateID != ""); }
 }
 
 function gotoChatPage() {
     var location = "../chat";
     if (g_user.nickname || g_user.browserID || g_user.id || g_chatRoom.RoomName)
         location += "?user=" + JSON.stringify(g_user);;
-/*
-    if (g_user.browserID)
-        location += "browserID=" + g_user.browserID;
-    else if (g_user.id)
-        location += "userId=" + g_user.id;
-    else if (g_user.nickname)
-        location += "Nickname=" + encodeURIComponent(g_user.nickname);
-*/
     if (g_chatRoom.RoomName) {
         if (g_user.nickname)
             location += "&";
         location += 'chatRoom=' + encodeURIComponent(g_chatRoom.RoomName);
     }
     window.location = location;
-    //            window.location = "../chat?Nickname=" + encodeURIComponent(g_user.nickname) + '&chatRoom=' + encodeURIComponent(g_chatRoom);
 }
 
 function g_onRemoveRoom(roomName) {
@@ -97,9 +72,36 @@ function g_onRemoveRoom(roomName) {
         }
     }
 }
-
+function createElRoomSignalR(room) {
+    var elementRoom = document.createElement((typeof room.tagName == 'undefined') ? 'div' : room.tagName);
+    elementRoom.className = "room";
+    elementRoom.name = "itemRoom";
+    elementRoom.roomName = room.RoomName;
+    elementRoom.style.overflow = "auto";
+    var usersCount;
+    if (room.RoomName != g_chatRoom.RoomName) {
+        if (typeof room.usersCount != 'undefined')
+            usersCount = room.usersCount;
+        else if (typeof room.RoomNameCount != 'undefined')//лень переименовывать RoomNameCount в usersCount
+            usersCount = room.RoomNameCount;
+    }
+    var elUsersCount;
+    if (typeof usersCount == 'undefined')
+        elUsersCount = '';
+    else elUsersCount = ': <span class="usersCount">' + usersCount + '</span>';
+    return {
+        elRoom: elementRoom
+        , elUsersCount: elUsersCount
+    }
+}
 function g_onUpdateRoom(room, strRoomNamePrev) {
     consoleLog('g_onUpdateRoom(...). room.RoomName: "' + room.RoomName + '" room.PrivateID = ' + room.PrivateID);
+
+    var elRoomsList = document.getElementById("roomsList");
+    if (!elRoomsList) {
+        consoleError("This is IRC page");
+        return;
+    }
 
     if (room.PrivateID != null) {
         consoleLog("I do not want to add a private room in to rooms list");
@@ -109,35 +111,34 @@ function g_onUpdateRoom(room, strRoomNamePrev) {
     //find current and prevoious rooms
     var elementRoom;
     var elementRoomPrev;
-    var roomsList = document.getElementById("roomsList");
-    for (var i = 0; i < roomsList.childNodes.length; i++) {
-        var elementRoomCur = roomsList.childNodes[i];
-        if (elementRoomCur.tagName == "DIV") {
-            var roomCurName = getItemRoomName(elementRoomCur);
-            if (roomCurName == room.RoomName)
-                elementRoom = elementRoomCur;
-            else if (roomCurName == strRoomNamePrev)
-                elementRoomPrev = elementRoomCur;
-        }
-    }
-/*
-    if ((strRoomNamePrev != "") && (elementRoomPrev == null))
-        consoleError('g_onUpdateRoom(room, "' + strRoomNamePrev + '") failed! elementRoomPrev == null');
-*/
+    elRoomsList.querySelectorAll('.room').forEach(function (elementRoomCur) {
+        var roomCurName = getItemRoomName(elementRoomCur);
+        if (roomCurName == room.RoomName)
+            elementRoom = elementRoomCur;
+        else if (roomCurName == strRoomNamePrev)
+            elementRoomPrev = elementRoomCur;
+    });
     if (elementRoom) {
-        var index = 1;//index of count of users in the room
-        if (elementRoom.childNodes[1].className == "pointer")
-            index = 2;
-        elementRoom.childNodes[index].innerHTML = room.usersCount;
+        if (elementRoom.roomName != g_chatRoom.RoomName) {
+            var className = 'usersCount';
+            var elUsersCount = elementRoom.querySelector('.' + className);
+            if (!elUsersCount) {
+                elUsersCount = document.createElement('span');
+                elUsersCount.innerHTML = ': ';
+                elementRoom.appendChild(elUsersCount);
+
+                elUsersCount = document.createElement('span');
+                elUsersCount.className = className;
+                elementRoom.appendChild(elUsersCount);
+            }
+            elUsersCount.innerHTML = room.usersCount;
+        }
     } else {
-        //<div name="itemRoom" class="streamer" style="overflow:auto;" onclick="javascript: onclickItemRoom(this)">Chat<span style="float: right">1</span></div>
-        //also see asp:ListView in SignalRChat\Default.aspx and Chat\Default.aspx
-        elementRoom = document.createElement('div');
-        elementRoom.name = "itemRoom";
-        elementRoom.style.overflow = "auto";
-        elementRoom.innerHTML = room.RoomName + '<span style="float: right">' + room.usersCount + '</span>';
-        createElementRoom(elementRoom, room);
+        elementRoom = createElementRoom(room);
     }
+    var elUsersCount = elementRoom.querySelector('.usersCount');
+    if (elUsersCount && room.usersCount)
+        elUsersCount.innerHTML = room.usersCount;
     if (elementRoomPrev)
         roomsList.insertBefore(elementRoom, elementRoomPrev);
     else roomsList.appendChild(elementRoom);
@@ -145,12 +146,14 @@ function g_onUpdateRoom(room, strRoomNamePrev) {
 
 function selectItemRoom(itemRoom) {
     if (g_clicked_itemRoom != null)
-        g_clicked_itemRoom.className = 'streamer';
+        g_clicked_itemRoom.className = g_clicked_itemRoom.className.replace("clicked_streamer", "streamer");
     g_clicked_itemRoom = itemRoom;
-    itemRoom.className = "clicked_streamer";
+    itemRoom.className = itemRoom.className.replace("streamer", "clicked_streamer");
 }
 
 function getItemRoomName(itemRoom) {
+    return itemRoom.roomName;
+/*
     var roomName = "";
     if (typeof itemRoom.childNodes[0].data == 'undefined')
         roomName = itemRoom.childNodes[1].innerHTML;
@@ -158,6 +161,7 @@ function getItemRoomName(itemRoom) {
     if ((typeof roomName == 'undefined') || (roomName == ""))
         consoleError("getItemRoomName(itemRoom) faled! roomName is empty");
     return roomName;
+*/
 }
 
 function getOrigin() {
@@ -317,3 +321,9 @@ function mapPosition(mapContainer) {
             expandAdditionally();
         });
 }
+function getWaitIconBase(papams) {
+    if (typeof papams == 'undefined')
+        papams = '';
+    return '<img src="../img/Wait.gif" style="width: 20px; height:20px"' + papams + '>';
+}
+function getErrorTag(message) { return '<FONT style="color: red;">' + message + '</FONT>' }

@@ -16,38 +16,37 @@ CKEDITOR.plugins.add( 'smileys', {
 	    var smiley_path = '/ckeditor/plugins/smiley/images/';
 
 	    for (i = 0; i < images.length; i++) {
+	        var smiley_description = CKEDITOR.config.smiley_descriptions[i];
 	        editor.ui.addButton(images[i].match(/^(.*).gif/)[1]//angel_smile
                 , {
-                    label: editor.lang.smiley[CKEDITOR.config.smiley_descriptions[i]],//smiley_descriptions[i],
+                    label: editor.lang.smiley[smiley_description],//smiley_descriptions[i],
 	                click: function () { insertSmile(this); },
-	                icon: smiley_path + images[i]
+	                icon: smiley_path + images[i],
+	                smiley_description: smiley_description
 	            });
 	    }
 	}
 } );
 
 /**
+ * Create a smiley's image
+ */
+function createSmile(button) {
+    return CKEDITOR.instances.editor.document.createElement('img', {
+        attributes: {
+            src: button.icon,//"http://localhost/ckeditor/plugins/smiley/images/confused_smile.gif"
+            title: button.title,
+            alt: button.title,
+            name: button.smiley_description
+        }
+    });
+}
+
+/**
  * Inserts  a smiley's image into editor
  */
 function insertSmile(button) {
-    var title = button.title;
-    var img = CKEDITOR.instances.editor.document.createElement('img', {
-        attributes: {
-            src: button.icon,//"http://localhost/ckeditor/plugins/smiley/images/confused_smile.gif"
-            title: title,
-            alt: title
-/*
-            width: 20,
-            height: 20
-*/
-/*
-            width: target.$.width,
-            height: target.$.height
-*/
-        }
-    });
-
-    CKEDITOR.instances.editor.insertElement(img);
+    CKEDITOR.instances.editor.insertElement(createSmile(button));
 }
 
 /**

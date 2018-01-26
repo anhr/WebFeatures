@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -36,6 +36,9 @@ function SendStream(options) {
     options.stopLocalMedia = function (fileTransfer, mediaName) {
         consoleLog('SendStream.stopLocalMedia(' + mediaName + ')');
 
+        if (fileTransfer.soundMeter != undefined)
+            fileTransfer.soundMeter.stop();
+
         if (typeof fileTransfer.stream != 'undefined')//stream == 'undefined' при неудачном открытии камеры например если она занята другим приложением
             fileTransfer.stream.getTracks().forEach(function (track) {
                 track.stop();//free media device
@@ -64,7 +67,6 @@ function SendStream(options) {
 
         block.querySelector('#wait').style.display = 'block';
         //https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getUserMedia
-//        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
         if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
             fileTransfer.restartLocalMedia = function (closeSessionCause) {
@@ -186,7 +188,15 @@ function SendStream(options) {
                 fileTransfer.sendFile(fileTransfer.getCurrentTime());
             }
 
-            function error(err) {
+            getMedia(hints, function (stream) {//success
+                if (!fileTransfer.options.options.isUserMediaSuccess(stream)) {
+                    fileTransfer.loadedmetadata = false;
+                    fileTransfer.cancel();
+                    return;
+                }
+                fileTransfer.stream = stream;
+                options.getUserMediaSuccess(stream);
+            }, function (err) {
                 consoleError("The following error occurred:", err);
                 var message;
                 switch (err.name) {
@@ -197,6 +207,7 @@ function SendStream(options) {
                         break;
                     case 'NotReadableError'://Firefox
                     case 'SourceUnavailableError':
+                    case 'TrackStartError':
                         fileTransfer.restartLocalMediaTimeout();
                         fileTransfer.closeSessionCause = closeSessionCauseEnum.webcamBusy;
                         return;
@@ -239,34 +250,7 @@ function SendStream(options) {
                 alert(message);
                 fileTransfer.loadedmetadata = false;
                 fileTransfer.cancel();
-            }
-
-            function success(stream) {
-                if (!fileTransfer.options.options.isUserMediaSuccess(stream)) {
-                    fileTransfer.loadedmetadata = false;
-                    fileTransfer.cancel();
-                    return;
-                }
-                fileTransfer.stream = stream;
-                options.getUserMediaSuccess(stream);
-            }
-
-            if (navigator.mediaDevices.getUserMedia) {
-                //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-                navigator.mediaDevices.getUserMedia(hints)
-                .then(function (stream) { success(stream); })
-                .catch(function (err) { error(err); });
-            } else {
-                //deprecated. Use navigator.mediaDevices.getUserMedia instead
-                //https://developer.mozilla.org/ru/docs/Web/API/Navigator/getUserMedia
-                navigator.getMedia = navigator.webkitGetUserMedia || navigator.msGetUserMedia || navigator.getUserMedia || navigator.mozGetUserMedia;
-                if (typeof navigator.getMedia == "undefined")
-                    consoleError('navigator.getMedia is undefined');
-                navigator.getMedia(hints,//{ audio: true, video: true },//{ width: 100, height: 100 } },
-                    function (stream) { success(stream); },
-                    function (err) { error(err);}
-                );
-            }
+            });
         } else {
             var message = 'getUserMedia not supported';
             consoleError(message);
@@ -340,6 +324,7 @@ function createSoundMeter(fileTransfer) {
 //            var soundMeter = document.getElementById(getSoundMeterID(blockId));
             if (soundMeter == null) {//окно с идикатором уровня звука было закрыто
                 window.clearInterval(this.soundMeterIntervalID);
+                fileTransfer.soundMeter.stop();
                 return;
             }
             var instantMeter = soundMeter.querySelector('meter');

@@ -1,0 +1,18 @@
+﻿<span onclick="javascript: myTreeView.onclickCloseBranch(event)" id="translatorClose" class="sendButton">X</span>
+<div>
+    <input type="checkbox" onclick="translator.onclickTranslateIncomingMessages(event)" id="checkboxTranslateIncomingMessages">
+    <label id="translateIncomingMessages" for="checkboxTranslateIncomingMessages"></label>
+</div>
+<div class="b-toggle" id="translatorSettings">
+
+    <label id="translateLanguageSourceLabel" for="translateLanguageSource"></label>
+    <select id="translateLanguageSource" onchange="javascript: translator.translatorBase.onchangeLanguage(event)"></select>
+    
+    <span id="translateLanguageToLabel"></span>
+    <select id="translateLanguageTo" onchange="javascript: translator.translatorBase.onchangeLanguage(event)"></select>
+
+    <input type="button" id="translateSwapLanguages" onclick="javascript: translator.translatorBase.onclickSwapLanguage(event)" value="⇄" />
+    <input type="button" id="translateDefault" onclick="javascript: translator.translatorBase.onclickDefault(event)" />
+
+    <div><a href="http://translate.yandex.ru/" target="_blank" id="translateYanrexRef"></a></div>
+</div>

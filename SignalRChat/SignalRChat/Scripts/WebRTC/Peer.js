@@ -2,7 +2,7 @@
  * Javascript code. WebRTC (Web Real-Time Communications) see https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API for details
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -20,11 +20,14 @@
 var g_iceServers;
 
 peer = {
-    peer: function (dataID, userId, options) {
+    peer: function (dataID, user, options) {
+        var userId = user.id;
         consoleLog('peer.peer(' + dataID + ', ' + userId + ')');
         //https://habrahabr.ru/post/187270/
 
         this.options = options;
+        this.nickname = user.nickname;
+        this.dataID = dataID;
 
         this.RTCPeerConnection = function () {
 //            var loadedIceFrame, peerPeer = this;
@@ -205,11 +208,11 @@ peer = {
                     }
 
                     connection.constraints = sdpConstraints;
-
+                    /*
                     if (connection.constraints) {
                         consoleLog('sdp-constraints', JSON.stringify(connection.constraints));
                     }
-
+                    */
                     connection.optionalArgument = {
                         optional: connection.optionalArgument.optional || [],
                         mandatory: connection.optionalArgument.mandatory || {}
@@ -221,10 +224,9 @@ peer = {
                         });
                     }
 
-                    consoleLog('optional-argument', JSON.stringify(connection.optionalArgument));
+                    //consoleLog('optional-argument', JSON.stringify(connection.optionalArgument));
 
                     if (typeof config.iceServers != 'undefined') {
-                        //                        var iceCandidates = this.rtcMultiConnection.candidates;
                         var iceCandidates = connection.candidates;
 
                         var stun = iceCandidates.stun;
@@ -249,101 +251,134 @@ peer = {
                         config.iceServers = null;
                     }
 
-                    consoleLog('rtc-configuration', JSON.stringify(config.iceServers));
+                    //consoleLog('rtc-configuration', JSON.stringify(config.iceServers));
                 }
                 setConstraints();
-                var _RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
-                // || window.RTCIceGatherer;//for edge. also see http://stackoverflow.com/questions/36824585/does-rtcpeerconnection-work-in-microsoft-edge
-                if (typeof _RTCPeerConnection == "undefined") {
-                    consoleError('WebRTC 1.0 (RTCPeerConnection) API seems NOT available in this browser.');
-                    return;
-                }
-//delete config.iceServers.iceTransports;
-//delete connection.optionalArgument.mandatory;
-//delete connection.optionalArgument.optional[3];
-//delete connection.optionalArgument.optional[2];
-//delete connection.optionalArgument.optional[1];
-//connection.optionalArgument.optional.length = 3;
-                peerPeer.pc = new _RTCPeerConnection(config.iceServers, connection.optionalArgument);
-/*
-peerPeer.pc = new _RTCPeerConnection(
-    JSON.parse('{"iceServers":[{"url":"stun:stun.l.google.com:19302"},{"url":"turn:turn.bistri.com:80","credential":"homeo","username":"homeo"}]}')
-    , JSON.parse('{"optional":[{"DtlsSrtpKeyAgreement":true}]}'));
-*/
-                
-                // Сразу установим обработчики событий
-                peerPeer.pc.onicecandidate = function (evt) {
-                    consoleLog('pc.onicecandidate(...)');
-                    if (evt.candidate) {
-                        // Каждый ICE-кандидат мы будем отправлять другому участнику через сигнальный сервер
-                        socket.send(userId, {
-                            userid: g_user.id,
-                            candidate: evt.candidate
-                        });
+                function pc(){
+
+                    // Сразу установим обработчики событий
+                    peerPeer.pc.onicecandidate = function (evt) {
+                        consoleLog('pc.onicecandidate(...)');
+                        if (evt.candidate) {
+                            // Каждый ICE-кандидат мы будем отправлять другому участнику через сигнальный сервер
+                            socket.send(userId, {
+                                userid: g_user.id,
+                                candidate: evt.candidate
+                            });
+                        }
+                    };
+                    peerPeer.pc.onconnection = function () {
+                        // Пока это срабатывает только в Firefox
+                        consoleLog('RTCPeerConnection connection established');
+                    };
+                    peerPeer.pc.onclosedconnection = function () {
+                        // И это тоже. В Chrome о разрыве соединения придется узнавать другим способом
+                        consoleLog('RTCPeerConnection disconnected');
+                    };
+
+                    peerPeer.pc.oniceconnectionstatechange = function (event) {
+                        if (this.iceConnectionState == 'failed') {
+                            consoleError('RTCPeerConnection oniceconnectionstatechange. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState + ' dataID: ' + dataID);
+                            /*сообщение об ошибке появляется на передающей стороне и потом не исчезает
+                            var elementBlock = getVideoBlock(dataID);
+                            elementBlock.querySelector('#wait').style.display = 'none';
+                            var elMessage = elementBlock.querySelector('.value');//receive file
+                            if (elMessage == null)
+                                elMessage = elementBlock.querySelector('#Message');//send camera
+                            elMessage.innerHTML =
+                                '<font style="color:red;">' + lang.error + ': iceConnectionState: ' + this.iceConnectionState + '</font>';
+                            */
+                            return;
+                        }
+                        consoleLog('RTCPeerConnection oniceconnectionstatechange. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState);
+                    };
+                    peerPeer.pc.onnegotiationneeded = function (event) {
+                        consoleLog('RTCPeerConnection onnegotiationneeded. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState);
+                    };
+                    peerPeer.pc.onremovestream = function (event) {
+                        consoleLog('RTCPeerConnection onremovestream. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState);
+                    };
+                    peerPeer.pc.onsignalingstatechange = function (event) {
+                        consoleLog('RTCPeerConnection onsignalingstatechange. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState);
+                    };
+                    try {
+                        if (typeof options.options == 'undefined') {//file transfer
+                            peerPeer.pc.ondatachannel = function (e) {
+                                consoleDebug('peer.pc.ondatachannel(...)');
+                                peerPeer.channel = e.channel;
+                                if (DetectRTC.browser.isFirefox) peerPeer.channel.binaryType = 'blob';
+
+                                peerPeer.setChannelEvents();
+                            };
+                            peerPeer.start = options.start;
+                            peerPeer.start();
+                        } else options.options.start(peerPeer);
+                    } catch (e) {
+                        consoleError(e);
                     }
-                };
-                peerPeer.pc.onconnection = function () {
-                    // Пока это срабатывает только в Firefox
-                    consoleLog('RTCPeerConnection connection established');
-                };
-                peerPeer.pc.onclosedconnection = function () {
-                    // И это тоже. В Chrome о разрыве соединения придется узнавать другим способом
-                    consoleLog('RTCPeerConnection disconnected');
-                };
-            
-                peerPeer.pc.oniceconnectionstatechange = function (event) {
-                    if (this.iceConnectionState == 'failed') {
-                        consoleError('RTCPeerConnection oniceconnectionstatechange. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState + ' dataID: ' + dataID);
-                        /*сообщение об ошибке появляется на передающей стороне и потом не исчезает
-                        var elementBlock = getVideoBlock(dataID);
-                        elementBlock.querySelector('#wait').style.display = 'none';
-                        var elMessage = elementBlock.querySelector('.value');//receive file
-                        if (elMessage == null)
-                            elMessage = elementBlock.querySelector('#Message');//send camera
-                        elMessage.innerHTML =
-                            '<font style="color:red;">' + lang.error + ': iceConnectionState: ' + this.iceConnectionState + '</font>';
-                        */
+                }
+                if (DetectRTC.browser.isEdge) {
+                    //https://github.com/webrtc/adapter
+                    var src = "https://webrtc.github.io/adapter/adapter-latest.js";
+                    loadScript(src, function () {//success
+//                        var servers = null;
+                        peerPeer.pc = new RTCPeerConnection(config.iceServers);//servers);
+                        pc();
+                    }, function () {//error
+                        src = '../WebRTC/adapter/release/adapter.js'
+                        loadScript(src, function () {
+                            peerPeer.pc = new RTCPeerConnection(config.iceServers);
+                            pc();
+                        }, function () { alert('Load "' + src + '" failed!'); });
+                    });
+                } else {
+                    var _RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection
+                    // || window.RTCIceGatherer;//for edge. also see http://stackoverflow.com/questions/36824585/does-rtcpeerconnection-work-in-microsoft-edge
+                    if (typeof _RTCPeerConnection == "undefined") {
+                        var error = 'WebRTC 1.0 (RTCPeerConnection) API seems NOT available in this browser.';
+                        consoleError(error);
+                        alert(lang.uncompatibleBrowser.replace("%s", error));//'Your web browser is not compatible with your web site.\n\n%s\n\n Please use Google Chrome or Mozilla Firefox or Opera web browser.';
                         return;
                     }
-                    consoleLog('RTCPeerConnection oniceconnectionstatechange. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState);
-                };
-                peerPeer.pc.onnegotiationneeded = function (event) {
-                    consoleLog('RTCPeerConnection onnegotiationneeded. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState);
-                };
-                peerPeer.pc.onremovestream = function (event) {
-                    consoleLog('RTCPeerConnection onremovestream. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState);
-                };
-                peerPeer.pc.onsignalingstatechange = function (event) {
-                    consoleLog('RTCPeerConnection onsignalingstatechange. iceConnectionState: ' + this.iceConnectionState + ' iceGatheringState: ' + this.iceGatheringState + ' signalingState: ' + this.signalingState);
-                };
-                try {
-                    if (typeof options.options == 'undefined') {//file transfer
-                        peerPeer.pc.ondatachannel = function (e) {
-                            consoleDebug('peer.pc.ondatachannel(...)');
-                            peerPeer.channel = e.channel;
-                            if (DetectRTC.browser.isFirefox) peerPeer.channel.binaryType = 'blob';
-
-                            peerPeer.setChannelEvents();
-                        };
-                        peerPeer.start = options.start;
-                        peerPeer.start();
-                    } else options.options.start(peerPeer);
-                } catch (e) {
-                    consoleError(e);
+                    try {
+                        peerPeer.pc = new _RTCPeerConnection(config.iceServers, connection.optionalArgument);
+                    } catch (e) {
+                        consoleError(e);
+                        alert(lang.uncompatibleBrowser.replace("%s", e));//'Your web browser is not compatible with your web site.\n\n%s\n\n Please use Google Chrome or Mozilla Firefox or Opera web browser.';
+                        return;
+                    }
+                    pc();
                 }
             });
         }
         this._RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription;
         if (typeof this._RTCSessionDescription == "undefined") {
-            consoleError('RTCSessionDescription: ' + this._RTCSessionDescription);
+            var error = 'RTCSessionDescription: ' + this._RTCSessionDescription;
+            consoleError(error);
+            alert(lang.uncompatibleBrowser.replace("%s", error));//'Your web browser is not compatible with your web site.\n\n%s\n\n Please use Google Chrome or Mozilla Firefox or Opera web browser.';
             return;
         }
+        /*попытка запустить в Safari
+        if (typeof this._RTCSessionDescription == "undefined") {
+            //https://github.com/webrtc/adapter
+            loadScript("https://webrtc.github.io/adapter/adapter-latest.js", function () {
+                this._RTCSessionDescription = window.RTCSessionDescription;
+                if (typeof this._RTCSessionDescription == "undefined") {
+                    var error = 'RTCSessionDescription: ' + this._RTCSessionDescription;
+                    consoleError(error);
+                    alert(lang.uncompatibleBrowser.replace("%s", error));//'Your web browser is not compatible with your web site.\n\n%s\n\n Please use Google Chrome or Mozilla Firefox or Opera web browser.';
+                    return;
+                }
+            });
+        */
         this.socket = {
-            send: function (userId, data) {
+            send: function (userId, data1) {
                 try {
-                    var jsonData = JSON.stringify(data);
-                    consoleLog('socket.send(' + jsonData + ')');
-                    $.connection.chatHub.server.peerSend2(userId, dataID, jsonData);
+                    var jsonData = JSON.stringify(data1);
+                    //consoleLog('socket.send(' + jsonData + ')');
+                    if (userId == null)
+                        consoleError('userId = ' + userId);
+                    else $.connection.chatHub.server.peerSend2(userId, dataID, jsonData);
                 } catch (e) {
                     consoleError(e.message);
                 }
@@ -379,13 +414,48 @@ peerPeer.pc = new _RTCPeerConnection(
             });
             // После завершения этой функции начнет срабатывать событие pc.onicecandidate
         }
+        this.addPeer = function () {
+            this.setPeersCount();
+            if (this.options.options == undefined)
+                return;
+            //media broadcasting
+            var receivers = 'receivers';
+            var elParticipants = getVideoBlock(dataID).querySelector('#participants');
+            var elReceivers = elParticipants.querySelector('.' + receivers);
+            if (elReceivers == null) {
+                elReceivers = document.createElement('div');
+                elReceivers.className = receivers;
+                elParticipants.appendChild(elReceivers);
+                elReceivers.appendChild(myTreeView.createBranch({
+                    name: lang.receivers,//Receivers
+/*
+                    params: {
+                        onOpenBranch: function (a) { this.fileTransfer.showTools(); },
+                        onCloseBranch: function (a) { this.fileTransfer.hideTools(); },
+                        fileTransfer: getVideoBlock(dataID).fileTransfer
+                    }
+*/
+                }));
+            } 
+            if (!myTreeView.isBranchExists(user.nickname, elReceivers)) {
+                myTreeView.AddNewBranch(elReceivers, {
+                    branch: function () {
+                        var el = document.createElement("div");
+                        el.appendChild(AddElementUser(user, g_chatRoom.RoomName));
+                        el.querySelector('.treeView').params.branchId = this.branchId;
+                        return el;
+                    },
+                    branchId: user.nickname
+                });
+            } else consoleError('duplicate receiver: ' + user.nickname);
+        }
         this.setPeersCount = function () {
             var peersCount = 0;
             for (var peer in getVideoBlock(dataID).fileTransfer.peers) {
                 peersCount++;
             }
             consoleLog('peersCount = ' + peersCount);
-            $.connection.chatHub.server.peersCount(dataID, peersCount);
+            window.setPeersCount(dataID, peersCount);
         }
         this.onsdp = function (message) {
             consoleLog('peer.onsdp()) sdp.type: ' + message.sdp.type);
@@ -396,7 +466,7 @@ peerPeer.pc = new _RTCPeerConnection(
                 }
                 case 'answer': {
                     var aPromise = this.pc.setRemoteDescription(new this._RTCSessionDescription(message.sdp))
-                        .then(this.setPeersCount())
+                        .then(this.addPeer())
                         .catch(this.reportError);
                     break;
                 }
@@ -410,11 +480,20 @@ peerPeer.pc = new _RTCPeerConnection(
                 consoleError('RTCIceCandidate: ' + _RTCIceCandidate);
                 return;
             }
+            //https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate
+/*uncompatible with Safari
             this.pc.addIceCandidate(new _RTCIceCandidate(message.candidate)).then(_=> {
                 consoleLog('candidate is successfully passed to the ICE agent');
             }).catch(e=> {
                 consoleError("Failure during addIceCandidate() " + JSON.stringify(e));
             });
+*/
+            try {
+                //ATTENTION!!! Deprecated see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addIceCandidate for details
+                this.pc.addIceCandidate(new _RTCIceCandidate(message.candidate));
+            } catch (e) {
+                consoleError(e);
+            }
         }
         try {
             if (typeof options.options == 'undefined') {
@@ -427,7 +506,7 @@ peerPeer.pc = new _RTCPeerConnection(
         }
     }
     , onPeerSend: function (dataID, JSONData) {
-        consoleLog('peer.onPeerSend(dataID = ' + dataID + ', JSONData: ' + JSONData + ')');
+        consoleLog('peer.onPeerSend(dataID = ' + dataID + ')');//', JSONData: ' + JSONData + ')');
         
         var message = JSON.parse(JSONData);
         var Id;
@@ -437,7 +516,7 @@ peerPeer.pc = new _RTCPeerConnection(
         if (!peerBlock){
             if (!message.userLeft)//Когда отправитель закрывает трансляцию, получатель отправляет сообщение message.userLeft чтобы удалить peer. Но к этому времени он уже удален
                 consoleError('peerBlock = ' + peerBlock);
-            return;
+            return false;
         }
 
         if (message.participationRequest) {
@@ -455,12 +534,17 @@ peerPeer.pc = new _RTCPeerConnection(
             } else if (message.candidate) {
                 peer.onice(message);
             } else if (message.userLeft) {
-                consoleLog('message.userLeft');
                 peerBlock.fileTransfer.peers[message.userid].pc.close();
+                var peer = peerBlock.fileTransfer.peers[message.userid];
+                consoleLog('message.userLeft: ' + peer.nickname);
+                var elReceivers = getVideoBlock(peer.dataID).querySelector('.receivers');
+                myTreeView.removeBranch(peer.nickname, elReceivers);
                 delete peerBlock.fileTransfer.peers[message.userid];
+                if (myTreeView.branchLength(elReceivers) == 0)
+                    elReceivers.parentElement.removeChild(elReceivers);
                 peer.setPeersCount();
             } else consoleError('invalid message');
         }
-//consoleDebug('peer.onPeerSend(dataID = ' + dataID + ', JSONData: ' + JSONData + ') end');
+        return true;
     }
 }

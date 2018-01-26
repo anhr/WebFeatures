@@ -10,12 +10,22 @@
         <AssociationConnector Association="Chat.UserConnection" />
         <EntityTypeShape EntityType="Chat.DBRooms" Width="1.5" PointX="6.875" PointY="4.125" />
         <AssociationConnector Association="Chat.DBRoomsDBConnection" />
-        <EntityTypeShape EntityType="Chat.ViewRoom" Width="1.5" PointX="3.375" PointY="3.75" />
-        <EntityTypeShape EntityType="Chat.ViewRoomList" Width="1.5" PointX="0.75" PointY="3.75" />
         <EntityTypeShape EntityType="Chat.DBPosition" Width="1.5" PointX="2.875" PointY="0.5" />
         <AssociationConnector Association="Chat.DBPositionDBUser" />
         <EntityTypeShape EntityType="Chat.DBCoords" Width="1.5" PointX="0.75" PointY="0.5" />
         <AssociationConnector Association="Chat.DBCoordsDBPosition" />
+        <EntityTypeShape EntityType="Chat.DBIRCServers" Width="1.5" PointX="2.5" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Chat.DBIRCChats" Width="1.5" PointX="4.5" PointY="7.625" />
+        <AssociationConnector Association="Chat.DBIRCServersDBIRCChats" />
+        <EntityTypeShape EntityType="Chat.DBIRCUsers" Width="1.5" PointX="4.5" PointY="9.875" />
+        <AssociationConnector Association="Chat.DBIRCServersDBIRCUsers" />
+        <EntityTypeShape EntityType="Chat.DBIRCMessages" Width="1.5" PointX="6.875" PointY="7.875" />
+        <AssociationConnector Association="Chat.DBIRCChatsDBIRCMessages" />
+        <AssociationConnector Association="Chat.DBIRCUsersDBIRCMessages" />
+        <EntityTypeShape EntityType="Chat.ViewRoomList" Width="1.5" PointX="0.625" PointY="3.875" />
+        <EntityTypeShape EntityType="Chat.ViewRoom" Width="1.5" PointX="2.75" PointY="2.75" />
+        <EntityTypeShape EntityType="Chat.DBIRCGroups" Width="1.5" PointX="0.5" PointY="7.625" />
+        <AssociationConnector Association="Chat.DBIRCGroupsDBIRCServers" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

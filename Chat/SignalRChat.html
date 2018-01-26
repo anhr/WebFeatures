@@ -1,0 +1,152 @@
+﻿<b id="SignalRChatHeader"></b>
+<table style="width:auto">
+    <tbody>
+        <!--nickname-->
+        <tr>
+            <td class="col1" style="border:0px" align="right"><span id="nicknamePrompt"></span>:</td>
+            <td class="col2" style="border:0px">
+                <input name="Nickname" id="Nickname" onkeyup="javascript: onKeyupNickname(this.value)" autofocus style="width:100%" maxlength="129" />
+            </td>
+        </tr>
+        <tr>
+            <td style="border:0px" align="right">
+                <a href="#" onclick="javascript: return onclickAdditionally()">
+                    <span id="branchAdditionally">▶</span>
+                    <span id="additionallyHeader"></span>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div id="tableAdditionally" class="b-toggle">
+    <table style="width:auto;">
+        <tbody>
+            <!--first name-->
+            <tr>
+                <td class="col1" style="border:0px" align="right"><span id="firstNamePrompt"></span>:</td>
+                <td class="col2" style="border:0px"><input id="firstName" style="width:100%" maxlength="129" /></td>
+            </tr>
+            <!--second name-->
+            <tr>
+                <td style="border:0px" align="right"><span id="secondNamePrompt"></span>:</td>
+                <td style="border:0px"><input id="secondName" style="width:100%" maxlength="129" /></td>
+            </tr>
+            <!--gender-->
+            <tr>
+                <td style="border:0px" align="right"><span id="genderPrompt"></span>:</td>
+                <td style="border:0px">
+                    <select id="gender" style="width:100%">
+                        <option id="selectGender" value="0" selected></option>
+                        <option id="male" value="3"></option>
+                        <option id="female" value="4"></option>
+                        <option id="couple" value="2"></option>
+                        <option id="another" value="1"></option>
+                    </select>
+                </td>
+            </tr>
+            <!--birthday-->
+            <tr>
+                <td style="border:0px" align="right"><span id="birthdayPrompt"></span>:</td>
+                <td style="border:0px">
+                    <input type="date" id="birthday" />
+                    <input type="button" id="clearBirthday" onclick="javascript: onclickClearBirthday()" style="float: right" />
+                </td>
+            </tr>
+            <!--picture-->
+            <!--
+                                <tr>
+                                    <td style="border:0px" align="right"><span id="picturePrompt"></span>:</td>
+                                    <td style="border:0px">
+                                        <input onchange="javascript: onchangePicture()" type="file" id="inputPicture">
+                                        <div id ="picture"><div class="fileTransferContainer"></div></div>
+                                    </td>
+                                </tr>
+            -->
+            <!--about me-->
+            <tr>
+                <td style="border:0px" align="right"><span id="aboutMePrompt"></span>:</td>
+                <td style="border:0px; height: 50px;">
+                    <textarea id="aboutMe" class="blok" onkeyup="javascript: onkeyupAboutMe()" style="height:50px;width:100%;border:0px;"></textarea>
+                    <div id="cookieOwerflow"></div>
+                </td>
+            </tr>
+            <!--location-->
+            <tr>
+                <td style="border:0px" align="right"><span id="locationPrompt"></span>:</td>
+                <td style="border:0px; height: 50px;">
+                    <input id="location" style="width:200px" maxlength="129" />
+                    <div id="geolocation" style="display:none;">
+                        <a href="#" onclick="javascript: return onclickGeolocation()">
+                            <span id="branchGeolocation">▶</span>
+                            <span id="geolocationPrompt"></span>
+                        </a>
+                        <div id="geolocationMessage" style="display:none;"></div>
+                        <img id="wait" src="../img/Wait.gif" alt="wait" style="width:12px; height:12px;display:none" />
+                        <div id="mapContainer" class="blok" style="margin-top:5px;display:none;"></div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<table style="width:auto">
+    <tbody>
+        <!--Update Profile-->
+<!--
+        <tr id="trUpdateProfile" style="float:right;">
+            <td class="col1" style="border:0px" align="right">.</td>
+            <td class="col2" style="border:0px">
+                <input type="button" id="updateProfile" onclick="javascript: onClickUpdateProfile()" />
+            </td>
+        </tr>
+-->
+        <tr id="trUpdateProfile">
+            <td style="border:0px"></td>
+            <td style="border:0px">
+                <input type="button" id="updateProfile" style="float: right" onclick="javascript: return onClickUpdateProfile()" />
+            </td>
+        </tr>
+        <!--Chat Room-->
+        <tr id="trChatRoom">
+            <td class="col1" style="border:0px" align="right"><span id="chatRoomPrompt"></span>:</td>
+            <td class="col2" style="border:0px">
+                <input name="chatRoom" id="chatRoom" onkeyup="javascript: onKeyupChatRoom(this.value)" maxlength="129" />
+                <input type="button" id="defaultChatRoom" style="float: right" onclick="javascript: getDefaultChatRoom()" />
+            </td>
+        </tr>
+        <!--select Chat Room-->
+        <tr>
+            <td style="border:0px;">
+                <a style="float:right;" href="#" onclick="javascript: return onclickSelectChatRoom()">
+                    <span id="branchSelectChatRoom">▶</span>
+                    <span id="selectChatRoomPrompt"></span>
+                </a>
+            </td>
+            <td style="border:0px">
+                <div id="roomsList" class="blok" style="height:200px;overflow:auto;display:none">
+                    <!--
+                                                <asp:ListView ID="ListView1" runat="server" DataKeyNames="RoomNameCount" DataSourceID="SqlDataSource2">
+                                                    <ItemTemplate>
+                                                        <div name="itemRoom" class="streamer room" style="overflow:auto;" onclick="javascript: onclickItemRoom(event)"><%# Eval("RoomName") %><span class="usersCount" style="float:right"><%# Eval("RoomNameCount") %></span></div>
+                                                    </ItemTemplate>
+                                                </asp:ListView>
+                                                <asp:SqlDataSource
+                                                    ID="SqlDataSource2"
+                                                    runat="server"
+                                                    ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=DBChat;Integrated Security=True"
+                                                    ProviderName="System.Data.SqlClient"
+                                                    SelectCommand="select RoomName, RoomNameCount from dbo.ViewRoomLists order by RoomNameCount desc, RoomName">
+                                                </asp:SqlDataSource>
+                    -->
+                </div>
+            </td>
+        </tr>
+        <!--submit-->
+        <tr>
+            <td style="border:0px"></td>
+            <td style="border:0px">
+                <input type="button" id="submit" style="float: right" onclick="javascript: return onClickSubmit()" />
+            </td>
+        </tr>
+    </tbody>
+</table>

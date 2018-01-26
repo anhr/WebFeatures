@@ -309,6 +309,10 @@ a:hover
 	{
 		border-bottom: black 1px solid;
 	}
+ td.noborder
+	{
+		border: 0px;
+	}
  td.activeTab
 	{
 		font-family:verdana,arial,sans-serif;

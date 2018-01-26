@@ -1,0 +1,1683 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ChatSharp</name>
+    </assembly>
+    <members>
+        <member name="T:ChatSharp.ChannelCollection">
+            <summary>
+            A collection of IRC channels a user is present in.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ChannelCollection.Join(System.String)">
+            <summary>
+            Join the specified channel. Only applicable for your own user.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ChannelCollection.Contains(System.String)">
+            <summary>
+            Returns true if the channel by the given name, including channel prefix (i.e. '#'), is in this collection.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ChannelCollection.Contains(System.String,System.String)">
+            <summary>
+            Returns true if the channel by the given name exists, and user with the given nick has joined.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ChannelCollection.Item(System.Int32)">
+            <summary>
+            Gets the channel at the given index.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ChannelCollection.Item(System.String)">
+            <summary>
+            Gets the channel by the given channel name, including channel prefix (i.e. '#')
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ChannelCollection.GetEnumerator">
+            <summary>
+            Gets an for the channels in this collection.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ChannelCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets an for the channels in this collection.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.ClientSettings">
+            <summary>
+            Customize the behavior of the ChatSharp client, including enabling or disabling
+            "helper" features.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ClientSettings.WhoIsOnConnect">
+            <summary>
+            If true, the client will WHOIS itself upon joining, which will populate the hostname in
+            IrcClient.User. This will allow you, for example, to use IrcUser.Match(...) on yourself
+            to see if you match any masks.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ClientSettings.ModeOnJoin">
+            <summary>
+            If true, the client will MODE any channel it joins, populating IrcChannel.Mode. If false,
+            IrcChannel.Mode will be null until the mode is explicitly requested.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ClientSettings.GenerateRandomNickIfRefused">
+            <summary>
+            If true, the library will generate a random nick with alphanumerical characters if it
+            encounters a NICK error.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ClientSettings.WhoIsOnJoin">
+            <summary>
+            If true, the library will WHOIS everyone in a channel upon joining. This procedure can
+            take several minutes on larger channels.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ClientSettings.JoinWhoIsDelay">
+            <summary>
+            The delay, in seconds, between each WHOIS when WhoIsOnJoin is true.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ChannelTopicEventArgs">
+            <summary>
+            Details of a channel topic event.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelTopicEventArgs.Channel">
+            <summary>
+            The channel whose topic has changed.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelTopicEventArgs.Topic">
+            <summary>
+            The new topic
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelTopicEventArgs.OldTopic">
+            <summary>
+            The original topic.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ChannelEventArgs">
+            <summary>
+            Generic event args for events regarding channels.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelEventArgs.Channel">
+            <summary>
+            The channel this event regards.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ChannelTopicWhoTimeEventArgs">
+            <summary>
+            Details of a channel topic who time event.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelTopicWhoTimeEventArgs.Channel">
+            <summary>
+            The channel to which the user set the topic.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelTopicWhoTimeEventArgs.User">
+            <summary>
+            User who last set the channel topic.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelTopicWhoTimeEventArgs.Time">
+            <summary>
+            The time the user set the current channel topic.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ChannelUserEventArgs">
+            <summary>
+            Generic event args for events regarding users in channels.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelUserEventArgs.Channel">
+            <summary>
+            The channel this event regards.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ChannelUserEventArgs.User">
+            <summary>
+            The user this event regards.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ErrorEventArgs">
+            <summary>
+            Raised when a Error occurs.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ErrorEventArgs.Error">
+            <summary>
+            The error that has occured.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ErrorReplyEventArgs">
+            <summary>
+            Raised when a IRC Error reply occurs. See rfc1459 6.1 for details.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ErrorReplyEventArgs.Message">
+            <summary>
+            The IRC error reply that has occured.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.HelpEventArgs">
+            <summary>
+            Event describing an help.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.HelpEventArgs.Message">
+            <summary>
+            The IRC message that describes this help reply.
+            </summary>
+            <value>The message.</value>
+        </member>
+        <member name="P:ChatSharp.Events.HelpEventArgs.Help">
+            <summary>
+            The text of the help reply.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.IrcNoticeEventArgs">
+            <summary>
+            Event describing an IRC notice.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.IrcNoticeEventArgs.Message">
+            <summary>
+            The IRC message that describes this NOTICE.
+            </summary>
+            <value>The message.</value>
+        </member>
+        <member name="P:ChatSharp.Events.IrcNoticeEventArgs.Notice">
+            <summary>
+            The text of the notice.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.IrcNoticeEventArgs.Source">
+            <summary>
+            The source of the notice (often a user).
+            </summary>
+            <value>The source.</value>
+        </member>
+        <member name="T:ChatSharp.Events.NickInUseEventArgs">
+            <summary>
+            Describes an invalid nick event.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.NickInUseEventArgs.InvalidNick">
+            <summary>
+            The nick that was not accepted by the server.
+            </summary>
+            <value>The invalid nick.</value>
+        </member>
+        <member name="P:ChatSharp.Events.NickInUseEventArgs.NewNick">
+            <summary>
+            The nick ChatSharp intends to use instead.
+            </summary>
+            <value>The new nick.</value>
+        </member>
+        <member name="P:ChatSharp.Events.NickInUseEventArgs.DoNotHandle">
+            <summary>
+            Set to true to instruct ChatSharp NOT to send a valid nick.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ErronousNickEventArgs">
+            <summary>
+            Describes an invalid nick event.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ErronousNickEventArgs.Command">
+            <summary>
+               "431" ERR_NONICKNAMEGIVEN ":No nickname given" - Returned when a nickname parameter expected for a command and isn't found.
+            or "432" ERR_ERRONEUSNICKNAME "nick :Erroneus nickname" - Returned after receiving a NICK message which contains characters which do not fall in the defined set.
+            or "436" ERR_NICKCOLLISION "nick :Nickname collision KILL" - Returned by a server to a client when it detects a nickname collision (registered of a NICK that already exists by another server).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ErronousNickEventArgs.InvalidNick">
+            <summary>
+            The nick that was not accepted by the server.
+            </summary>
+            <value>The invalid nick.</value>
+        </member>
+        <member name="P:ChatSharp.Events.ErronousNickEventArgs.Message">
+            <summary>
+            Message from server.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ListEventArgs">
+            <summary>
+            Raised when a IRC server's 322 RPL_LIST "channel # visible :topic". See https://tools.ietf.org/html/rfc1459#section-4.2.6
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ListEventArgs.ListState">
+            <summary>
+            The results of an IRC LIST query.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ListStartEventArgs">
+            <summary>
+            Raised when a IRC server's 321 RPL_LISTSTART "Channel :Users  Name" response to a LIST command. See https://tools.ietf.org/html/rfc1459#section-4.2.6
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ListStartEventArgs.Message">
+            <summary>
+            The IRC server's 321 RPL_LISTSTART "Channel :Users  Name" reply that has occured.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ModeChangeEventArgs">
+            <summary>
+            Describes a change to a channel or user mode.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ModeChangeEventArgs.Target">
+            <summary>
+            The target of this change (a channel or user).
+            </summary>
+            <value>The target.</value>
+        </member>
+        <member name="P:ChatSharp.Events.ModeChangeEventArgs.User">
+            <summary>
+            The user who issued the change.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ModeChangeEventArgs.Change">
+            <summary>
+            The mode change string.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ModeChangeEventArgs.Parameter">
+            <summary>
+            Nickname who gives or takes the status of a channel such as o or v
+            or Nickname/ hostmask  which adds or removes a channel ban
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.MyInfoEventArgs">
+            <summary>
+            Describes the RPL_MYINFO server reply.
+            </summary>
+            <remarks>See RFC2812 5.1 Command responses https://tools.ietf.org/html/rfc2812#section-5.1 for details</remarks>
+        </member>
+        <member name="P:ChatSharp.Events.MyInfoEventArgs.MyInfo">
+            <summary>
+            The My Info featureset.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.PrivateMessageEventArgs">
+            <summary>
+            Describes a private message we have received.
+            The term "private message" is misleading - this describes both messages sent user-to-user,
+            and messages sent to a channel.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.PrivateMessageEventArgs.IrcMessage">
+            <summary>
+            The IRC message received.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.PrivateMessageEventArgs.PrivateMessage">
+            <summary>
+            The private message received.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.RawMessageEventArgs">
+            <summary>
+            Describes a raw IRC message we have sent or received.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.RawMessageEventArgs.Message">
+            <summary>
+            The text of the raw IRC message.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.RawMessageEventArgs.Outgoing">
+            <summary>
+            True if this message is going from ChatSharp to the server.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.ServerMOTDEventArgs">
+            <summary>
+            Raised when we have received the MOTD from the server.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.ServerMOTDEventArgs.MOTD">
+            <summary>
+            The message of the day.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.SocketErrorEventArgs">
+            <summary>
+            Raised when a SocketError occurs.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.SocketErrorEventArgs.SocketError">
+            <summary>
+            The error that has occured.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.SupportsEventArgs">
+            <summary>
+            Describes the features the server supports.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.SupportsEventArgs.ServerInfo">
+            <summary>
+            The server's supported featureset.
+            </summary>
+        </member>
+        <member name="F:ChatSharp.Events.SupportsEventArgs.Message">
+            <summary>
+            RPL_BOUNCE RFC2812 :Try server &lt;server_name&gt;, port &lt;port_number&gt;
+            <para>Sent by the server to a user to suggest an alternative server, sometimes used when the connection is refused because the server is already full. Also known as RPL_SLINE (AustHex), and RPL_REDIR.</para>
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.UserListEventArgs">
+            <summary>
+            Raised when a IRC server's 353 RPL_NAMREPLY "&lt;channel&gt; :[[@|+]&lt;nick&lt; [[@|+]&lt;nick&lt; [...]]]". NAMES message reply. https://tools.ietf.org/html/rfc1459#section-4.2.5
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.UserListEventArgs.NamesState">
+            <summary>
+            The results of an IRC NAMES 353 RPL_NAMREPLY reply.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.WhoIsReceivedEventArgs">
+            <summary>
+            Describes the response to a WHOIS query. Note that ChatSharp may generate WHOIS
+            queries that the consumer did not ask for.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.WhoIsReceivedEventArgs.WhoIsResponse">
+            <summary>
+            The WHOIS response from the server.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.NickChangedEventArgs">
+            <summary>
+            Raised when a user has changed their nick.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.NickChangedEventArgs.User">
+            <summary>
+            The user whose nick changed.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.NickChangedEventArgs.OldNick">
+            <summary>
+            The original nick.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.NickChangedEventArgs.NewNick">
+            <summary>
+            The new nick.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Events.UserEventArgs">
+            <summary>
+            Generic event args that represent an event regarding a user.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.UserEventArgs.User">
+            <summary>
+            The user this regards.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Events.UserEventArgs.Reason">
+            <summary>
+            Reason for the end of the client session
+            </summary>
+        </member>
+        <member name="T:ChatSharp.TopicEventArgs">
+            <summary>
+            Raised when the topic of a channel has changed.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.TopicEventArgs.Message">
+            <summary>
+            The IRC server's TOPIC reply that has occured.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.Handlers.ChannelHandlers.HandleTopicWhoTime(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            <para>RPL_TOPICWHOTIME 333</para>
+            <para>This is returned for a TOPIC request or when you JOIN, if the channel has a topic.</para>
+            <para>message.Parameters[1]: A channel name.</para>
+            <para>message.Parameters[2]: User who last set the channel topic.</para>
+            <para>message.Parameters[3]: The time the user set the current channel topic.</para>
+            <para>example: 333 blink #kif psycon!~psy@comm.wurbz.de 1500138059</para>
+            <para>http://www.tracyexpressbaseball.com/mishbox/reference/rawhelp3.htm#raw333</para>
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Handlers.ErrorHandlers">
+            <summary>
+            IRC error replies handler. See rfc1459 6.1.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.Handlers.ErrorHandlers.HandleError(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            IRC Error replies handler. See rfc1459 6.1.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.Handlers.ErrorHandlers.HandleFatalError(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            IRC fatal error handler.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Handlers.ListHandlers">
+            <summary>
+            IRC server's response to a LIST command. See https://tools.ietf.org/html/rfc1459#section-4.2.6
+            </summary>
+        </member>
+        <member name="M:ChatSharp.Handlers.ListHandlers.HandleListStart(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            321 RPL_LISTSTART "Channel :Users  Name"
+            </summary>
+        </member>
+        <member name="M:ChatSharp.Handlers.ListHandlers.HandleList(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            322 RPL_LIST "channel # visible :topic"
+            </summary>
+        </member>
+        <member name="M:ChatSharp.Handlers.ListHandlers.HandleListEnd(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            323 RPL_LISTEND ":End of /LIST"
+            </summary>
+        </member>
+        <member name="M:ChatSharp.Handlers.MessageHandlers.HandlePong(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            Exclude unhandled message event
+            </summary>
+        </member>
+        <member name="M:ChatSharp.Handlers.UserHandlers.HandleWhoIsActually(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            RPL_WHOISACTUALLY &lt;source&gt; 338 &lt;target&gt; &lt;nick&gt; &lt;user&gt;@&lt;host&gt; &lt;ip&gt; :Actual user@host, Actual IP
+            </summary>
+        </member>
+        <member name="T:ChatSharp.IrcChannel">
+            <summary>
+            An IRC channel.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcChannel.Topic">
+            <summary>
+            The channel topic. Will send a TOPIC command if set.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcChannel.Name">
+            <summary>
+            The name, including the prefix (i.e. #), of this channel.
+            </summary>
+            <value>The name.</value>
+        </member>
+        <member name="P:ChatSharp.IrcChannel.Mode">
+            <summary>
+            The channel mode. May be null if we have not received the mode yet.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcChannel.Users">
+            <summary>
+            The users in this channel.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcChannel.UsersCount">
+            <summary>
+            The users count in this channel. It is # visible parameter of the IRC server's reply 322 RPL_LIST "channel # visible :topic". See rfc1459#section-6.2  Command responses.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcChannel.#ctor(ChatSharp.IrcClient,ChatSharp.IrcMessage)">
+            <summary>
+            Create channel from IRC server's reply 322 RPL_LIST "channel # visible :topic". See rfc1459#section-6.2  Command responses.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcChannel.Invite(System.String)">
+            <summary>
+            Invites a user to this channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcChannel.Kick(System.String)">
+            <summary>
+            Kicks a user from this channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcChannel.Kick(System.String,System.String)">
+            <summary>
+            Kicks a user from this channel, giving a reason for the kick.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcChannel.Part">
+            <summary>
+            Parts this channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcChannel.Part(System.String)">
+            <summary>
+            Parts this channel, giving a reason for your departure.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcChannel.SendMessage(System.String)">
+            <summary>
+            Sends a PRIVMSG to this channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcChannel.ChangeMode(System.String)">
+            <summary>
+            Set the channel mode.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.IrcClient">
+            <summary>
+            An IRC client.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.Nick(System.String)">
+            <summary>
+            Changes your nick.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.SendMessage(System.String,System.String[])">
+            <summary>
+            Sends a message to one or more destinations (channels or users).
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.SendAction(System.String,System.String[])">
+            <summary>
+            Sends a CTCP action (i.e. "* SirCmpwn waves hello") to one or more destinations.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.SendNotice(System.String,System.String[])">
+            <summary>
+            Sends a NOTICE to one or more destinations (channels or users).
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.PartChannel(System.String)">
+            <summary>
+            Leaves the specified channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.PartChannel(System.String,System.String)">
+            <summary>
+            Leaves the specified channel, giving a reason for your departure.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.JoinChannel(System.String)">
+            <summary>
+            Joins the specified channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.SetTopic(System.String,System.String)">
+            <summary>
+            Sets the topic for the specified channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.GetTopic(System.String)">
+            <summary>
+            Retrieves the topic for the specified channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.KickUser(System.String,System.String)">
+            <summary>
+            Kicks the specified user from the specified channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.KickUser(System.String,System.String,System.String)">
+            <summary>
+            Kicks the specified user from the specified channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.InviteUser(System.String,System.String)">
+            <summary>
+            Invites the specified user to the specified channel.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.WhoIs(System.String)">
+            <summary>
+            Sends a WHOIS query asking for information on the given nick.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.WhoIs(System.String,System.Action{ChatSharp.WhoIs})">
+            <summary>
+            Sends a WHOIS query asking for information on the given nick, and a callback
+            to run when we have received the response.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.WhoIs(ChatSharp.IrcUser,System.Action{ChatSharp.WhoIs})">
+            <summary>
+            Sends a WHOIS query asking for information on the given user, and a callback
+            to run when we have received the response.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.GetMode(System.String)">
+            <summary>
+            Requests the mode of a channel from the server.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.GetMode(System.String,System.Action{ChatSharp.IrcChannel})">
+            <summary>
+            Requests the mode of a channel from the server, and passes it to a callback later.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.ChangeMode(System.String,System.String)">
+            <summary>
+            Sets the mode of a target.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.GetModeList(System.String,System.Char,System.Action{ChatSharp.MaskCollection})">
+            <summary>
+            Gets a collection of masks from a channel by a mode. This can be used, for example,
+            to get a list of bans.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.List(System.Action{ChatSharp.ListState},System.String,System.String)">
+            <summary>
+            List message. https://tools.ietf.org/html/rfc1459#section-4.2.6
+            </summary>
+            <param name="callback">Called when a IRC server's 322 RPL_LIST &lt;channel&gt; # &lt;visible&gt; :&lt;topic&gt;" response to a LIST message.</param>
+            <param name="channels">Comma separated channels list. If  the channels  parameter  is  used,  only the  status of  that channel is displayed.</param>
+            <param name="server">server's address</param>
+        </member>
+        <member name="M:ChatSharp.IrcClient.NSIdentify(System.String)">
+            <summary>
+            NickServ Registering Nicknames. 
+            <para><param name="pass">pass: NickServ password</param></para>
+            </summary>
+            <remarks>http://wiki.foonetic.net/wiki/Nickserv_Commands#Identifying_.26_Retrieving_a_password</remarks>
+        </member>
+        <member name="M:ChatSharp.IrcClient.Names(System.String,System.Action{ChatSharp.NamesState})">
+            <summary>
+            Names message.
+            <para name="channels">channels: Comma separated channels list. If  the channels  parameter  is  used, specifies which channel(s) to return information about if valid.</para>
+            <para name="callback">callback: Called when a IRC server's 353 RPL_NAMREPLY "&lt;channel&gt; :[[@|+]&lt;nick&gt; [[@|+]&lt;nick&gt; [...]]]" response to a NAMES message.</para>
+            </summary>
+            <remarks>https://tools.ietf.org/html/rfc1459#section-4.2.5</remarks>
+        </member>
+        <member name="T:ChatSharp.IrcClient.MessageHandler">
+            <summary>
+            A raw IRC message handler.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.SetHandler(System.String,ChatSharp.IrcClient.MessageHandler)">
+            <summary>
+            Sets a custom handler for an IRC message. This applies to the low level IRC protocol,
+            not for private messages.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.ServerHostname">
+            <summary>
+            The address this client is connected to, or will connect to.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.ServerPort">
+            <summary>
+            The port this client is connected to, or will connect to.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.ServerAddress">
+            <summary>
+            The address this client is connected to, or will connect to. Setting this
+            after the client is connected will not cause a reconnect.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.NetworkStream">
+            <summary>
+            The low level TCP stream for this client.
+            </summary>
+        </member>
+        <member name="F:ChatSharp.IrcClient.Message">
+            <summary>
+            Message of socket disconnect
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.UseSSL">
+            <summary>
+            If true, SSL will be used to connect.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.IgnoreInvalidSSL">
+            <summary>
+            If true, invalid SSL certificates are ignored.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.Encoding">
+            <summary>
+            The character encoding to use for the connection. Defaults to UTF-8.
+            </summary>
+            <value>The encoding.</value>
+        </member>
+        <member name="P:ChatSharp.IrcClient.User">
+            <summary>
+            The user this client is logged in as.
+            </summary>
+            <value>The user.</value>
+        </member>
+        <member name="P:ChatSharp.IrcClient.Channels">
+            <summary>
+            The global channel collection of all channels we know about.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.Settings">
+            <summary>
+            Settings that control the behavior of ChatSharp.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.ServerInfo">
+            <summary>
+            Information about the server we are connected to. Servers may not send us this information,
+            but it's required for ChatSharp to function, so by default this is a guess. Handle
+            IrcClient.ServerInfoRecieved if you'd like to know when it's populated with real information.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.PrivmsgPrefix">
+            <summary>
+            A string to prepend to all PRIVMSGs sent. Many IRC bots prefix their messages with \u200B, to
+            indicate to other bots that you are a bot.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcClient.Users">
+            <summary>
+            A list of users on this network that we are aware of.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.#ctor(System.String,ChatSharp.IrcUser,System.Boolean)">
+            <summary>
+            Creates a new IRC client, but will not connect until ConnectAsync is called.
+            </summary>
+            <param name="serverAddress">Server address including port in the form of "hostname:port".</param>
+            <param name="user">The IRC user to connect as.</param>
+            <param name="useSSL">Connect with SSL if true.</param>
+        </member>
+        <member name="M:ChatSharp.IrcClient.ConnectAsync">
+            <summary>
+            Connects to the IRC server.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.Quit">
+            <summary>
+            Send a QUIT message and disconnect.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.Quit(System.String)">
+            <summary>
+            Send a QUIT message with a reason and disconnect.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.Disconnect(ChatSharp.IrcMessage)">
+            <summary>
+            Socket disconnect
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.SendRawMessage(System.String,System.Object[])">
+            <summary>
+            Send a raw IRC message. Behaves like /quote in most IRC clients.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcClient.SendIrcMessage(ChatSharp.IrcMessage)">
+            <summary>
+            Send a raw IRC message. Behaves like /quote in most IRC clients.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ErrorReply">
+            <summary>
+            IRC Error Replies. rfc1459 6.1.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.Disconnected">
+            <summary>
+            Socket disconnected.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.Error">
+            <summary>
+            Raised for errors.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.MessageError">
+            <summary>
+            Raised for message errors.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.NetworkError">
+            <summary>
+            Raised for socket errors. ChatSharp does not automatically reconnect.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.RawMessageSent">
+            <summary>
+            Occurs when a raw message is sent.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.RawMessageRecieved">
+            <summary>
+            Occurs when a raw message recieved.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.UnhandledMessageRecieved">
+            <summary>
+            Occurs when an unhandled message received.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.NoticeRecieved">
+            <summary>
+            Occurs when a notice recieved.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.HelpRecieved">
+            <summary>
+            Occurs when a help recieved.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.MOTDPartRecieved">
+            <summary>
+            Occurs when the server has sent us part of the MOTD.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.MOTDRecieved">
+            <summary>
+            Occurs when the entire server MOTD has been recieved.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.PrivateMessageRecieved">
+            <summary>
+            Occurs when a private message recieved. This can be a channel OR a user message.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ChannelMessageRecieved">
+            <summary>
+            Occurs when a message is recieved in an IRC channel.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.UserMessageRecieved">
+            <summary>
+            Occurs when a message is recieved from a user.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.NickInUse">
+            <summary>
+            Raised if the nick you've chosen is in use. By default, ChatSharp will pick a
+            random nick to use instead. Set ErronousNickEventArgs.DoNotHandle to prevent this.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ErronousNick">
+            <summary>
+            Raised if the nick you've chosen is erronous.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ModeChanged">
+            <summary>
+            Occurs when a user or channel mode is changed.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.UserJoinedChannel">
+            <summary>
+            Occurs when a user joins a channel.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.UserPartedChannel">
+            <summary>
+            Occurs when a user parts a channel.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ChannelListRecieved">
+            <summary>
+            Occurs when we have received the list of users present in a channel.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ChannelTopicReceived">
+            <summary>
+            Occurs when we have received the topic of a channel.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ChannelTopicWhoTimeReceived">
+            <summary>
+            Occurs when we have received the topic of a channel or when you JOIN, if the channel has a topic.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ConnectionComplete">
+            <summary>
+            Occurs when the IRC connection is established and it is safe to begin interacting with the server.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ServerInfoRecieved">
+            <summary>
+            Occurs when we receive server info (such as max nick length).
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.MyInfoRecieved">
+            <summary>
+            Occurs when we receive RPL_MYINFO server reply.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.UserKicked">
+            <summary>
+            Occurs when a user is kicked.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.Topic">
+            <summary>
+            Occurs when a topic of a channel has changed.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.WhoIsReceived">
+            <summary>
+            Occurs when a WHOIS response is received.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.NickChanged">
+            <summary>
+            Occurs when a user has changed their nick.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.UserQuit">
+            <summary>
+            Occurs when a user has quit.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ListError">
+            <summary>
+            Raised for add channel errors.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ListStart">
+            <summary>
+            IRC server's reply 321 RPL_LISTSTART "Channel :Users  Name". rfc1459#section-4.2.6 Command responses.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ListReply">
+            <summary>
+            IRC server's reply 322 RPL_LIST "channel # visible :topic". rfc1459#section-4.2.6 Command responses.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.ListEnd">
+            <summary>
+            IRC server's reply 323 RPL_LISTEND ":End of /LIST". rfc1459#section-4.2.6 Command responses.
+            </summary>
+        </member>
+        <member name="E:ChatSharp.IrcClient.UserListReply">
+            <summary>
+            IRC server's reply 353 RPL_NAMREPLY "&lt;channel&gt; :[[@|+]&lt;nick&lt; [[@|+]&lt;nick&lt; [...]]]". NAMES message reply. https://tools.ietf.org/html/rfc1459#section-4.2.5
+            </summary>
+        </member>
+        <member name="T:ChatSharp.IrcMessage">
+            <summary>
+            Represents a raw IRC message. This is a low-level construct - PrivateMessage is used
+            to represent messages sent from users.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcMessage.RawMessage">
+            <summary>
+            The unparsed message.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcMessage.Prefix">
+            <summary>
+            The message prefix.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcMessage.Command">
+            <summary>
+            The message command.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcMessage.Parameters">
+            <summary>
+            Additional parameters supplied with the message.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcMessage.#ctor(System.String)">
+            <summary>
+            Initializes and decodes an IRC message, given the raw message from the server.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.IrcProtocolException">
+            <summary>
+            Raised when the server complains about IRC protocol errors.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.IrcUser">
+            <summary>
+            A user connected to IRC.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.#ctor(System.String)">
+            <summary>
+            Constructs an IrcUser given a hostmask or nick.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.#ctor(System.String,System.String)">
+            <summary>
+            Constructs an IrcUser given a nick and user.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Constructs an IRC user given a nick, user, and password.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Constructs an IRC user given a nick, user, password, and real name.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.#ctor(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Constructs an IRC user given a nick, user, password, real name and Nickserv's password.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.Nick">
+            <summary>
+            The user's nick.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.User">
+            <summary>
+            The user's user (an IRC construct, a string that identifies your username).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.Password">
+            <summary>
+            The user's password. Will not be set on anyone but your own user.
+            See https://tools.ietf.org/html/rfc1459#section-4.1.1
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.NSPassword">
+            <summary>
+            The user's password for identify in Nickserv. Will not be set on anyone but your own user.
+            See http://wiki.foonetic.net/wiki/Nickserv_Commands
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.Mode">
+            <summary>
+            The user's mode.
+            </summary>
+            <value>The mode.</value>
+        </member>
+        <member name="P:ChatSharp.IrcUser.RealName">
+            <summary>
+            The user's real name.
+            </summary>
+            <value>The name of the real.</value>
+        </member>
+        <member name="P:ChatSharp.IrcUser.Hostname">
+            <summary>
+            The user's hostname.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.Channels">
+            <summary>
+            Channels this user is present in. Note that this only includes channels you are
+            also present in, even after a successful WHOIS.
+            </summary>
+            <value>The channels.</value>
+        </member>
+        <member name="T:ChatSharp.IrcUser.Modes">
+            <summary>
+            The channel modes class.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.Modes.Mode">
+            <summary>
+            Get user's channel mode.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.IrcUser.ChannelsModes">
+            <summary>
+            The user's channel modes class.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.ChannelsModes.Add(ChatSharp.IrcChannel,System.Nullable{System.Char})">
+            <summary>
+            Add user's channel mode.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.ChannelModes">
+            <summary>
+            The user's channel modes.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.Hostmask">
+            <summary>
+            This user's hostmask (nick!user@host).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.IrcUser.WhoIs">
+            <summary>
+            The results of an IRC WHOIS query. Depending on the capabilities of the server you're connected to,
+            some of these fields may be null.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.Match(System.String)">
+            <summary>
+            Returns true if the user matches the given mask. Can be used to check if a ban applies
+            to this user, for example.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.Match(System.String,System.String)">
+            <summary>
+            Checks if the given hostmask matches the given mask.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.Equals(ChatSharp.IrcUser)">
+            <summary>
+            True if this user is equal to another (compares hostmasks).
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.Equals(System.Object)">
+            <summary>
+            True if this user is equal to another (compares hostmasks).
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.GetHashCode">
+            <summary>
+            Returns the hash code of the user's hostmask.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.IrcUser.ToString">
+            <summary>
+            Returns the user's hostmask.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.ListState">
+            <summary>
+            The results of an IRC LIST query.  See https://tools.ietf.org/html/rfc1459#section-4.2.6 for details
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ListState.Channel">
+            <summary>
+            Channel, created from 322 RPL_LIST "channel # visible :topic" LIST message reply.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ListState.Message">
+            <summary>
+            IRC server's 323 RPL_LISTEND ":End of /LIST" reply.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ListState.Channels">
+            <summary>
+            Collection of all channels as reply of the LIST message. See https://tools.ietf.org/html/rfc1459#section-4.2.6
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ListState.#ctor(ChatSharp.ChannelCollection)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ListState.#ctor(ChatSharp.IrcMessage)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:ChatSharp.Mask">
+            <summary>
+            A mask that can be used to match against a user's hostmask in a channel list,
+            such as banned users.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Mask.Creator">
+            <summary>
+            The user who created this mask.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.Mask.CreationTime">
+            <summary>
+            The time this mask was added to the channel list.
+            </summary>
+            <value>The creation time.</value>
+        </member>
+        <member name="P:ChatSharp.Mask.Value">
+            <summary>
+            The mask string.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.MaskCollection">
+            <summary>
+            A collection of masks from a channel list.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.MaskCollection.Add(ChatSharp.Mask)">
+            <summary>
+            Adds a mask to the collection. This only modifies the local mask list, changes are
+            not flushed to the server.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.MaskCollection.Remove(ChatSharp.Mask)">
+            <summary>
+            Removes a mask from the collection. This only modifies the local mask list, changes are
+            not flushed to the server.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.MaskCollection.Contains(ChatSharp.Mask)">
+            <summary>
+            True if this collection includes the given mask.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.MaskCollection.ContainsMask(ChatSharp.Mask)">
+            <summary>
+            True if this collection includes any masks that are equal to the given mask.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.MaskCollection.Item(System.Int32)">
+            <summary>
+            Returns the mask at the requested index.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.MaskCollection.ContainsMatch(ChatSharp.IrcUser)">
+            <summary>
+            True if any mask matches the given user.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.MaskCollection.GetMatch(ChatSharp.IrcUser)">
+            <summary>
+            Returns the mask that matches the given user.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.MaskCollection.GetEnumerator">
+            <summary>
+            Enumerates over the masks in this collection.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.NamesState">
+            <summary>
+            The results of an IRC NAMES query.  See https://tools.ietf.org/html/rfc1459#section-4.2.5 for details
+            </summary>
+        </member>
+        <member name="P:ChatSharp.NamesState.User">
+            <summary>
+            User, created from 353 RPL_NAMREPLY "&lt;channel&gt; :[[@|+]&lt;nick&gt; [[@|+]&lt;nick&gt; [...]]]" response to a NAMES message.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.NamesState.Channel">
+            <summary>
+            Channel where user has added to.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.NamesState.Message">
+            <summary>
+            IRC server's 366 RPL_ENDOFNAMES "&lt;channel&gt; :End of /NAMES list" reply.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.NamesState.Users">
+            <summary>
+            A list of users on this network that we are aware of. Same as IrcClient.Users
+            </summary>
+        </member>
+        <member name="M:ChatSharp.NamesState.#ctor(ChatSharp.UserPool)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:ChatSharp.PrivateMessage">
+            <summary>
+            Represents an IRC message sent from user-to-user or user-to-channel.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.PrivateMessage.User">
+            <summary>
+            The user that sent this message.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.PrivateMessage.Message">
+            <summary>
+            The message text.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.PrivateMessage.Source">
+            <summary>
+            The source of the message (a nick or a channel name).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.PrivateMessage.IsChannelMessage">
+            <summary>
+            True if this message was posted to a channel.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.ServerInfo">
+            <summary>
+            Information provided by the server about its featureset.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ServerInfo.GetModeForPrefix(System.Char)">
+            <summary>
+            Gets the mode for a given channel user list prefix.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.ServerInfo.GetPrefixForMode(System.Nullable{System.Char})">
+            <summary>
+            Gets the user list prefix for a given channel mode.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.IsGuess">
+            <summary>
+            ChatSharp makes some assumptions about what the server supports in order to function properly.
+            If it has not recieved a 005 message giving it accurate information, this value will be true.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.Prefixes">
+            <summary>
+            Nick prefixes for special modes in channel user lists
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ChannelTypes">
+            <summary>
+            Supported channel prefixes (i.e. '#')
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.SupportedChannelModes">
+            <summary>
+            Channel modes supported by this server
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MaxModesPerCommand">
+            <summary>
+            The maximum number of MODE changes possible with a single command
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MaxChannelsPerUser">
+            <summary>
+            The maximum number of channels a user may join
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MaxNickLength">
+            <summary>
+            Maximum length of user nicks on this server
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ModeListLimits">
+            <summary>
+            The limits imposed on list modes, such as +b
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.NetworkName">
+            <summary>
+            The name of the network, as identified by the server
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.SupportsBanExceptions">
+            <summary>
+            Set to ban exception character if this server supports ban exceptions
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.SupportsInviteExceptions">
+            <summary>
+            Set to invite exception character if this server supports invite exceptions
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MaxTopicLength">
+            <summary>
+            Set to maximum topic length for this server
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MaxKickCommentLength">
+            <summary>
+            Set to the maximum length of a KICK comment
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MaxChannelNameLength">
+            <summary>
+            Set to the maximum length of a channel name
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MaxAwayLength">
+            <summary>
+            Set to the maximum length of an away message
+            </summary>
+        </member>
+        <member name="T:ChatSharp.ServerInfo.MyInfo">
+            <summary>
+            RPL_MYINFO server reply
+            </summary>
+            <remarks>See RFC2812 5.1 Command responses https://tools.ietf.org/html/rfc2812#section-5.1 for details</remarks>
+        </member>
+        <member name="M:ChatSharp.ServerInfo.MyInfo.#ctor(ChatSharp.IrcMessage)">
+            <summary>
+            Save of the RPL_MYINFO server reply
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MyInfo.Servername">
+            <summary>
+            Server name
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MyInfo.Version">
+            <summary>
+            version
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MyInfo.AvailableUserModes">
+            <summary>
+            Available user modes that affect either how the client is seen by others or what 'extra' messages the client is sent.
+            </summary>
+            <remarks>See  RFC1459 4.2.3.2 User modes https://tools.ietf.org/html/rfc1459#section-4.2.3.2
+            and RFC2812 3.1.5 User mode message https://tools.ietf.org/html/rfc2812#section-3.1.5 for more details</remarks>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.MyInfo.AvailableChannelModes">
+            <summary>
+            Available channel modes that channel operators may change the characteristics of `their' channel.
+            It is also required that servers be able to change channel modes so that channel operators may be created.
+            </summary>
+            <remarks>See RFC1459 4.2.3.1 Channel modes https://tools.ietf.org/html/rfc1459#section-4.2.3.1 for details</remarks>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.myInfo">
+            <summary>
+            RPL_MYINFO server reply
+            </summary>
+        </member>
+        <member name="T:ChatSharp.ServerInfo.ChannelModes">
+            <summary>
+            Modes a server supports that are applicable to channels.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ChannelModes.ChannelLists">
+            <summary>
+            Modes that are used for lists (i.e. bans).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ChannelModes.ChannelUserModes">
+            <summary>
+            Modes that can be set on a user of a channel (i.e. ops, voice, etc).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ChannelModes.ParameterizedSettings">
+            <summary>
+            Modes that take a parameter (i.e. +k).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ChannelModes.OptionallyParameterizedSettings">
+            <summary>
+            Modes that take an optional parameter (i.e. +f).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ChannelModes.Settings">
+            <summary>
+            Modes that change channel settings.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.ServerInfo.ModeListLimit">
+            <summary>
+            Limits imposed on channel lists, such as the maximum bans per channel.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ModeListLimit.Mode">
+            <summary>
+            The mode character this applies to (i.e. 'b')
+            </summary>
+        </member>
+        <member name="P:ChatSharp.ServerInfo.ModeListLimit.Maximum">
+            <summary>
+            The maximum entries for this list.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.WhoIs">
+            <summary>
+            The results of an IRC WHOIS query. Depending on the capabilities of the server you're connected to,
+            some of these fields may be null.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.User">
+            <summary>
+            A fully populated IrcUser, including hostname, real name, etc.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.Channels">
+            <summary>
+            A list of channels this user is joined to. Depending on the IRC network you connect to,
+            this may omit channels that you are not present in.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.IrcOp">
+            <summary>
+            If true, the whois'd user is a network operator.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.RegNick">
+            <summary>
+            If true, the whois'd user is using a registered nickname. See 307 RPL_WHOISREGNICK command response.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.NickTraces">
+            <summary>
+            The user's nick traces.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.SecondsIdle">
+            <summary>
+            Seconds since this user last interacted with IRC.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.Server">
+            <summary>
+            The server this user is connected to.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.ServerInfo">
+            <summary>
+            Additional information about the server this user is connected to.
+            </summary>
+            <value>The server info.</value>
+        </member>
+        <member name="P:ChatSharp.WhoIs.LoggedInAs">
+            <summary>
+            The nickserv account this user is logged into, if applicable.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.Location">
+            <summary>
+            Users location.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.error">
+            <summary>
+            The error of an IRC WHOIS query. For example error = "401" ERR_NOSUCHNICK "nickname :No such nick/channel"
+            </summary>
+        </member>
+        <member name="P:ChatSharp.WhoIs.Actually">
+            <summary>
+            RPL_WHOISACTUALLY &lt;source&gt; 338 &lt;target&gt; &lt;nick&gt; &lt;user&gt;@&lt;host&gt; &lt;ip&gt; :Actual user@host, Actual IP
+            </summary>
+            <remarks>Use irc.efnet.org IRC server for testing</remarks>
+        </member>
+        <member name="P:ChatSharp.WhoIs.Other">
+            <summary>
+            A list of other WhoIs handlers
+            </summary>
+            <remarks>Example: :wilhelm.freenode.net 671 blink2 dvim :is using a secure connection</remarks>
+        </member>
+        <member name="T:ChatSharp.KickEventArgs">
+            <summary>
+            Raised when a user (possibly yourself) is kicked from a channel.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.KickEventArgs.Channel">
+            <summary>
+            The channel the user was kicked from.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.KickEventArgs.Kicker">
+            <summary>
+            The user who issued the kick.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.KickEventArgs.Kicked">
+            <summary>
+            The user that was kicked.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.KickEventArgs.Reason">
+            <summary>
+            The reason provided for the kick (may be null).
+            </summary>
+        </member>
+        <member name="T:ChatSharp.UserPool">
+            <summary>
+            A pool of users the client is aware of on the network. IrcUser objects in this
+            pool are shared across the entire library (e.g. a PrivateMessage will reuse an
+            IrcUser object from this poll).
+            </summary>
+        </member>
+        <member name="P:ChatSharp.UserPool.Item(System.String)">
+            <summary>
+            Gets the IrcUser with the specified nick.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.UserPool.ContainsMask(System.String)">
+            <summary>
+            Returns true if any user in the pool matches this mask. Note that not all users
+            in the user pool will be fully populated, even if you set ClientSettings.WhoIsOnJoin 
+            to true (it takes time to whois everyone in your channels).
+            </summary>
+        </member>
+        <member name="M:ChatSharp.UserPool.Contains(System.String)">
+            <summary>
+            Returns true if any user in the pool has the specified nick.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.UserPool.Contains(ChatSharp.IrcUser)">
+            <summary>
+            Returns true if the given IrcUser is in the pool.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.UserPool.GetEnumerator">
+            <summary>
+            Enumerates over the users in this collection.
+            </summary>
+        </member>
+        <member name="T:ChatSharp.UserPoolView">
+            <summary>
+            A filtered view of the user pool.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.UserPoolView.Item(System.String)">
+            <summary>
+            Gets the IrcUser with the specified nick.
+            </summary>
+        </member>
+        <member name="P:ChatSharp.UserPoolView.Item(System.Int32)">
+            <summary>
+            Gets the IrcUser with the specified index.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.UserPoolView.ContainsMask(System.String)">
+            <summary>
+            Returns true if any user in the pool matches this mask. Note that not all users
+            in the user pool will be fully populated, even if you set ClientSettings.WhoIsOnJoin 
+            to true (it takes time to whois everyone in your channels).
+            </summary>
+        </member>
+        <member name="M:ChatSharp.UserPoolView.Contains(System.String)">
+            <summary>
+            Returns true if any user in the pool has the specified nick.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.UserPoolView.Contains(ChatSharp.IrcUser)">
+            <summary>
+            Returns true if the given IrcUser is in the pool.
+            </summary>
+        </member>
+        <member name="M:ChatSharp.UserPoolView.GetEnumerator">
+            <summary>
+            Enumerates over the users in this collection (with the filter applied).
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -7,6 +7,10 @@ namespace SignalRChat
 {
     public partial class Default : System.Web.UI.Page
     {
+        public bool IsIRCChannelOrPrivate()
+        { return false; }
+        public bool IsIRCServer() { return Request.Params["IRCServer"] == null ? false : true;}
+        public bool IsSignalRChat() { return Request.Params["chatRoom"] == null ? false : true; }
         protected void Page_Load(object sender, EventArgs e)
         {
             //http://www.interestprograms.ru/sources/aspnet/program-code-webforms
@@ -25,7 +29,7 @@ namespace SignalRChat
             // stored in view state.                      
             if (!IsPostBack)
             {
-                SqlDataSourceRooms.SelectCommand = "select RoomName, RoomNameCount from dbo.ViewRoomList" + strWhere + " order by RoomNameCount desc, RoomName";
+//                SqlDataSourceRooms.SelectCommand = "select RoomName, RoomNameCount from dbo.ViewRoomLists" + strWhere + " order by RoomNameCount desc, RoomName";
             }
 
         }

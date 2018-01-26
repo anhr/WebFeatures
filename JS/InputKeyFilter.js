@@ -2,8 +2,9 @@
  * A Javascript object of the cross-browser filter of value of the text input element on your web page using JavaScript language. You can filter the value as an integer number, a float number etc. , or write a custom filter, such as a phone number filter.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/InputKeyFilter
+ * example: http://anhr.github.io/InputKeyFilter/
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
  *
@@ -165,13 +166,15 @@ var inputKeyFilter = {
 	}
 	
 	//http://javascript.ru/forum/dom-window/7626-vsplyvayushhaya-podskazka.html
-	, TextAdd: function(text, elementInput, className){
+	, TextAdd: function(text, elementInput, className, noBeep){
 //consoleLog("inputKeyFilter.TextAdd(" + text + ") inputKeyFilter.focusAgain = " + inputKeyFilter.focusAgain);
 		if(isIE && inputKeyFilter.focusAgain)
 			return;
 		if((typeof className == 'undefined') || (className == null))
 			className = "uparrowdivred";
 		inputKeyFilter.CreateTooltip(text, elementInput, className);
+		if (noBeep)
+		    return;
 		beep();
 	}
 

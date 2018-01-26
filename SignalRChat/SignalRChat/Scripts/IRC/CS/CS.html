@@ -1,0 +1,19 @@
+﻿<span onclick="javascript: g_IRC.CS.onclick(event)" class="sendButton CSClose">X</span>
+<a href="http://wiki.foonetic.net/wiki/ChanServ_Commands" target="_blank" class="sendButton">?</a>
+<h3 class="CSHeader" align="center"></h3>
+<div class="CSDescription"></div>
+<hr>
+<label class="IRCChannelNameLabel"></label>
+    <!--http://jsfiddle.net/nwH8A/-->
+    <input list="channels" class="CSChannel" onfocus="javascript: g_IRC.CS.onfocusChannel(event)">
+    <datalist id="channels"></datalist>
+<hr>
+<div class="CSPassBlock" style="display:none">
+    <div><label class="CSPassLabel"></label><input type="password" class="CSPass" /></div>
+    <div><label class="CSPassLabel2"></label><input type="password" class="CSPass2" /></div>
+</div>
+<div class="CSRegisterDescriptionBlock" style="display:none"><label class="CSRegisterDescriptionLabel"></label><input class="CSRegisterDescription" /></div>
+<div class="CSRegisterParamsBlock" style="display:none"><label class="CSRegisterParamsLabel"></label><input class="CSRegisterParams" /></div>
+<input type="button" class="CSRegister" onclick="javascript: g_IRC.CS.onclickRegister()" />
+<hr>
+<input type="button" class="CSDrop" onclick="javascript: g_IRC.CS.onclickDrop()" />

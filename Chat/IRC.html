@@ -1,0 +1,90 @@
+﻿<b id="IRCChatHeader"></b>
+<!--IRC Options-->
+<div id="IRCOptions" style="overflow:auto">
+    <table style="width:auto">
+        <tbody>
+            <!-- IRC servet name-->
+            <tr>
+                <td class="col1" style="border:0px" align="right"><label id="IRCURLLabel" for="IRCURL"></label></td>
+                <td class="col2" style="border:0px"><input type="url" id="IRCURL" /></td>
+            </tr>
+            <!--IRC Servers List-->
+            <tr>
+                <td class="col1" style="border:0px" align="right">
+                    <a href="#" onclick="javascript: return onclickIRCServersList()">
+                        <span id="branchIRCServersList">▶</span>
+                        <span id="IRCServersListHeader"></span>
+                    </a>
+                </td>
+                <td class="col2" style="border:0px">
+                    <!--Не добавлять символы в тело элемента IRCServersList потому что это создаст лиший доченрний элемент. Смотри onclickIRCServersList() -->
+                    <div id="IRCServersList" style="display:none;margin-left:5px;margin-bottom:5px;"></div>
+                </td>
+            </tr>
+            <!-- nick -->
+            <tr>
+                <td class="col1" style="border:0px" align="right"><label id="IRCNicknameLabel" for="IRCNickname"></label></td>
+                <td class="col2" style="border:0px"><input id="IRCNickname" /></td>
+            </tr>
+            <!--Additionally-->
+            <tr>
+                <td class="col1" style="border:0px" align="right">
+                    <a href="#" onclick="javascript: return onclickIRCAdditionally()">
+                        <span id="branchIRCAdditionally">▶</span>
+                        <span id="IRCHeaderAdditionally"></span>
+                    </a>
+                </td>
+                <td class="col2" style="border:0px">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="IRCTableAdditionally" class="b-toggle">
+        <table style="width:auto;">
+            <tbody>
+                <!--IRCPort-->
+                <tr>
+                    <td class="col1" style="border:0px" align="right"><label id="IRCPortLabel" for="IRCPort"></label></td>
+                    <td class="col2" style="border:0px">
+                        <input type="number" id="IRCPort" />
+                        <input type="button" id="IRCPortDefault" onclick="javascript: onclickIRCPortDefault()" />
+                    </td>
+                </tr>
+                <!--IRCGroupName-->
+                <tr>
+                    <td class="col1" style="border:0px" align="right"><label id="IRCGroupNameLabel" for="IRCGroupName"></label></td>
+                    <td class="col2" style="border:0px"><input id="IRCGroupName" /></td>
+                </tr>
+                <!--IRCServerName-->
+                <tr>
+                    <td class="col1" style="border:0px" align="right"><label id="IRCServerNameLabel" for="IRCServerName"></label></td>
+                    <td class="col2" style="border:0px"><input id="IRCServerName" /></td>
+                </tr>
+                <!--<hr>-->
+                <!--IRCFullName-->
+                <tr>
+                    <td class="col1" style="border:0px" align="right"><label id="IRCFullNameLabel" for="IRCFullName"></label></td>
+                    <td class="col2" style="border:0px"><input id="IRCFullName" /></td>
+                </tr>
+                <!--IRCRealName-->
+                <tr>
+                    <td class="col1" style="border:0px" align="right"><label id="IRCRealNameLabel" for="IRCRealName"></label></td>
+                    <td class="col2" style="border:0px"><input id="IRCRealName" /></td>
+                </tr>
+                <!--IRCPass-->
+                <tr>
+                    <td class="col1" style="border:0px" align="right"><label id="IRCPassLabel" for="IRCPass"></label></td>
+                    <td class="col2" style="border:0px"><input type="password" id="IRCPass" onkeyup="javascript: onkeyupIRCPass()" /></td>
+                </tr>
+                <!--IRCRememberPass-->
+                <tr>
+                    <td class="col1" style="border:0px" align="right"><input type="checkbox" id="IRCRememberPass" onclick="javascript: onclickIRCRememberPass()" /></td>
+                    <td class="col2" style="border:0px"><label id="IRCRememberPassLabel" for="IRCRememberPass"></label></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div align="center"><input type="button" id="IRCToggle" onclick="javascript: g_IRC.ConnectToggle()" value="↯" /></div><!--⌁-->
+    <div id="IRCConnectResponse" style="text-align:left"></div>
+    <div id="IRCConnectError" style="text-align:left"></div>
+</div>

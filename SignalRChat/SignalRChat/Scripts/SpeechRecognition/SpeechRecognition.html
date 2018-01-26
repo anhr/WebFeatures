@@ -1,0 +1,13 @@
+﻿<span onclick="javascript: speechRecognition.init()" id="SRClose" class="sendButton">X</span>
+<!--<p align="center"><b id="SRHeader"></b></p>-->
+<div>
+    <input type="checkbox" onclick="speechRecognition.onclickSpeechRecognition(event)" id="checkboxSR">
+    <label id="checkboxSRLabel" for="checkboxSR"></label>
+</div>
+<div id="SRSettings" style="display:none"><!--style="visibility:";-->
+    <label id="SRLanguageLabel" for="SRLanguage"></label>
+    <select id="SRLanguage" onchange="javascript: speechRecognition.onchangeLanguage(event)"></select>
+    <span class="treeView" onclick="javascript: speechRecognition.onclickLanguageHelp()">?</span>
+    <span id="SRLanguageHelp" style="display:none"></span>
+    <div id="SRHelp"></div>
+</div>

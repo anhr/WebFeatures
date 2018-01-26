@@ -2,7 +2,7 @@
  * Common Javascript code.
  * Author: Andrej Hristoliubov
  * email: anhr@mail.ru
- * About me: http://anhr.ucoz.net/AboutMe/
+ * About me: http://anhr.github.io/AboutMe/
  * source: https://github.com/anhr/WebFeatures
  * Licences: GPL, The MIT License (MIT)
  * Copyright: (c) 2015 Andrej Hristoliubov
@@ -22,7 +22,7 @@ function ReceiveCamera(user, options) {
         var cameras = new Cameras(options.fileTransfers);
         loadScript("Scripts/WebRTC/Media.js", function () {
             ReceiveFile(user, options, {
-                header: '📹 ' + '<span id="header">' + lang.videoFrom + '</span>'//'Camera of '
+                header: '📹 ' + '<span id="header">' + lang.videoFrom + '</span>'//'Open camera from '//'Turn on camera from '
                 , headerEnd: elementMediaHeader(lang.viewersNumber)//'Viewers number'
                 , informerFileTransfers: 'informerCameraTransfers'
                 , fileTransfers: options.fileTransfers
@@ -114,13 +114,13 @@ function ReceiveCamera(user, options) {
                     if (isBranchExpanded(elementToggle)) {//stop receive stream
                         consoleLog('stop receive stream. this.ID: ' + this.ID);
                         fileTransfer.stopRecording();
-                        header = lang.videoFrom;//'Camera of '
+                        header = lang.videoFrom;//'Open camera from '//'Turn on camera from '
                         message = lang.broadcastingCanceled;//'The broadcasting canceled.'
                         fileTransfer.disconnect();
                     } else {
                         consoleLog('Start receive stream. this.ID: ' + this.ID);
 
-                        header = lang.cancelStream;//'Cancel broadcast from '
+                        header = lang.cancelStream;//'Cancel stream receiving'//'Cancel Broadcast from '
                         message = lang.connectionWaiting;//'Connection waiting.'
 
                         //Peer connection
@@ -133,7 +133,8 @@ function ReceiveCamera(user, options) {
                         });
                     }
                     elementBlock.querySelector('#header').innerText = header;
-                    elementBlock.querySelector('#Message').innerText = message;
+//                    elementBlock.querySelector('#Message').innerText = message;not compatible with Safari
+                    elementBlock.querySelector('.Message').innerText = message;
                     elementBlock.querySelector('#wait').style.display = 'inline';
                     onbranchelement(elementToggle);
                 }
