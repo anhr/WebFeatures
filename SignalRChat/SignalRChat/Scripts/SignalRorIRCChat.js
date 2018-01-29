@@ -99,23 +99,14 @@ function SignalRorIRCChatInit() {
     //SpeechRecognition
     document.getElementById('speechRecognitionSetupButton').title = lang.speechRecognitionSetup;//Speech recognition setup
     document.getElementById('speechRecognitionButton').title = lang.speechRecognition;//Speech Recognition
-    var cookieSpeechRecognition = get_cookie('speechRecognition');
-    var speechRecognition = 'SR';
-    if (
-            (get_cookie(speechRecognition, 'true') == 'true')//При первом открытии страницы всегда появляется кнопка speechRecognition
-            || (
-                (cookieSpeechRecognition != '')//checkbox в диалоге SpeechRecognition уже нажиалася
-                && (JSON.parse(cookieSpeechRecognition).recognition == true)//птичка в checkbox в диалоге SpeechRecognition
-                )
-        ) {
+    if (isSpeechRecognition('SR')) {
         var elSpeechRecognition = document.getElementById('speechRecognitionButton');
         elSpeechRecognition.style.width = elSpeechRecognition.scrollWidth + 'px';
-        /*
+        /*это делаю в translatorSend.init() потому что тут еще не создан элемент translatorSend
         var elSpeechRecognitionTranslate = document.getElementById('speechRecognitionTranslate');
         elSpeechRecognitionTranslate.style.width = elSpeechRecognitionTranslate.scrollWidth + 'px';
         */
-    } 
-    SetCookie(speechRecognition, 'false');
+    }
 
     //Translator
     document.getElementById('translatorButton').title = lang.translator;//Translator
@@ -170,6 +161,20 @@ function SignalRorIRCChatInit() {
     setUsersWidth();
 }
 SignalRorIRCChatInit();
+function isSpeechRecognition(speechRecognition) {
+    var cookieSpeechRecognition = get_cookie('speechRecognition');
+    var res = (cookieSpeechRecognition == '')//checkbox в диалоге SpeechRecognition еще не нажималася. Значит по умолчанию надо показать кнопку распознавания звука
+                || (JSON.parse(cookieSpeechRecognition).recognition == true);//птичка в checkbox в диалоге SpeechRecognition
+/*
+    var res = (get_cookie(speechRecognition, 'true') == 'true')//При первом открытии страницы всегда появляется кнопка speechRecognition
+            || (
+                (cookieSpeechRecognition != '')//checkbox в диалоге SpeechRecognition уже нажималася
+                && (JSON.parse(cookieSpeechRecognition).recognition == true)//птичка в checkbox в диалоге SpeechRecognition
+                );
+    SetCookie(speechRecognition, 'false');
+*/
+    return res;
+}
 function onclickEraseMessages(event) { document.getElementById('messages').innerHTML = ''; }
 function getToolbar() { return document.getElementById("cke_1_top"); }
 function getToolbars() { return CKEDITOR.instances.editor.toolbox.toolbars; }
@@ -347,6 +352,23 @@ function microphonesCount() {
     var microphonesCount = document.getElementsByName("microphone").length;
     document.getElementById("microphonesCount").innerHTML = microphonesCount;
     return microphonesCount;
+}
+function browserSettings() {
+    if (DetectRTC.browser.isChrome) {
+        if (DetectRTC.isMobileDevice)
+            return '\n\r' + lang.permissionMediaChromeMobile;//'For permission to media devices open the Chrome settings and go to "Site settings"'
+        return '\n\r' + lang.permissionMediaChrome;//'For permission to media devices open the Chrome settings and go to Privacy/Content settings'
+    }
+    if (DetectRTC.browser.isOpera) {
+        if (DetectRTC.isMobileDevice)
+            return '\n\r' + lang.permissionMediaOperaMobile;//'For permission to media devices open the Opera settings and go to "Website Settings"'
+        return '\n\r' + lang.permissionMediaOpera;//'For permission to media devices open the Opera settings and go to Websites'
+    }
+    if (DetectRTC.browser.isFirefox) {
+        return '';//ничего не нашел
+    }
+    consoleError('browserSettings() faled! Unknown browser');
+    return '';
 }
 function toggleSendMenu() {
     consoleLog('toggleSendMenu()');

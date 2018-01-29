@@ -260,24 +260,6 @@ function SendStream(options) {
     SendDataStream(options);
 }
 
-function browserSettings() {
-    if (DetectRTC.browser.isChrome) {
-        if (DetectRTC.isMobileDevice)
-            return '\n\r' + lang.permissionMediaChromeMobile;//'For permission to media devices open the Chrome settings and go to "Site settings"'
-        return '\n\r' + lang.permissionMediaChrome;//'For permission to media devices open the Chrome settings and go to Privacy/Content settings'
-    }
-    if (DetectRTC.browser.isOpera) {
-        if (DetectRTC.isMobileDevice)
-            return '\n\r' + lang.permissionMediaOperaMobile;//'For permission to media devices open the Opera settings and go to "Website Settings"'
-        return '\n\r' + lang.permissionMediaOpera;//'For permission to media devices open the Opera settings and go to Websites'
-    }
-    if (DetectRTC.browser.isFirefox) {
-        return '';//ничего не нашел
-    }
-    consoleError('browserSettings() faled! Unknown browser');
-    return ''; 
-}
-
 function createSoundMeter(fileTransfer) {
     var MediaStream = fileTransfer.stream;
     if (typeof MediaStream == 'undefined') {

@@ -79,7 +79,7 @@ translatorSend = {
         this.elTranslator.style.display = translatorDisplay;
 
         //speechRecognition button
-        if (JSON.parse(get_cookie('speechRecognition')).recognition) {
+        if (isSpeechRecognition('SRTranslator')) {
             var elSpeechRecognitionTranslate = this.elTranslator.querySelector("#speechRecognitionTranslate");
             elSpeechRecognitionTranslate.style.width = elSpeechRecognitionTranslate.scrollWidth + 'px';
         }

@@ -22,6 +22,9 @@ speechRecognition = {
     speechRecognition: 'speechRecognition',
     elSpeechRecognition: document.getElementById('speechRecognitionButton'),
     speechRecognitionTest: function () {
+        if (DetectRTC.browser.isOpera) {
+            alert(lang.SRSetup.noSpeechRecognitionOpera)//Currently January 2018 your Opera browser does not support Speech Recognition. Try Google Chrome.
+        }
         if ((typeof SpeechRecognition == 'undefined') && (typeof webkitSpeechRecognition == 'undefined')) {
             consoleError('SpeechRecognition: ' + typeof SpeechRecognition);
             alert(lang.SRSetup.noSpeechRecognition)//Your browser does not support Speech Recognition. Try Google Chrome.
@@ -114,9 +117,9 @@ speechRecognition = {
     isRecognition: function () {
         var recognition = this.getCookie().recognition;
         if (recognition == undefined)
-            return false;//default is not recognition. При первом открытии страницы появляется кнопка speechRecognition
+            return true;//default is recognition. При первом открытии страницы появляется кнопка speechRecognition
         //если пользователь не нажал кнопку speechRecognition при первом открытии странцы,
-        //  то при повторном открытии станицы кнопка speechRecognition исчезает
+        //  то при повторном открытии станицы кнопка speechRecognition остается
         //если пользователь нажал кнопку speechRecognition при первом открытии странцы,
         //  то this.getCookie().recognition = true, и при повторном открытии станицы кнопка speechRecognition остается видимой
         return recognition;
@@ -124,7 +127,7 @@ speechRecognition = {
     toggle: function (el) {
         loadScript("./Scripts/SpeechRecognition/lang/" + getLanguageCode() + ".js", function () {
             if (speechRecognition.status == 'start') {
-                speechRecognition.speechRecognitionIn(false, el);//stop speech recognition
+                speechRecognitionIn(false, el);//stop speech recognition
                 delete speechRecognition.status;
 //                consoleError('speechRecognition start twice');
                 consoleLog('speechRecognition stop');
@@ -137,13 +140,13 @@ speechRecognition = {
 //            var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
             var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
 
-            var recognition = new SpeechRecognition();
+            speechRecognition.recognition = new SpeechRecognition();
 /*
             var phrase = 'Ok bonalink';
             var grammar = '#JSGF V1.0; grammar phrase; public <phrase> = ' + phrase + ';';
             var speechRecognitionList = new SpeechGrammarList();
             speechRecognitionList.addFromString(grammar, 1);
-            recognition.grammars = speechRecognitionList;
+            speechRecognition.recognition.grammars = speechRecognitionList;
 */
             //language
             var selectedIndex = speechRecognition.getSelectedLanguage(),
@@ -155,15 +158,15 @@ speechRecognition = {
                     break;
                 }
             }
-            recognition.lang = language;//getLanguageCode();//'en-US';
+            speechRecognition.recognition.lang = language;//getLanguageCode();//'en-US';
+            speechRecognition.recognition.continuous = false;//true - После паузы в речи больше ничего не распознает но распозгавание не отключается.
+            speechRecognition.recognition.interimResults = false;//Контроллирует, следует ли возвращать промежуточные результаты (true) или нет (false.) Промежуточные результаты это результаты которые еще не завершены ( например SpeechRecognitionResult.isFinal свойство ложно.)
+            speechRecognition.recognition.maxAlternatives = 1;
 
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.start();
+            speechRecognition.recognition.start();
             speechRecognition.status = 'start';
 
-            recognition.onresult = function (event) {
+            speechRecognition.recognition.onresult = function (event) {
                 // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
                 // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
                 // It has a getter so it can be accessed like an array
@@ -180,171 +183,194 @@ speechRecognition = {
                     var elText = el.parentElement.querySelector('#text');
                     if (elText == null) {
                         var body = CKEDITOR.instances.editor.document.getBody();
-                        body.setText(body.getText() + ' ' + speechResult);
+                        body.setText(body.getText() + ' ' +
+                            speechResult);
                     } else elText.value +=  ' ' + speechResult;
                 }
                 consoleLog('Confidence: ' + event.results[0][0].confidence);
             }
 
-            recognition.onspeechend = function () {
-                recognition.stop();
+            speechRecognition.recognition.onspeechend = function () {
+                speechRecognition.recognition.stop();
                 speechRecognition.status = 'speechend';
                 consoleLog('recognition.onspeechend()');
-                speechRecognition.speechRecognitionIn(false, el);
+                speechRecognitionIn(false, el);
             }
-
-            recognition.onerror = function (event) {
-                recognition.stop();
+            //https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionError/error
+            speechRecognition.recognition.onerror = function (event) {
+                speechRecognition.recognition.stop();
                 speechRecognition.status = 'error';
-                consoleError('Error occurred in recognition: ' + event.error);
-                speechRecognition.speechRecognitionIn(false, el);
+                consoleError('Error occurred in speech recognition: ' + event.error);
+                var message = '';
+                switch (event.error) {
+                    case "no-speech":
+                        consoleLog('Error occurred in speech recognition: ' + event.error);
+                        //message = lang.SRSetup.errors.noSpeech;//No speech was detected.
+                        break;
+                    case "aborted":
+                        message = lang.SRSetup.errors.aborted;//Speech input was aborted in some manner, perhaps by some user-agent-specific behavior like a button the user can press to cancel speech input.
+                        break;
+                    case "audio-capture":
+                        message = lang.SRSetup.errors.audioCapture;//Audio capture failed.
+                        break;
+                    case "network":
+                        message = lang.SRSetup.errors.network;//Network communication required for completing the recognition failed.
+                        break;
+                    case "not-allowed":
+                        message = lang.SRSetup.errors.notAllowed;//Your browser disallowed any speech input from occurring for reasons of security, privacy or user preference.\n Probably, your microphone is not allowed for our site.
+                        if (DetectRTC.browser.isChrome)
+                            message += '\n' + lang.SRSetup.errors.allowMicChrome;//Open chrome://settings/ page,\nclick Advanced,\ngo to the "Privacy and security" section,\nclick "Content settings",\nclick "Microphone",\nremove our site from Block list.
+                        break;
+                    case "service-not-allowed":
+                        message = lang.SRSetup.errors.serviceNotAllowed;//Your browser disallowed the requested speech recognition service, either because your browser doesn't support it or because of reasons of security, privacy or user preference. In this case it would allow another more suitable speech recognition service to be used instead.
+                        break;
+                    case "bad-grammar":
+                        message = lang.SRSetup.errors.badGrammar;//There was an error in the speech recognition grammar or semantic tags, or the chosen grammar format or semantic tag format was unsupported.
+                        break;
+                    case "language-not-supported":
+                        message = lang.SRSetup.errors.languageNotSupported;//The language was not supported.
+                        break;
+                }
+                if (message != '') alert(event.error + '\n\n' + message);
+                speechRecognitionIn(false, el);
             }
-            speechRecognition.speechRecognitionIn(true, el);
+            speechRecognitionIn(true, el);
         });
-    },
-    speechRecognitionIn: function (open, el) {
-        /*if (el == undefined) elSpeechRecognitionIn = document.getElementById('speechRecognitionIn');
-        else*/ elSpeechRecognitionIn = el.parentElement.querySelector('#speechRecognitionIn');
-        var widthIn = 0;
-        if (open) {
-            /*if (elSpeechRecognitionIn.innerHTML == '')*/ {
-                elSpeechRecognitionIn.innerHTML = '<meter high="0.25" max="1" value="0"></meter><span class="value"></span>';
-                getMedia({
-                    audio: true,
-                    /*
-                    //https://simpl.info/getusermedia/sources/
-                    audio: {
-                        optional: []
-                    },
-                    */
-                }, function (stream) {
-                    consoleLog('getMedia success');
-                    speechRecognition.setCookie(true);
-                    speechRecognition.stream = stream;
-                    function CreateSoundMeter(MediaStream, elSoundMeter) {
-                        elSoundMeter.stopSoundMeter = false;
-                        var createSoundMeter = this;
-                        if (typeof MediaStream == 'undefined') {
-                            consoleError('MediaStream: ' + MediaStream);
-                            return;
-                        }
-
-                        if (MediaStream.getAudioTracks().length == 0) {
-                            consoleError('createSoundMeter: no audio tracks');//Возможно запрещен доступ к микрофону в браузере (Chrome: Settings/Content Settings/Microphone/Do not allow sites to acces to your microphone)
-                            return;
-                        }
-
-                        //Audio stream volume https://webrtc.github.io/samples/src/content/getusermedia/volume/
-                        // Put variables in global scope to make them available to the
-                        // browser console.
-                        loadScript("../js/soundmeter.js", function () {
-                            var soundMeterIntervalID,
-                                soundMeter = new SoundMeter(window.audioContext);
-                            soundMeter.connectToSource(MediaStream, function (e) {
-                                if (e) {
-                                    //alert(e);
-                                    consoleError('soundMeter e = ' + e);
-                                    return;
-                                }
-                                //            var soundMeter = document.getElementById(getSoundMeterID(blockId));
-                                if (!elSoundMeter) {
-                                    consoleError('soundMeter = ' + elSoundMeter);
-                                    return;
-                                }
-//                                elSoundMeter.style.display = 'block';
-                                //http://javascript.ru/setinterval
-                                window.clearInterval(soundMeterIntervalID);
-                                soundMeterIntervalID = setInterval(function () {
-                                    //consoleLog('soundMeterInterval()');
-                                    if (elSoundMeter.stopSoundMeter) {
-                                        window.clearInterval(soundMeterIntervalID);
-                                        soundMeter.stop();
-                                        return;
-                                    }
-                                    var instantMeter = elSoundMeter.querySelector('meter');
-                                    if (!instantMeter) {
-                                        consoleError('soundMeter failed!');
-                                        return;
-                                    }
-                                    instantMeter.value = soundMeter.instant.toFixed(2);
-                                    elSoundMeter.querySelector('.value').innerText = (soundMeter.instant * 100).toFixed();
-                                }, 200);
-                            });
-                        });
-                    }
-                    CreateSoundMeter(stream, elSpeechRecognitionIn);
-                }, function (err) {
-                    consoleError("The following error occurred:", err);
-                    var message;
-                    switch (err.name) {
-                        case 'NotFoundError':
-                        case 'DevicesNotFoundError':
-                            message = lang.setupMicrophone;//'Please setup your microphone first.'
-//                            fileTransfer.closeSessionCause = closeSessionCauseEnum.setupWebcam;
-                            break;
-                        case 'NotReadableError'://Firefox
-                        case 'SourceUnavailableError':
-                        case 'TrackStartError':
-//                            fileTransfer.restartLocalMediaTimeout();
-//                            fileTransfer.closeSessionCause = closeSessionCauseEnum.webcamBusy;
-                            return;
-                        case 'NotSupportedError':
-                            if (window.location.protocol == "https:") {
-                                message = err.name + ' ' + err.message;
-//                                fileTransfer.closeSessionCause = closeSessionCauseEnum.error;
-                            } else message = lang.notSupported;//'Only secure origins are allowed. Please use protocol for secure communication HTTPS for opening this web page.'
-//                            fileTransfer.closeSessionCause = closeSessionCauseEnum.notSupported;
-                            break;
-                        case 'PermissionDeniedError':
-                            if (window.location.protocol == "https:") {
-                                message = lang.permissionDeniedShort + browserSettings();//'Permission to media devices is denied.'
-                            } else message = lang.permissionDenied;//'Permission to media devices is denied. Please use protocol for secure communication HTTPS for opening this web page.'
-//                            fileTransfer.closeSessionCause = closeSessionCauseEnum.permissionDenied;
-                            break;
-                        case 'ReferenceError':
-                        case 'SecurityError':
-                        case 'NotAllowedError'://for Firefox
-                            message = lang.securityError.replace('%s', err.message) + browserSettings();//'Permission to media devices is denied.\n\n%s\n\nPlease allow to use the camera and microphone in your web browser for our web site.'
-//                            fileTransfer.closeSessionCause = closeSessionCauseEnum.permissionDenied;
-                            break;
-                        case 'InternalError'://for Firefox
-                            message = err.name + ' ' + err.message;
-                            switch (err.message) {
-                                case 'Starting audio failed':
-                                case 'Starting video failed':
-                                    consoleError(message);
-//                                    restartLocalMediaTimeout();
-                                    return;
-                                default:
-//                                    fileTransfer.closeSessionCause = closeSessionCauseEnum.error;
+        function speechRecognitionIn(open, el) {
+            /*if (el == undefined) elSpeechRecognitionIn = document.getElementById('speechRecognitionIn');
+            else*/ elSpeechRecognitionIn = el.parentElement.querySelector('#speechRecognitionIn');
+            var widthIn = 0;
+            if (open) {
+                /*if (elSpeechRecognitionIn.innerHTML == '')*/ {
+                    elSpeechRecognitionIn.innerHTML = '<meter high="0.25" max="1" value="0"></meter><span class="value"></span>';
+                    getMedia({
+                        audio: true,
+                        /*
+                        //https://simpl.info/getusermedia/sources/
+                        audio: {
+                            optional: []
+                        },
+                        */
+                    }, function (stream) {
+                        consoleLog('getMedia success');
+                        speechRecognition.setCookie(true);
+                        speechRecognition.stream = stream;
+                        function CreateSoundMeter(MediaStream, elSoundMeter) {
+                            elSoundMeter.stopSoundMeter = false;
+                            var createSoundMeter = this;
+                            if (typeof MediaStream == 'undefined') {
+                                consoleError('MediaStream: ' + MediaStream);
+                                return;
                             }
-                            break;
-                        default:
-                            message = err.name + ' ' + err.message;
-//                            fileTransfer.closeSessionCause = closeSessionCauseEnum.error;
-                            break;
-                    }
-                    alert(message);
-//                    fileTransfer.loadedmetadata = false;
-//                    fileTransfer.cancel();
+
+                            if (MediaStream.getAudioTracks().length == 0) {
+                                consoleError('createSoundMeter: no audio tracks');//Возможно запрещен доступ к микрофону в браузере (Chrome: Settings/Content Settings/Microphone/Do not allow sites to acces to your microphone)
+                                return;
+                            }
+
+                            //Audio stream volume https://webrtc.github.io/samples/src/content/getusermedia/volume/
+                            // Put variables in global scope to make them available to the
+                            // browser console.
+                            loadScript("../js/soundmeter.js", function () {
+                                var soundMeterIntervalID,
+                                    soundMeter = new SoundMeter(window.audioContext);
+                                soundMeter.connectToSource(MediaStream, function (e) {
+                                    if (e) {
+                                        //alert(e);
+                                        consoleError('soundMeter e = ' + e);
+                                        return;
+                                    }
+                                    //            var soundMeter = document.getElementById(getSoundMeterID(blockId));
+                                    if (!elSoundMeter) {
+                                        consoleError('soundMeter = ' + elSoundMeter);
+                                        return;
+                                    }
+                                    //                                elSoundMeter.style.display = 'block';
+                                    //http://javascript.ru/setinterval
+                                    window.clearInterval(soundMeterIntervalID);
+                                    soundMeterIntervalID = setInterval(function () {
+                                        //consoleLog('soundMeterInterval()');
+                                        if (elSoundMeter.stopSoundMeter) {
+                                            window.clearInterval(soundMeterIntervalID);
+                                            soundMeter.stop();
+                                            return;
+                                        }
+                                        var instantMeter = elSoundMeter.querySelector('meter');
+                                        if (!instantMeter) {
+                                            consoleError('soundMeter failed!');
+                                            return;
+                                        }
+                                        instantMeter.value = soundMeter.instant.toFixed(2);
+                                        elSoundMeter.querySelector('.value').innerText = (soundMeter.instant * 100).toFixed();
+                                    }, 200);
+                                });
+                            });
+                        }
+                        CreateSoundMeter(stream, elSpeechRecognitionIn);
+                    }, function (err) {
+                        consoleError("The following error occurred:", err);
+                        var message;
+                        switch (err.name) {
+                            case 'NotFoundError':
+                            case 'DevicesNotFoundError':
+                                message = lang.setupMicrophone;//'Please setup your microphone first.'
+                                break;
+                            case 'NotReadableError'://Firefox
+                            case 'SourceUnavailableError':
+                            case 'TrackStartError':
+                                return;
+                            case 'NotSupportedError':
+                                if (window.location.protocol == "https:") {
+                                    message = err.name + ' ' + err.message;
+                                } else message = lang.notSupported;//'Only secure origins are allowed. Please use protocol for secure communication HTTPS for opening this web page.'
+                                break;
+                            case 'PermissionDeniedError':
+                                if (window.location.protocol == "https:") {
+                                    message = lang.permissionDeniedShort + browserSettings();//'Permission to media devices is denied.'
+                                } else message = lang.permissionDenied;//'Permission to media devices is denied. Please use protocol for secure communication HTTPS for opening this web page.'
+                                break;
+                            case 'ReferenceError':
+                            case 'SecurityError':
+                            case 'NotAllowedError'://for Firefox
+                                message = lang.securityError.replace('%s', err.message) + browserSettings();//'Permission to media devices is denied.\n\n%s\n\nPlease allow to use the camera and microphone in your web browser for our web site.'
+                                break;
+                            case 'InternalError'://for Firefox
+                                message = err.name + ' ' + err.message;
+                                switch (err.message) {
+                                    case 'Starting audio failed':
+                                    case 'Starting video failed':
+                                        consoleError(message);
+                                        return;
+                                    default:
+                                }
+                                break;
+                            default:
+                                message = err.name + ' ' + err.message;
+                                break;
+                        }
+                        alert(message);
+                        elSpeechRecognitionIn.style.width = '0px';
+                        delete speechRecognition.status;
+                    });
+                }
+                elSpeechRecognitionIn.childNodes.forEach(function (el) {
+                    widthIn += el.scrollWidth;
                 });
+                widthIn += 25;
+            } else {
+                //stop speech recognition
+                speechRecognition.recognition.stop();
+                elSpeechRecognitionIn.stopSoundMeter = true;
+                //            width = this.elSpeechRecognition.scrollWidth;
+                if (this.stream != undefined) {
+                    this.stream.getTracks().forEach(function (track) {
+                        track.stop();//free media device
+                    });
+                }
             }
-            elSpeechRecognitionIn.childNodes.forEach(function (el) {
-                widthIn += el.scrollWidth;
-            });
-            widthIn += 25;
-        } else {
-            //stop speech recognition
-            elSpeechRecognitionIn.stopSoundMeter = true;
-//            width = this.elSpeechRecognition.scrollWidth;
-            if (this.stream != undefined) {
-                this.stream.getTracks().forEach(function (track) {
-                    track.stop();//free media device
-                });
-            }
+            elSpeechRecognitionIn.style.width = widthIn + 'px';
+            //this.elSpeechRecognition.style.width = width + 'px';
         }
-        elSpeechRecognitionIn.style.width = widthIn + 'px';
-        //this.elSpeechRecognition.style.width = width + 'px';
     },
     onclickLanguageHelp: function () {
         this.elLanguageHelp.style.display = this.elLanguageHelp.style.display == 'none' ? 'inline' : 'none';

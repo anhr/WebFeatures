@@ -183,7 +183,8 @@
             overflow:hidden;
         }
         .sendMenuItem:hover {
-            /*padding: 5px;*/
+            padding-top: 5px;
+            padding-bottom: 5px;
 	        background: #cccccc;
 	        background: -moz-linear-gradient(top, #cccccc, #FFFFFF);
 	        background: -webkit-gradient(linear, left top, left bottom, 
