@@ -5,6 +5,10 @@
     <label id="checkboxSRLabel" for="checkboxSR"></label>
 </div>
 <div id="SRSettings" style="display:none"><!--style="visibility:";-->
+    <div>
+        <label id="SRAudioSourceLabel" for="SRAudioSource"></label>
+        <select id="SRAudioSource" onchange=""></select>
+    </div>
     <label id="SRLanguageLabel" for="SRLanguage"></label>
     <select id="SRLanguage" onchange="javascript: speechRecognition.onchangeLanguage(event)"></select>
     <span class="treeView" onclick="javascript: speechRecognition.onclickLanguageHelp()">?</span>

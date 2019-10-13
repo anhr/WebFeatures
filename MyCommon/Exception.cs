@@ -1,14 +1,6 @@
 ﻿//using System;
 using System.Data.SqlClient;
 using System.Text;
-/*
-public class Class1
-{
-public Class1()
-{
-}
-}
-*/
 namespace MyCommon
 {
     public class SqlExceptionTrace

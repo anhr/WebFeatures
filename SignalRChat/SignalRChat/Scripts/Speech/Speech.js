@@ -168,17 +168,29 @@ speech = {
 //    getSpeechLang: function () { return this.getCookie().speechLang; },
     getPitch: function () {
         var pitch = this.getCookie().pitch;
-        if (pitch == undefined) return this.pitch.value;
+        if (pitch == undefined) {
+            if (this.pitch == undefined)
+                return '1';//The 'speech' dialog never opened
+            return this.pitch.value;
+        }
         return pitch;
     },
     getRate: function () {
         var rate = this.getCookie().rate;
-        if (rate == undefined) return this.rate.value;
+        if (rate == undefined) {
+            if (this.rate == undefined)
+                return '1';//The 'speech' dialog never opened
+            return this.rate.value;
+        }
         return rate;
     },
     getVolume: function () {
         var volume = this.getCookie().volume;
-        if (volume == undefined) return this.volume.value;
+        if (volume == undefined) {
+            if (this.volume == undefined)
+                return '1';//The 'speech' dialog never opened
+            return this.volume.value;
+        }
         return volume;
     },
     getSelectedVoice: function () { return this.getCookie().selectedVoice; },

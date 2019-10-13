@@ -18,7 +18,6 @@
  *
  */
 function TranslatorBase(translator) {
-//    this.translator = translator;
     var YandexApiKey = 'trnsl.1.1.20180121T052241Z.57bbae4e088d2eb8.349b799f5ac824ec2742d237b8f606499cf3923a';
     this.getLangs = function () {
         //consoleLog('translatorBase.getLangs()');
@@ -29,19 +28,14 @@ function TranslatorBase(translator) {
         //
         var request = new myRequest();
         request.url = 'https://translate.yandex.net/api/v1.5/tr.json/getLangs?key=' + YandexApiKey + '&ui=' + getLanguageCode();
-//        request.translator = this.translator;
         request.XMLHttpRequestStart(function () {//onreadystatechange
             request.ProcessReqChange(function (myRequest) {//processStatus200
                 if (myRequest.processStatus200Error())
                     return;
-                //                translator.selectLanguageSource = translator.elTranslator.querySelector('#translateLanguageSource');
-                //                translator.selectLanguageTo = translator.elTranslator.querySelector('#translateLanguageTo');
                 var response = JSON.parse(myRequest.req.responseText);
 
                 //sort
-                var tmpAry = new Array();/*,
-                    languageCodeSource = translator.cookie.getLCSource(),
-                    languageCodeTo = translator.cookie.getLCTo();*/
+                var tmpAry = new Array();
                 for (var languageCode in response.langs) {
                     var i = tmpAry.length;
                     tmpAry[i] = new Array();
@@ -154,8 +148,7 @@ if (selectLanguage == undefined) return;
         });
         return text;
     }
-    this.translate = function (text, callback, reverse//, elMessage
-        ) {
+    this.translate = function (text, callback, reverse) {
         if ((this.error != 0) || ((this.elTranslateIncomingMessages != undefined) && !this.elTranslateIncomingMessages.checked))
             return;
 
@@ -181,7 +174,6 @@ if (selectLanguage == undefined) return;
         request.url = 'https://translate.yandex.net/api/v1.5/tr.json/translate?key=' + YandexApiKey
             + '&lang=' + langCodes//en-ru
             + '&text=' + encodeURIComponent(text);
-//        request.elMessage = elMessage;
         request.callback = callback;
         request.XMLHttpRequestStart(function () {//onreadystatechange
             var response = request.req.responseText == '' ? '' : JSON.parse(request.req.responseText);
@@ -190,7 +182,6 @@ if (selectLanguage == undefined) return;
                 if (response != '') {
                     switch (response.code) {
                         case 401://Неправильный API-ключ
-                            //                        message = lang.translatorDlg.invalidKey;//Invalid Yandex Translator API key.
                             break;
                         case 402://API-ключ заблокирован
                             break;
@@ -208,32 +199,13 @@ if (selectLanguage == undefined) return;
             request.ProcessReqChange(function (myRequest) {//processStatus200
                 if (myRequest.processStatus200Error())
                     return;
-/*
-                var text = '';
-                response.text.forEach(function (item) {
-                    text += item;
-                });
-*/
                 switch (response.code) {
                     case 200://Операция выполнена успешно
                         myRequest.callback(response);
-/*
-                        var elTranslation = document.createElement('div');
-                        elTranslation.innerHTML = '[' + response.lang + '] ' + text;
-
-                        var boSrolling = forScrolling();
-
-                        myRequest.elMessage.appendChild(elTranslation);
-
-                        if (boSrolling)
-                            elTranslation.scrollIntoView();
-*/
                         return;
                 }
-                //                MessageElement(message);
             });
         }
-//        , false//Synchronous mode
         );
     }
 }

@@ -43,9 +43,6 @@ function SignalRorIRCChatInit() {
                     return el;
                 },
                 tagName: "span",
-//                remember: 'help',
-//                title: "inline-element",
-//                animate: true,
             },
             {
                 name: lang.speech + ' ',//Speech
@@ -84,18 +81,6 @@ function SignalRorIRCChatInit() {
         myTreeView.onclickBranch(document.getElementById('help').querySelector('.treeView'));//Open help once
     SetCookie(openHelp, 'false');
 
-    /* See displayChatBody() in D:\My documents\MyProjects\trunk\WebFeatures\WebFeatures\SignalRChat\ckeditor\samples\js\sample.js
-    //Speech
-    var openSpeech = 'openSpeech';
-    if (get_cookie(openSpeech, 'true') == 'true')
-        myTreeView.onclickBranch(document.getElementById('speechBranch').querySelector('.treeView'));//Open speech dialog once
-    SetCookie(openSpeech, 'false');
-    var cookieSpeech = get_cookie('speech');
-    if ((cookieSpeech == '')//по умолчанию Speech загружается
-        || (JSON.parse(cookieSpeech).speech == true))
-        loadScript("Scripts/Speech/Speech.js", function () { speech.synth.cancel(); });
-    */
-
     //SpeechRecognition
     document.getElementById('speechRecognitionSetupButton').title = lang.speechRecognitionSetup;//Speech recognition setup
     document.getElementById('speechRecognitionButton').title = lang.speechRecognition;//Speech Recognition
@@ -129,7 +114,6 @@ function SignalRorIRCChatInit() {
         if ((cookieTranslatorSend == '')//по умолчанию TranslatorSend загружается
             || (JSON.parse(cookieTranslatorSend).translator == true)) {
             onClickTranslatorButton();
-            //        loadScript("Scripts/Translator/TranslatorSend/TranslatorSend.js", function () { translatorSend.init(); });
         }
     }
 
@@ -569,13 +553,6 @@ function onClickSend() {
         // Clear text box and reset focus for next comment.
         if (isEditorReady()) {
             CKEDITOR.instances.editor.setData('');
-/*
-            // Fire "setData" so data manipulation may happen.
-            var eventData = { dataValue: '' };
-            CKEDITOR.instances.editor._.data = eventData.dataValue;
-            CKEDITOR.instances.editor.fire('afterSetData', eventData);
-            setTimeout(function () { CKEDITOR.instances.editor.focus(); }, 0);
-*/
         } else {
             var editor = document.getElementById("editor");
             editor.value = "";
@@ -740,8 +717,7 @@ function broadcastMessage(user, message) {
     firstMessage = false;
     if (user.nickname != g_user.nickname){
         if (typeof speech != 'undefined') speech.speak(user.nickname + ' ' + lang.said + '. ' + message, el);//said
-//        if (typeof translator != 'undefined') translator.translatorBase.translate(message, el);
-        if (typeof translator != 'undefined') translator.translate(message, el);
+        if ((typeof translator != 'undefined') && translator.elTranslateIncomingMessages.checked) translator.translate(message, el);
     }
 };
 
@@ -851,7 +827,7 @@ function onbeforeunload(e) {
     });
     */
 
-    if (speech != undefined) {
+    if (typeof speech != 'undefined') {
         speech.speechCancel();
         delete speech;
     }
@@ -883,11 +859,12 @@ function sendFilesInfo(userInfo) {
 }
 function startHubChat() {
     var chat = $.connection.chatHub;
+    //ATTENTION!!! Never called
     chat.client.onGetMicrophoneCount = function (microphoneID) {
         consoleLog('chat.client.onGetMicrophoneCount(microphoneID = ' + microphoneID + ')');
         var microphoneBlock = document.getElementById(getMicrophoneBlockID(microphoneID));
         if (microphoneBlock)
-            microphoneBlock.addMedia.app.peer.setPeersCount();
+            microphoneBlock.addMedia.app.peer.setPeersCount();//вывести на экран количество зрителей или слушателей media передачи
     }
     chat.client.onAddRemoteVideoControl = function (videoID, peerId, connectionId, captureScreen) {
         //                    consoleLog('chat.client.onAddRemoteVideoControl(videoID = ' + videoID + ', connectionId = ' + connectionId + ')');
@@ -979,6 +956,7 @@ function startHubChat() {
         consoleLog('chat.client.onRestartLocalMedia(' + videoID + ', ' + restart + ')');
         getVideoBlock(videoID).restartLocalMedia = restart;
     }
+    //вывести на экран количество зрителей или слушателей media передачи
     chat.client.onPeersCount = function (mediaID, peersCount) {
         var block = getVideoBlock(mediaID);
         if (block == null)

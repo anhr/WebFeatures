@@ -96,12 +96,10 @@ WebSiteLib
 WhoIs
 x64
 WebFeatures.opensdf
-Chat/bin/Chat.dll
-Chat/bin/Chat.dll
-Chat/bin/Chat.dll
 *.dll
-SignalRChat/SignalRChat/bin/SignalRChat.dll
-SignalRChat/SignalRChat/bin/SignalRChat.dll
-SignalRChat/SignalRChat/bin/SignalRChat.dll
-SignalRChat/SignalRChat/bin/SignalRChat.dll
+SignalRChat/SignalRChat/bin
 WebFeatures.sdf
+# =========================
+# Operating System Files
+# =========================
+Chat\bin

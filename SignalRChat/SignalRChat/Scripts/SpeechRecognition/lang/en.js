@@ -10,7 +10,7 @@ lang.SRSetup = {
     chromeLanguagesSettings: 'Open chrome://settings/ page, click Advanced and go to the Languages section.',
     help: 'Please click the 🎤 button in the bottom right corner of the panel and say a message',
     errors: {
-        noNpeech: 'No speech was detected.',
+        noSpeech: 'No speech was detected.',
         aborted: 'Speech input was aborted in some manner, perhaps by some user-agent-specific behavior like a button the user can press to cancel speech input.',
         audioCapture: 'Audio capture failed.',
         network: 'Network communication required for completing the recognition failed.',

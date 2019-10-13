@@ -1,0 +1,33 @@
+﻿<Settings>
+  <Strings>
+    <String>Connecting</String>
+    <String>Offline</String>
+    <String>Maintenance</String>
+    <String>Please wait while we connect you to this webcam broadcast.</String>
+    <String>The member you are trying to view is currently offline. Please wait or choose another member to view.</String>
+    <String>We are performing maintenance on this server and must temporarily stop this member from broadcasting. Please wait or choose another member to view.</String>
+    <String>Fullscreen</String>
+    <String>Mute</String>
+    <String>Popout</String>
+    <String>Group Show In Progress</String>
+    <String>You may continue chatting while you wait for the broadcaster to return from the group show. If a goal had been set when the broadcaster returns it will continue where it left off.</String>
+    <String>JOIN THIS GROUP SHOW</String>
+    <String>tokens per minute</String>
+    <String>Performer Is Away</String>
+    <String>You may continue chatting while you wait for the broadcaster to return.</String>
+    <String>Private Show In Progress</String>
+    <String>You may continue chatting while you wait for the broadcaster to return from the private show. If a goal had been set when the broadcaster returns it will continue where it left off.</String>
+    <String>SPY ON THIS PRIVATE SHOW</String>
+    <String>Software Update Required</String>
+    <String>Please refresh your browser and try again. Please contact support@chaturbate.com if you experience any problems.</String>
+    <String>Free Registration Required</String>
+    <String>You have reached the limit of the number of cams you can watch at once. Join for free and watch as many as you want!</String>
+    <String>JOIN NOW</String>
+    <String>Password Required</String>
+    <String>The broadcaster has set a password which is required for viewing. If you know the password, click the link to enter it.</String>
+    <String>ENTER PASSWORD</String>
+    <String>An Error Occurred</String>
+    <String>There was a problem trying to play the video for this broadcaster. If the problem continues, please contact support.</String>
+  </Strings>
+</Settings>
+

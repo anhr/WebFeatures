@@ -89,14 +89,18 @@ g_IRC.onVoice = function (JSONmessage) {
     this.UserMode(message, '+', 'voice');
 }
 g_IRC.isChannelOperator = function () {
+    if (this.ChannelModes == undefined)
+        return false;
     var channelMode = this.ChannelModes['ChatSharp.IrcChannel'];
-    if (typeof channelMode == 'undefined')
+    if (channelMode == undefined)
         return false;
     return channelMode.includes('o');
 }
 g_IRC.isVoice = function () {
+    if (this.ChannelModes == undefined)
+        return false;
     var channelMode = this.ChannelModes['ChatSharp.IrcChannel'];
-    if (typeof channelMode == 'undefined')
+    if (channelMode == undefined)
         return false;
     return channelMode.includes('v');
 }
@@ -121,18 +125,6 @@ g_IRC.onChannelMode = function (message) {
     }
     AddMessageToChat(array);
 }
-/*
-g_IRC.onUserMode = function (message) {
-    consoleLog('IRC.onUserMode()');
-    if (g_chatRoom.RoomName != message.Target) {
-        consoleError('Invalid message.Target: ' + message.Target);
-        return;
-    }
-    //example: blink2!~blink2@95.188.70.66 has set mode +o blink3
-    AddMessageToChat(message.Prefix + lang.hasSetMode//' has set mode '
-         + message.Add + message.Mode + ' ' + message.Nick);
-}
-*/
 g_IRC.onUserBanned = function (message) {
     consoleLog('IRC.onUserBanned(' + message + ')');
     var elBanner = g_IRC.createUser({ nickname: message.UserBanner.Nick }, 'span');

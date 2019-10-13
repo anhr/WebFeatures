@@ -50,6 +50,16 @@ g_IRC.CS = {
         }
         return description;
     },
+    getTopic: function (elCS) {
+        var elTopic = elCS.querySelector('#CSTopic');
+        var topic = elTopic.value;
+        if (topic == '') {
+            inputKeyFilter.TextAdd(lang.IRC.CS.typeTopic//'Enter topic
+                , elTopic, "downarrowdivred");
+            elTopic.focus();
+        }
+        return topic;
+    },
     getChannel: function (elCS) {
         var elChannel = elCS.querySelector('.CSChannel'),
             channel = elChannel.value;
@@ -59,16 +69,9 @@ g_IRC.CS = {
 //            elChannel.focus();
             return null;
         }
+        if (channel[0] != '#')
+            channel = '#' + channel;
         return channel;
-/*
-        if (elChannel.selectedIndex == -1) {
-            inputKeyFilter.TextAdd(lang.IRC.CS.selectChannel//Select joined channel
-                , elChannel, "downarrowdivred");
-//            elChannel.focus();
-            return null;
-        }
-        return elChannel[elChannel.selectedIndex].value;
-*/
     },
     onclickRegister: function (event) {
         consoleLog('IRC.CS.onclickRegister()');
@@ -160,23 +163,62 @@ g_IRC.CS = {
         }
         this.command(command + params);
     },
-/*
-    enumJoinedChannels: function (elSelectChannel) {
-        elSelectChannel.options.length = 0;
+    onclickTopic: function (event) {
+        consoleLog('IRC.CS.onclickTopic()');
+        var elCS = this.getElCS(event).parentElement;
 
-        var elIRCJoinedChannels = document.getElementById('IRCJoinedChannels'),
-            IRCChannels = IRCJoinedChannels.querySelectorAll('.IRCRoom'),
-            firstOption = true;
-        IRCChannels.forEach(function (elIRCChannel) {
-            var channel = elIRCChannel.querySelector('.treeView').params.channel;
-            elSelectChannel.options[elSelectChannel.options.length] = new Option(channel);
-            if (firstOption) {
-                elSelectChannel.nextElementSibling.value = channel;
-                firstOption = false;
+        var params = '', topic, command = "TOPIC";
+        if (this.arCommandParams) {
+            topic = this.arCommandParams.topic;
+            if (topic != undefined) {
+                for (i = 0; i < topic.length; i++) {
+                    switch (topic[i]) {
+                        case "#channel"://irc.freenode.net
+                            var channel = this.getChannel(elCS);
+                            if (channel == null) return;
+                            break;
+                        case "topic"://irc.freenode.net
+                            var newTopic = this.getTopic(elCS);
+                            if (newTopic == null) return;
+                            break;
+                    }
+                }
+                params = this.commandParams(topic, elCS);
             }
-        });
+        }
+        if (params == '') {
+            var channel = this.getChannel(elCS);
+            if (channel == null) return;
+            params = ' ' + channel;
+        }
+        this.command(command + params);
     },
-*/
+    onclickInfo: function (event) {
+        consoleLog('IRC.CS.onclickInfo()');
+        var elCS = this.getElCS(event).parentElement;
+
+        var params = '', info, command = "INFO";
+        if (this.arCommandParams) {
+            info = this.arCommandParams.info;
+            if (info != undefined) {
+                for (i = 0; i < info.length; i++) {
+                    switch (info[i]) {
+                        case "#channel"://irc.freenode.net
+                            var channel = this.getChannel(elCS);
+                            if (channel == null) return;
+                            break;
+                    }
+                }
+                params = this.commandParams(info, elCS);
+            }
+        }
+        if (params == '') {
+            var channel = this.getChannel(elCS);
+            if (channel == null) return;
+            params = ' ' + channel;
+        }
+        this.command(command + params);
+    },
     enumJoinedChannels: function (elSelectChannel) {
         elSelectChannel = elSelectChannel.nextElementSibling;
         elSelectChannel.innerHTML = '';
@@ -218,6 +260,12 @@ g_IRC.CS = {
             elCS.querySelector(".CSHeader").innerHTML = '⚿ ' + lang.IRC.CSAssistant;//'ChanServ Assistant'
             elCS.querySelector(".CSDescription").innerHTML = lang.IRC.CS.description;//'When you register a channel with ChanServ, you don't need to worry about takeovers, or bots to keep a list of Ops. ChanServ does all of this and more. The founder is the person who does the registering.'
             elCS.querySelector(".IRCChannelNameLabel").innerHTML = lang.channelName + ': ';//Channel Name//lang.IRC.CS.joinedChannel + ': ';//Joined channel
+
+            elCS.querySelector("#CSTopicLabel").innerHTML = lang.IRC.CS.topic + ': ';//'Topic'
+            elCS.querySelector("#CSBtnTopic").value = lang.IRC.CS.setTopic;//'Set Topic'
+
+            elCS.querySelector("#CSBtnInfo").value = lang.IRC.CS.info;//'Info'
+
             elCS.querySelector(".CSPassLabel").innerHTML = lang.IRC.CS.password + ': ';//'Make up a password to register with. The password is used so that only the founder can completely control the channel.'
             elCS.querySelector(".CSRegister").value = lang.NSRegister;//'Register'
 
@@ -235,6 +283,8 @@ g_IRC.CS = {
                 g_IRC.CS.command('help REGISTER');
                 g_IRC.CS.command('help UNREGISTER');
                 g_IRC.CS.command('help DROP');
+                g_IRC.CS.command('help TOPIC');
+                g_IRC.CS.command('help INFO');
 //                g_IRC.CS.command('help ATTACH');do not support in irc.webmaster.com
             }
             elCS.scrollIntoView();
@@ -301,6 +351,12 @@ g_IRC.CS = {
                     elCSDrop.value = lang.IRC.unregister;//Unregister
             });
         }
+        if (this.arCommandParams.topic) {
+            arCSAssistants[0].querySelector('#topic').style.display = 'block';
+        }
+        if (this.arCommandParams.info) {
+            arCSAssistants[0].querySelector('#info').style.display = 'block';
+        }
     },
     commandParams: function (array, elCS) {
         if (array == undefined) {
@@ -326,6 +382,11 @@ g_IRC.CS = {
                     var description = this.getDescription(elCS);
                     if (description == '') return;
                     command += ' ' + description;
+                    break;
+                case "topic"://irc.freenode.net
+                    var topic = this.getTopic(elCS);
+                    if (topic == '') return;
+                    command += ' ' + topic;
                     break;
                 case " ": break;//irc.swiftirc.net
                 default:

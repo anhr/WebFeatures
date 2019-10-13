@@ -106,51 +106,8 @@ function openIRCPage(q) {
     g_IRC.onUserMessageRecieved = function (receiver, sender, message) {
         consoleLog('g_IRC.onUserMessageRecieved(...)');
 
-        // Client-to-client protocol  (CTCP)
-        //https://en.wikipedia.org/wiki/Client-to-client_protocol
-        //http://www.irchelp.org/protocol/ctcpspec.html?
-        if ((message.length > 0) && (message.charCodeAt(0) == 1) && (message.charCodeAt(message.length - 1) == 1)) {
-            var IRCclient = ' Web IRC client - Bonalink  ' + window.location.protocol + '//' + window.location.hostname + '/Chat/?tab=IRC';
-            var reply;
-            var message2 = message.substr(1, message.length - 2).toUpperCase();
-            switch (message2) {
-                case 'VERSION':
-                    reply = IRCclient + '  Browser - ' + DetectRTC.browser.name + ' ' + DetectRTC.browser.version
-                        + '. UTC - ' + DetectRTC.osName + ' ' + DetectRTC.osVersion
-                        + (DetectRTC.isMobileDevice ? ' mobile device' : ' desktop');
-                    break;
-                case 'TIME':
-                    reply = ' ' + new Date();
-                    break;
-                case 'CLIENTINFO'://http://www.irchelp.org/protocol/ctcpspec.html?
-                    reply = IRCclient + '  - Supported tags: PING,VERSION,CLIENTINFO,TIME,SOURCE';
-                    break;
-                case 'SOURCE'://http://www.irchelp.org/protocol/ctcpspec.html?
-                    reply = IRCclient;
-                    break;
-                    /*
-                case 'AVATAR'://http://www.kvirc.ru/wiki/HOWTO:%D0%90%D0%B2%D0%B0%D1%82%D0%B0%D1%80%D1%8B_%D0%B2_KVirc
-                    break;
-                case 'DCC'://https://en.wikipedia.org/wiki/Direct_Client-to-Client
-                    //пересылка файлов, чат напрямую минуя IRC сервер
-                    break;
-                case 'FINGER'://http://www.irchelp.org/protocol/ctcpspec.html?
-                    //не реагирую потому что в данный момент не могу получть мое реальное имя потому что отсутствует g_user.IRCuser на веб странице IRCSever
-                    break;
-                case 'USERINFO'://KVIrc возвращет: Age=8; Gender=Male; Location=Russia; Languages=Russian, English; I'm too lazy to edit this field.
-                    break;
-                    */
-            }
-            if (reply == undefined) {
-                var ping = 'PING';
-                if (message2.indexOf(ping) == 0) reply = '';
-            }
-            if (reply != undefined) {
-                g_IRC.get('NOTICE ' + sender + ' :' + message[0] + message2 + reply + message[0]);
-                return;
-            }
-            consoleError('CTCP: ' + message);
-        }
+        if (g_IRC.getCTCP(message, sender))
+            return;
 
         document.getElementById("noInvitations").style.display = 'none';
         document.getElementById("invitations").style.display = 'block';
@@ -785,6 +742,14 @@ function openIRCPage(q) {
                 }
 */
                 return true;
+            } else if (arSyntax[0].indexOf('TOPIC') != -1) {
+                var arParams = params();
+                if (arParams != null) arCommandParams.topic = arParams;
+                return true;
+            } else if (arSyntax[0].indexOf('INFO') != -1) {
+                var arParams = params();
+                if (arParams != null) arCommandParams.info = arParams;
+                return true;
             }
         }
         return false;
@@ -799,14 +764,21 @@ function openIRCPage(q) {
         if ((elNSRegistering.IRC.ns.unregister != undefined) && (elNSDrop.value != lang.IRC.unregister))
             elNSDrop.value = lang.IRC.unregister;//Unregister
     }
+    g_IRC.CSTopic = function (message) {
+        var elCSAssistant = document.getElementById('CSAssistant');
+        if (!elCSAssistant || (elCSAssistant.querySelector('.CSChannel').value != message.Message.Parameters[0]))
+            return;
+        inputKeyFilter.TextAdd(lang.topicUpdated//'Channel's topic was updated'
+            , elCSAssistant.querySelector('#CSTopic'), "uparrowdivgreen", true);
+    }
 }
 function IRCMessageError(message) { g_IRC.Reply(message); }
-function onclickIRCJoin2(elParent) {
+function onclickIRCJoin2(elParent, IRCChannelName, pass, disabled) {
     consoleLog("onclickIRCJoin2()");
     var elIRCJoin = elParent.querySelector('.IRCJoin');
     var expanded = ' expanded';
     if (elIRCJoin == null) {
-        elIRCJoin = g_IRC.createJoin();
+        elIRCJoin = g_IRC.createJoin(IRCChannelName, undefined, disabled);
         elIRCJoin.className += expanded;
         elParent.insertBefore(elIRCJoin, elParent.childNodes[0]);
     } else {

@@ -38,7 +38,7 @@ function MessageElement(message, noCloseButton) {
     });
 }
 
-loadScript("lang/" + getLanguageCode() + ".js", function () {
+if (!new QueryString().value("request")) loadScript("../SignalRChat/lang/" + getLanguageCode() + ".js", function () {
 
     //menu
     var elMenuUsers = document.getElementById("menuUsers");
@@ -58,6 +58,8 @@ loadScript("lang/" + getLanguageCode() + ".js", function () {
     var isPrompt = false;
 
     //http://unixpapa.com/js/querystring.html
+    if (typeof QueryString == 'undefined')
+        return;//IRCBot project
     var q = new QueryString();
     var privateUserId = q.value("private");
     g_chatRoom.PrivateID = q.value("privateID");
@@ -189,6 +191,17 @@ function closeContextMenuUsers() {
 }
 function resizeVideos() {
     var elementUsers = document.getElementById('users');
+
+    //chaturbate
+    elementUsers.querySelectorAll('#xmovie').forEach(function (elXmovie) {
+        height = parseInt((elXmovie.clientWidth / 4) * 3);
+        if (height == 0) {
+            consoleError('height = ' + height);
+            return;
+        }
+        elXmovie.style.height = height + 'px';
+    });
+
     /*сейчас ширина video и audio равна ширине родителя и определяется style="width:inherit"
                         loadScript("Scripts/WebRTC/Media.js", function (){
                             var videos = elementUsers.querySelectorAll('video');
@@ -306,6 +319,7 @@ function startHub() {
                     onRemoveRoom(roomName);
             }
             chat.client.onRooms = function (rooms) { onRooms(rooms); }
+            //ATTENTION!!! Never called
             chat.client.onGetVideoCount = function (videoID) {
                 consoleLog('chat.client.onGetVideoCount(videoID = ' + videoID + ')');
                 var videoBlock = document.getElementById(getVideoBlockID(videoID));

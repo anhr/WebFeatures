@@ -1,7 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="WelcomeToChat.Default" %>
-
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="author" content="Andrej Hristoliubov anhr@mail.ru">
@@ -12,7 +10,7 @@
 
     <script type="text/javascript" src="/js/Common.js"></script>
 
-    <link rel="stylesheet" href="../MyIsapi/InputKeyFilter.css" type="text/css">
+    <!--<link rel="stylesheet" href="../MyIsapi/InputKeyFilter.css" type="text/css">-->
     <link rel="stylesheet" href="/js/jquery/ui/1.11.4/jquery-ui.css">
     <link rel="stylesheet" href="/js/jquery/ui/1.11.4/style.css">
 
@@ -53,17 +51,6 @@
             loadScript("lang/" + getLanguageCode() + ".js", function () {
                 <% if(IsEditProfile()) { %>
                 document.title = lang.myProfile;//"My profile"
-/*
-                var elTr = document.createElement('tr');
-                elTr.innerHTML =
-                      '<td style="border:0px"></td>'
-                    + '<td style="border:0px">'
-                        + '<input type="button" onclick="javascript: onClickUpdateProfile()" value="' + lang.updateProfile + '"/>'//"Update Profile"
-                    + '</td>';
-                var elBefore = document.getElementById('trChatRoom');
-                elBefore.style.borderTop = "1px solid black";
-                elBefore.parentElement.insertBefore(elTr, elBefore);
-*/
                 <% } else { %>
                 document.title = lang.welcomeToChat;//"Welcome to chat"
                 <% } %>
@@ -73,10 +60,9 @@
                     loadScript("../SignalRChat/Scripts/jquery-1.6.4.js", function () {//Reference the jQuery library.
                         loadScript("../SignalRChat/Scripts/jquery.signalR-2.0.0.js", function () {//Reference the SignalR library.
                             loadScript("../SignalRChat/signalr/hubs", function () {
-                                loadScript("/JS/jquery/ui/1.11.4/jquery-ui.js"
-                                    , function () {
-                                        startHub();
-                                    });
+                                loadScript("/JS/jquery/ui/1.11.4/jquery-ui.js", function () {
+                                    startHub();
+                                });
                             });
                         });
                     });
@@ -148,6 +134,11 @@
                     ], tab == undefined ? true : false);
                 });
             }
+            function getWaitIconBase(papams) {
+                if (typeof papams == 'undefined')
+                    papams = '';
+                return '<img src="../img/Wait.gif" style="width: 20px; height:20px"' + papams + '>';
+            }
             function startHub() {
                 //consoleLog('startHub');
 
@@ -157,14 +148,30 @@
                         // Declare a proxy to reference the hub.
                         var chat = $.connection.chatHub;
 
-                        chat.client.onIRCUnhandledMessage = function (message) { consoleError(message); }
+                        chat.client.onIRCUnhandledMessage = function (message) {
+                            //for testing try connect to irc.gamesurge.net
+                            consoleError(message);
+                            g_IRC.MessageError3(getErrorTag(message));
+                        }
                         chat.client.onIRCGroup = function (JSONIRCGroup) { onIRCGroup(JSONIRCGroup); }
                         chat.client.onIRCConnect = function (message) { g_IRC.onConnect(message); }
                         chat.client.onIRCNickInUse = function (message) { g_IRC.onNickInUse(message); }
                         chat.client.onIRCNickChanged = function (oldNick, newNick, Hostmask) { g_IRC.onNickChanged(oldNick, newNick, Hostmask); }
                         chat.client.onIRCDisconnected = function (message) { g_IRC.onDisconnected(message); }
-                        chat.client.onIRCIsConneted = function (message) { g_IRC.onIsConneted(); }
-                        chat.client.onIRCPing = function (key) { consoleLog('onIRCPing'); $.connection.chatHub.server.ircPong(key); }
+                        chat.client.onIRCBotResponseReady = function () {
+                            consoleLog('chat.client.onIRCBotResponseReady');
+                            chat.server.getNextConnectionDelay(document.getElementById('IRCURL').value);
+                        }
+                        chat.client.onNextConnectionDelay = function (NextConnectionDelay) {
+                            consoleLog('chat.client.onNextConnectionDelay(' + NextConnectionDelay + ')');
+                            g_IRC.Reply(getWaitIconBase() + lang.tooManyConnections.replace('%s', NextConnectionDelay / 1000));//Too many connections from your host. Waiting about 3 seconds for connecting again
+                            setTimeout(function () { g_IRC.Connect(); }, NextConnectionDelay);
+                        }
+                        chat.client.onIRCIsConnected = function (message) { g_IRC.onIsConnected(); }
+
+                        //Не помню зачем это добавил
+//                        chat.client.onIRCPing = function (key) { consoleLog('onIRCPing'); $.connection.chatHub.server.ircPong(key); }
+
                         chat.client.onIRCReply = function (message) { g_IRC.Reply(message); }
 
                         chat.client.onGUID = function (guid) { g_IRC.onGUID(guid); }
@@ -217,7 +224,14 @@
                             }
                             window.location = getOrigin() + "/SignalRChat?" + user + 'chatRoom=' + encodeURIComponent(document.getElementById("chatRoom").value);
                         }
-
+                        chat.client.onMaxNickLength = function (maxNickLength) {
+                            consoleError('maxNickLength = ' + maxNickLength);
+                            var message = lang.maxNickLength + maxNickLength;//'Max nick length is limited to '
+//                            g_IRC.MessageError(message);
+                            g_IRC.MessageError3(getErrorTag(message));
+                            alert(message);
+                            inputKeyFilter.TextAdd(message, document.getElementById('IRCNickname'), "downarrowdivred");
+                        }
                         chat.client.onUser = function (user) {
                             consoleLog("chat.client.onUser(" + JSON.stringify(user) + ")");
                             if (user && user.browserID) {
@@ -235,7 +249,9 @@
                             alert(lang.profileNotExist);//"Your profile does not exist. Please create a new profile.");
                             gotoChatPage();
                         }
-
+                        chat.client.onMessageElement = function (message) {
+                            MessageElement(message);
+                        }
                         chat.client.onNickname = function (nickname) {
                             consoleLog("chat.client.onNickname(" + nickname + ")");
                             if (nickname) {

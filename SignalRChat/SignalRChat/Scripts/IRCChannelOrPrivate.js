@@ -115,41 +115,28 @@ function openIRCPage(q) {
             //in the Console window
 
             window.close();
+        }
+        //список посетителей канала с сайта https://chaturbate.com/
+//        g_IRC.chaturbateUsers;
 
-            //https://stackoverflow.com/questions/19761241/window-close-and-self-close-do-not-close-the-window-in-chrome
-            //open(location, '_self').close();
-/*
-            window.open('', '_self', '');
-            window.close();
-*/
-/*
-            //Открывается несуществующая страница 
-            window.open('location', '_self', '');
-            window.close();
-*/
-/*
-            //Открывается веб страница about:blank
-            var win = window.open("about:blank", "_self");
-            win.close();
-*/
+        //получить список посетителей канала с сайта https://chaturbate.com/
+        g_IRC.getChaturbateUsers = function () {
+            loadScript('Scripts/IRC/Chaturbate/Chaturbate.js', function () {
+                g_chaturbate.chaturbateResponse
+                    ('../IRCBot/?IRCServer=' + g_IRC.ircClient.ServerHostname + '&Channel=' + encodeURIComponent(g_chatRoom.RoomName));
+            });
         }
         g_IRC.onJoinedChannel = function (channelName, noDisplayMessage, user) {
             consoleLog('IRC.onJoinedChannel(' + channelName + ')');
-/*
-            g_user.IRCuser = user;
-            g_user.IRCuser.isChannelOperator = g_IRC.isChannelOperator;
-            g_user.IRCuser.isVoice = g_IRC.isVoice;
-*/
             g_user.nickname = user.Nick;
             $.connection.chatHub.server.ircIsJoined(channelName);
-//            g_IRC.displayJoinedMessage(channelName, noDisplayMessage);
         }
         g_IRC.onChannel = function (user, channel, ChannelModes) {
             consoleLog('IRC.onChannel');
             g_user.IRCuser = user;
             g_user.IRCuser.isChannelOperator = g_IRC.isChannelOperator;
             g_user.IRCuser.isVoice = g_IRC.isVoice;
-//            g_user.nickname = g_user.IRCuser.Nick;
+            g_user.nickname = g_user.IRCuser.Nick;//сейчас это используется при обновлении веб страницы канала. Так же данные о самом себе я отаравляю еще в onIRCJoinedChannel
             if (
                 (channel != null)
                 && (channel != 'null')//For compatible with old wersion of this.Clients.Caller.onIRCChannel
@@ -164,7 +151,8 @@ function openIRCPage(q) {
                     Users: [g_user.IRCuser]
                 }
                 g_chatRoom.PrivateID = g_chatRoom.RoomName;//чтобы правильно работала g_chatRoom.isPrivate()
-                $.connection.chatHub.server.ircIsOpenPrivate(g_IRC.IRCServerID);//g_user.browserID);
+                //Если все в порядке, добавляем нового пользователя в приватную страницу, которая запрашивала ircIsOpenPrivate
+                $.connection.chatHub.server.ircIsOpenPrivate(g_IRC.IRCServerID);
             }
             g_IRC.onConnect('');
             g_IRC.connected = true;
@@ -265,18 +253,29 @@ function openIRCPage(q) {
             displayUsersCount();
             document.querySelectorAll('.IRCChannel').forEach(function (elChannel) {
                 if (elChannel.querySelector('.channelName').innerHTML == channelName) {
-/*
-                    var elUsers = elChannel.querySelector('.usersWhoIs');
-                    AddUser(user, insertUser(elUsers.querySelectorAll('.userWhoIs')), elUsers);
-*/
-                    g_IRC.createUserWhoIs({ elInsertBebore: insertUser(elChannel.querySelector('.usersWhoIs').querySelectorAll('.userWhoIs')) },
-                        userNick, user.prefix);
+                    var elUsersWhoIs = elChannel.querySelector('.usersWhoIs');
+                    if (elUsersWhoIs != null)//этот элемент не существует в елементе канала, который создан в заголовке веб страницы
+                        //для тестирования 
+                        //открыть веб сраницу канала
+                        //открыть ветку канала IRCRoom в заголовке веб страницы канала
+                        //войти на канал еще одним посетителем
+                        //в этом случае сюда не должно попасть
+                        g_IRC.createUserWhoIs({ elInsertBebore: insertUser(elUsersWhoIs.querySelectorAll('.userWhoIs')) }, userNick, user.prefix);
                 }
             })
             var message = lang.joined + ' ' + channelName;//has joined
             AddMessageToChat('', user, ' ' + message, channelName);
             g_IRC.UserInChannel({ nickname: userNick, RawMessage: message, disabled: false });
             sendFilesInfo(userNick);
+
+            //Add chaturbate properties if current user from chaturbate site
+            loadScript('Scripts/IRC/Chaturbate/Chaturbate.js', function () {
+                g_chaturbate.chaturbateResponse(
+                      '../IRCBot/?request=chaturbate'
+                    + '&ServerHostname=' + encodeURIComponent(g_IRC.ircClient.ServerHostname)
+                    + '&nick=' + encodeURIComponent(userNick)
+                    , userNick);
+            });
         }
         g_IRC.userPartChannel = function (channelName, userNick) {
             var elUser = this.getElUser(channelName, userNick);
@@ -486,6 +485,7 @@ function openIRCPage(q) {
 //        g_user.updateProfile(ircClient.User);
         }
         g_IRC.NSSyntax = function (syntax){}
+        g_IRC.CSTopic = function (message) { }
 
         document.getElementById("title").innerHTML = getTitle(IRCChannel, IRCPrivateMessages);
         initSample();//ckeditor http://ckeditor.com/
@@ -655,4 +655,5 @@ function privMsgFileTransfer(fileTransfer) {
 //эта функция вызывается еще до того как открывается веб страница IRC канала. Поэтому список всех ранее запущенных FileTransfer не отображается
 function sendFileRequest(userInfo) { /*$.connection.chatHub.server.ircSendFileRequest(g_chatRoom.RoomName, g_user.id, userInfo);*/ }
 function isHelpContentSignalR() { return false; }
+//вывести на экран количество зрителей или слушателей media передачи
 function setPeersCount(dataID, peersCount) { $.connection.chatHub.server.ircPeersCount(dataID, peersCount); }

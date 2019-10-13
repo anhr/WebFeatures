@@ -14,5 +14,9 @@ lang.IRC.CS = {
     unknownParamsLabel: 'Unknown params "%p" has been detected in the "%c" command. Please type params manually',
     drop: 'Drop',
     dropTitle: 'This command is used when you no longer want ChanServ to manage a channel.',
+    topic: 'Topic',
+    setTopic: 'Set Topic',
+    typeTopic: 'Enter topic',
+    info: 'Info',
 };
 

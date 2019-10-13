@@ -262,7 +262,7 @@ var lang = {
             + '%helpSignalR'
 	        + '<li class="help">You can change width of the right and left panels of the page by clicking and moving the border between panels. You can drag border by finger if your device have a touchscreen.</li>'
 	        + '<li class="help">You can format your message before sending to chat. To do this, click the <b>«</b> button then <b>△</b> button in right bottom corner of the page.</li>'
-	        + '<li class="help">To hear all incoming messages, open the </b>▶Speech</b> branch under the help text.</li>'
+	        + '<li class="help">To hear all incoming messages, open the <b>▶Speech</b> branch under the help text.</li>'
 	        + '<li class="help">For translation all incoming messages, open the <b>▶Translator</b> branch under the help text.</li>'
 	        + '<li class="help">You can translate your message before sending. To do this, click the <b>«</b> button then <b>A⇄🉐</b> button in right bottom corner of the page.</li>'
 	        + '<li class="help">You can use your microphone for recognition of your message. To do this, click the <b>«</b> button then <b>⚙🎤</b> button in right bottom corner of the page.</li>'
@@ -324,6 +324,7 @@ var lang = {
     , address: 'Address'
     , hostmask: "User's hostmask (nick!user@host)"
     , topicUpdated: 'Channel\'s topic was updated'
+    , topicTooLong: 'Channel\'s topic too long. Max topic length is '
     , changeTopic: 'Change the channel\'s topic first'
     , kick: 'Kick'
     , kickTitle: 'Forcibly  remove  a  user  from  a channel.'
@@ -380,6 +381,7 @@ var lang = {
     , speechRecognitionSetup: 'Speech recognition setup'
     , speechRecognition: 'Speech recognition'//'Press the mouse button, say the message, release the mouse button to the speech recognition'
     , translator: 'Translator'
+    , noNpeech: 'No speech was detected.'
 };
 
 

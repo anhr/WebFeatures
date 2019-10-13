@@ -47,7 +47,7 @@ function IRCInitCommon() {
             var message = "";
             if (typeof e.Error != 'undefined') {
                 message = e.Error.Message;
-                for (var i = 0; i < e.Error.InnerExceptions.length; i++)
+                if (e.Error.InnerExceptions != undefined) for (var i = 0; i < e.Error.InnerExceptions.length; i++)
                     message += ' ' + e.Error.InnerExceptions[i].Message;
             } else if (typeof e.Command != 'undefined') {
                 if (typeof e.InvalidNick != 'undefined') {

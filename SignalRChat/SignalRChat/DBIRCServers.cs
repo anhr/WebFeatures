@@ -19,6 +19,7 @@ namespace SignalRChat
         {
             this.DBIRCChats = new HashSet<DBIRCChats>();
             this.DBIRCUsers = new HashSet<DBIRCUsers>();
+            this.DBIRCNS = new HashSet<DBIRCNS>();
         }
     
         public int Id { get; set; }
@@ -34,5 +35,7 @@ namespace SignalRChat
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DBIRCUsers> DBIRCUsers { get; set; }
         public virtual DBIRCGroups DBIRCGroup { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DBIRCNS> DBIRCNS { get; set; }
     }
 }

@@ -17,10 +17,10 @@
  *
  */
 
-loadCSS('Scripts/IRC.css');
+loadCSS('../SignalRChat/Scripts/IRC.css');//Абсолютный путь нужен для проекта IRCBot
 
 function IRC() {
-    loadScript("Scripts/IRCCommon.js", function () {
+    loadScript("../SignalRChat/Scripts/IRCCommon.js", function () {//Абсолютный путь нужен для проекта IRCBot
         IRCInitCommon();
     });
     //
@@ -58,8 +58,6 @@ function IRC() {
         */
 
         //control codes
-//        var rex = /\003([0-9]{2})[,]?([0-9]{2})?([^\003]+)/,
-//        var rex = /\003([0-9]{1,2})([,])?([0-9]{1,2})?([^\003]+)(\003?)/,
         //Если я буду учитывать только две цифры в коде цвета {2}, то будут проблемы в выводе топиков каналов.
         // Кроме того в некоторых топиках нет завершающего символа в блоке текста, выделенного цветом, если блок в конце строки
         var rex = /\003([0-9]{1,2})([,])?([0-9]{1,2})?([^\003]+)/,
@@ -68,14 +66,10 @@ function IRC() {
             while (cp = rex.exec(text)) {
                 var value;
                 if (cp[2]) {
-//                    var cbg = cp[2];
                     var cbg = cp[3];
                     value = cp[4];
                 }
                 else value = (cp[3] == undefined ? '' : cp[3]) + cp[4];
-//                var text = text.replace(cp[0], removeControlCodes ? cp[3] : '<span class="fg' + cp[1] + ' bg' + cbg + '">' + cp[3] + '</span>');
-//                var text1 = text.replace(cp[0] + '\003', removeControlCodes ?
-//                var text1 = text.replace(cp[0] + cp[5], removeControlCodes ?
                 var text1 = text.replace(cp[0], removeControlCodes ?
                     cp[4] : '<span class="fg' + parseInt(cp[1]) + (cbg == undefined ? '' : ' bg' + parseInt(cbg)) + '">' + value + '</span>');
                 if (text1 == text) {
@@ -125,20 +119,17 @@ function IRC() {
                 (ar != null)
                 && (ar.length == 4)
                 && (ar[1] == "NOTICE")
-/*
-                && (ar[3][0] == String.fromCharCode(1))
-                && (ar[3][ar[3].length - 1] == String.fromCharCode(1))
-*/
             ) {//message = "NOTICE [anhr!kvirc@95.188.70.66]: TIME Mon Oct 30 05:17:02 2017"
             if (
                     (ar[3][0] == String.fromCharCode(1))
                     && (ar[3][ar[3].length - 1] == String.fromCharCode(1))
                 ) {//CTCP
+                /*сейчас CTCP выводится в this.ReplyCTCP... Смотри следующие функции ниже
                 var arMsg = ar[3].substr(1, ar[3].length - 2).match(/([A-Z]+) (.*)/),//TIME Mon Oct 30 05:17:02 2017
                     nick = ar[2].match(/\[(.*)!(.*)\]/)[1];//[anhr!kvirc@95.188.70.66]
                 if ((nick == undefined) || (nick == null))
                     consoleError('IRC.Reply(' + message + ') nick: ' + nick);
-                document.querySelectorAll('.IRCuser').forEach(function (elUser) {
+                project.getElIRCServer().querySelectorAll('.IRCuser').forEach(function (elUser) {
                     var user = getUserElUser(elUser);
                     if (user.nickname == nick) {
                         var parentElement = elUser.querySelector('.treeView').params.branch.parentElement;//пользователь в заголовке веб страницы
@@ -146,9 +137,11 @@ function IRC() {
                             parentElement = elUser;
                         var command = arMsg[1].toUpperCase();
                         function CTCPReply(back) {
-                            var elCTCP = parentElement.querySelector('.CTCP_' + command);
+                            var elCTCP = parentElement.querySelector('.CTCP_' + command),
+                                reply = back();
                             if (elCTCP != null)
-                                elCTCP.innerHTML = back();
+                                elCTCP.innerHTML = reply;
+                            project.CTCPReply(user.ServerHostname, user.nickname, command, reply);
                         }
                         switch (command) {
                             case 'PING':
@@ -160,21 +153,20 @@ function IRC() {
                             case 'SOURCE'://http://www.irchelp.org/protocol/ctcpspec.html?
                                 CTCPReply(function () { return arMsg[2]; });
                                 break;
-                                /*
-                            case 'AVATAR'://http://www.kvirc.ru/wiki/HOWTO:%D0%90%D0%B2%D0%B0%D1%82%D0%B0%D1%80%D1%8B_%D0%B2_KVirc
-                                break;
-                            case 'DCC'://https://en.wikipedia.org/wiki/Direct_Client-to-Client
+//                            case 'AVATAR'://http://www.kvirc.ru/wiki/HOWTO:%D0%90%D0%B2%D0%B0%D1%82%D0%B0%D1%80%D1%8B_%D0%B2_KVirc
+//                                break;
+//                            case 'DCC'://https://en.wikipedia.org/wiki/Direct_Client-to-Client
                                 //пересылка файлов, чат напрямую минуя IRC сервер
-                                break;
-                            case 'FINGER'://http://www.irchelp.org/protocol/ctcpspec.html?
+//                                break;
+//                            case 'FINGER'://http://www.irchelp.org/protocol/ctcpspec.html?
                                 //не реагирую потому что в данный момент не могу получть мое реальное имя потому что отсутствует g_user.IRCuser на веб странице IRCSever
-                                break;
-                            case 'USERINFO'://KVIrc возвращет: Age=8; Gender=Male; Location=Russia; Languages=Russian, English; I'm too lazy to edit this field.
-                                break;
-                                */
+//                                break;
+//                            case 'USERINFO'://KVIrc возвращет: Age=8; Gender=Male; Location=Russia; Languages=Russian, English; I'm too lazy to edit this field.
+//                                break;
                         }
                     }
                 });
+                */
                 return;
             } else {
                 switch (g_IRC.help) {
@@ -192,7 +184,7 @@ function IRC() {
         if (typeof element == 'undefined')
             element = 'p';
         elMessage = document.createElement(element);
-        var elMessages = document.getElementById('messages');
+        var elMessages = project.getElementMessages();//document.getElementById('messages');
 
         //буквы одинаковой ширины. <pre> нужен для того что бы не пропадали идущие подряд пробелы
         elMessage.innerHTML = '<pre style="margin:0;"><FONT style="font-family:monospace;font-size:'
@@ -202,6 +194,97 @@ function IRC() {
         elMessages.appendChild(elMessage);
         //если вызвать эту функцию то на веб странице IRC канала заголовок страницы поднимется вверх если открыть свойства этого канала в заголовке страницы
         elMessage.scrollIntoView();
+    }
+
+    // CTCP reply
+    // See https://en.wikipedia.org/wiki/Client-to-client_protocol for details
+    this.ReplyCTCP = function (command, message, nick) {
+        if (nick == undefined)
+            consoleError('IRC.ReplyCTCPversion(' + message + ') nick: ' + nick);
+        project.getElIRCServer().querySelectorAll('.IRCuser').forEach(function (elUser) {
+            var user = getUserElUser(elUser);
+            if (user.nickname == nick) {
+                var parentElement = elUser.querySelector('.treeView').params.branch.parentElement;//пользователь в заголовке веб страницы
+                if (parentElement == undefined)
+                    parentElement = elUser;
+                function CTCPReply(back) {
+                    var elCTCP = parentElement.querySelector('.CTCP_' + command),
+                        reply = back();
+                    if (elCTCP != null)
+                        elCTCP.innerHTML = reply;
+                    project.CTCPReply(user.ServerHostname, user.nickname, command, reply);
+                }
+                switch (command) {
+                    case 'PING':
+                        CTCPReply(function () { return ((timeStampInMs() - message) / 1000) + ' ' + lang.sec; });
+                        break;
+                    case 'VERSION':
+                    case 'TIME':
+                    case 'CLIENTINFO'://http://www.irchelp.org/protocol/ctcpspec.html?
+                    case 'SOURCE'://http://www.irchelp.org/protocol/ctcpspec.html?
+                        CTCPReply(function () { return message; });
+                        break;
+//                            case 'AVATAR'://http://www.kvirc.ru/wiki/HOWTO:%D0%90%D0%B2%D0%B0%D1%82%D0%B0%D1%80%D1%8B_%D0%B2_KVirc
+//                                break;
+//                            case 'DCC'://https://en.wikipedia.org/wiki/Direct_Client-to-Client
+//пересылка файлов, чат напрямую минуя IRC сервер
+//                                break;
+//                            case 'FINGER'://http://www.irchelp.org/protocol/ctcpspec.html?
+//не реагирую потому что в данный момент не могу получть мое реальное имя потому что отсутствует g_user.IRCuser на веб странице IRCSever
+//                                break;
+//                            case 'USERINFO'://KVIrc возвращет: Age=8; Gender=Male; Location=Russia; Languages=Russian, English; I'm too lazy to edit this field.
+//                                break;
+                }
+            }
+        });
+    }
+    this.getCTCP = function (message, sender) {
+        // Client-to-client protocol  (CTCP)
+        //https://en.wikipedia.org/wiki/Client-to-client_protocol
+        //http://www.irchelp.org/protocol/ctcpspec.html?
+        if ((message.length > 0) && (message.charCodeAt(0) == 1) && (message.charCodeAt(message.length - 1) == 1)) {
+            var IRCclient = ' Web IRC client - Bonalink  ' + window.location.protocol + '//' + window.location.hostname + '/Chat/?tab=IRC';
+            var reply;
+            var message2 = message.substr(1, message.length - 2).toUpperCase();
+            switch (message2) {
+                case 'VERSION':
+                    reply = IRCclient + '  Browser - ' + DetectRTC.browser.name + ' ' + DetectRTC.browser.version
+                        + '. UTC - ' + DetectRTC.osName + ' ' + DetectRTC.osVersion
+                        + (DetectRTC.isMobileDevice ? ' mobile device' : ' desktop');
+                    break;
+                case 'TIME':
+                    reply = ' ' + new Date();
+                    break;
+                case 'CLIENTINFO'://http://www.irchelp.org/protocol/ctcpspec.html?
+                    reply = IRCclient + '  - Supported tags: PING,VERSION,CLIENTINFO,TIME,SOURCE';
+                    break;
+                case 'SOURCE'://http://www.irchelp.org/protocol/ctcpspec.html?
+                    reply = IRCclient;
+                    break;
+                    /*
+                case 'AVATAR'://http://www.kvirc.ru/wiki/HOWTO:%D0%90%D0%B2%D0%B0%D1%82%D0%B0%D1%80%D1%8B_%D0%B2_KVirc
+                    break;
+                case 'DCC'://https://en.wikipedia.org/wiki/Direct_Client-to-Client
+                    //пересылка файлов, чат напрямую минуя IRC сервер
+                    break;
+                case 'FINGER'://http://www.irchelp.org/protocol/ctcpspec.html?
+                    //не реагирую потому что в данный момент не могу получть мое реальное имя потому что отсутствует g_user.IRCuser на веб странице IRCSever
+                    break;
+                case 'USERINFO'://KVIrc возвращет: Age=8; Gender=Male; Location=Russia; Languages=Russian, English; I'm too lazy to edit this field.
+                    break;
+                    */
+            }
+            if (reply == undefined) {
+                var ping = 'PING';
+                if (message2.indexOf(ping) == 0) reply = '';
+            }
+            if (reply != undefined) {
+                project.get(sender, 'NOTICE ' + sender + ' :' + message[0] + message2 + reply + message[0]);
+                return true;
+            }
+            consoleError('CTCP: ' + message);
+        }
+        return false;
     }
     this.clearReply = function () {
         consoleLog('IRC.clearReply()');
@@ -241,7 +324,6 @@ function IRC() {
         AddMessageToChat('', { nickname: Nick }, ' ' + lang.joined);//has joined
     }
     this.onIsClosePrivate = function (Nick) {
-//        consoleLog('IRC.onIsClosePrivate(' + Nick + ')');
         this.onUserPartedChannel(g_chatRoom.RoomName, Nick);
     }
     this.MessageError2 = function (message) {
@@ -263,13 +345,29 @@ function IRC() {
         this.channelEvent(message.Message.Parameters[0], function (IRCChannel) {
             var elTopic = IRCChannel.querySelector('.topic');
             IRCChannel.querySelector('.wait').innerHTML = '';
-            inputKeyFilter.TextAdd(lang.topicUpdated//'Channel's topic was updated'
-                , elTopic, "uparrowdivgreen", true);
+            //Если не делать эту проверку, то сообщение о том, что тема слишком длинная промелькет слишком быстро
+            //потому что событие this.onTopicTooLong происходит раньше чем this.onTopic
+            if (!this.TopicTooLong)
+                inputKeyFilter.TextAdd(lang.topicUpdated//'Channel\'s topic was updated'
+                    , elTopic, "uparrowdivgreen", true);
+            this.TopicTooLong = false;
             var topic = message.Message.Parameters[1];
             if (typeof elTopic.value == 'undefined')
                 elTopic.innerHTML = topic;
             else elTopic.value = topic;
             elTopic.myData.valueOld = topic;
+        });
+        this.CSTopic(message);
+    }
+    this.TopicTooLong = false;
+    this.onTopicTooLong = function (channel, MaxTopicLength) {
+        consoleLog('IRC.onTopicTooLong(MaxTopicLength = ' + MaxTopicLength + ')');
+        this.channelEvent(channel, function (IRCChannel) {
+            this.TopicTooLong = true;
+            var elTopic = IRCChannel.querySelector('.topic');
+            IRCChannel.querySelector('.wait').innerHTML = '';
+            inputKeyFilter.TextAdd(lang.topicTooLong + MaxTopicLength//'Channel\'s topic too long. Max topic length is '
+                , elTopic, "downarrowdivred", true);
         });
     }
     this.onclickUpdateTopic = function () {
@@ -284,7 +382,7 @@ function IRC() {
             return;
         }
         elParent.querySelector('.wait').innerHTML = getWaitIconBase();
-        $.connection.chatHub.server.ircSetTopic(elTopic.myData.a.params.channel, elTopic.value);
+        $.connection.chatHub.server.ircSetTopic(elTopic.myData.a == null ? elTopic.myData.channelName : elTopic.myData.a.params.channel, elTopic.value);
     }
     this.channelEvent = function (channelName, callback) {
         document.querySelectorAll('.IRCChannel').forEach(function (IRCChannel) {
@@ -314,7 +412,7 @@ function IRC() {
         var elCol2;
         var topicClass = ' class="topic"';
         if (isCnannelOperator) {
-            elCol2 = '<input' + topicClass + ' value="' + message.Topic + '" />'
+            elCol2 = '<input' + topicClass + ' value="' + message.Topic + '" style="width:97%" />'
                 + '<input type="button" onclick="javascript: g_IRC.onclickUpdateTopic()" value="' + lang.update + '" />'//Update
                 + '<span class="wait"></span>'
         } else elCol2 = '<span' + topicClass + '>' + g_IRC.mircToHtml(message.Topic) + '</span>';
@@ -326,6 +424,7 @@ function IRC() {
             if (elTopic) {
                 elTopic.myData = {
                     a: IRCChannel.parentElement.querySelector('.treeView')
+                    , channelName: message.Channel.Name
                     , valueOld: message.Topic
                 }
             }
@@ -414,13 +513,89 @@ function IRC() {
             myTreeView.onclickBranch(elIRCServers.querySelector('.treeView'));
         */
     }
+    this.whoIsDlg = function (WhoIsResponse, elWhoisDlg) {
+        var elTable = elWhoisDlg.querySelector('table');
+        elTable.innerHTML = '';
+
+        function appendItem(key, value, title) {
+            var el = document.createElement("tr");
+            el.innerHTML = g_IRC.tableCells(key, value);
+            if (typeof title != 'undefined')
+                el.title = title;
+            elTable.appendChild(el);
+        }
+        appendItem(lang.nick, {
+            value: g_user.nickname == WhoIsResponse.User.Nick ?
+                '<input class="nickInput" value="' + WhoIsResponse.User.Nick + '" />'
+                + '<input type="button" onclick="g_IRC.onclickNick(event)" value="⥀" title="' + lang.update + '">'//🔃
+                : WhoIsResponse.User.Nick,
+            className: 'nick'
+        });//Nick
+        appendItem(lang.name, WhoIsResponse.User.User, lang.fullName);//User Name
+        appendItem(lang.realName, WhoIsResponse.User.RealName);//'Real Name'
+        if (WhoIsResponse.Location != null)
+            appendItem(lang.location, WhoIsResponse.Location);//Location
+        appendItem(lang.address, WhoIsResponse.User.Hostmask, lang.hostmask);//
+
+        //geolocation
+        var elGeolocation = elWhoisDlg.querySelector('#geolocation');
+        if (elGeolocation != null)
+            elGeolocation.parentElement.removeChild(elGeolocation);
+        var arIP = WhoIsResponse.User.Hostmask.match(/.*@([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)/);
+        if ((arIP != null) && (arIP.length == 5)) {
+            elWhoisDlg.appendChild(myTreeView.createBranch({
+                name: lang.geolocationPrompt,//Geolocation
+                id: 'geolocation',
+                params:
+                {
+                    createBranch: function () { return g_IRC.geolocation(arIP[1] + '.' + arIP[2] + '.' + arIP[3] + '.' + arIP[4]); }
+                }
+            }));
+        }
+
+        if (WhoIsResponse.SecondsIdle != -1)
+            appendItem(lang.IRCSecondsIdle, readableTimestamp(WhoIsResponse.SecondsIdle)// + ' ' + lang.sec
+                , lang.IRCSecondsIdleTitle);//Seconds since this user last interacted with IRC
+        appendItem(lang.server, WhoIsResponse.Server + ' ' + WhoIsResponse.ServerInfo);//Server
+        var userStatus = '';
+        if (WhoIsResponse.IrcOp)
+            userStatus += lang.IRCOp + ' ';//Is operator.
+        if (WhoIsResponse.RegNick)
+            userStatus += lang.IRCRegNick + ' ';//Registered nickname.
+        if (userStatus != '')
+            appendItem(lang.status, userStatus);//'User', lang.IRCOpTitle);//User is a network operator.
+        if (WhoIsResponse.LoggedInAs != null)
+            appendItem(lang.NSLoggedInAs, WhoIsResponse.LoggedInAs, lang.NSLoggedInAsTitle);//The nickserv account this user is logged into
+
+        //Nick traces
+        var NickTracesKeys = Object.keys(WhoIsResponse.NickTraces);
+        if (NickTracesKeys.length > 0) {
+            var NickTraces = '';
+            for (var i = 0; i < NickTracesKeys.length; i++) {
+                NickTraces += WhoIsResponse.NickTraces[NickTracesKeys[i]] + '. ';
+            }
+            appendItem(lang.IRCNickTraces, NickTraces);//Nick traces
+        }
+
+        //Actually. Use irc.efnet.org IRC server for testing
+        if (WhoIsResponse.Actually != null)
+            Object.keys(WhoIsResponse.Actually).forEach(function (item) {
+                appendItem(item, WhoIsResponse.Actually[item]);
+            });
+
+        //Other
+        if (WhoIsResponse.Other != null)
+            WhoIsResponse.Other.forEach(function (item) {
+                appendItem('', item);
+            });
+
+        //channels
+        var elChannels = elWhoisDlg.querySelector('.Channels');
+        elChannels.innerHTML = '';
+        g_IRC.appendJoinedChannels(elChannels, WhoIsResponse);
+    }
     this.onWhoIsReceived = function (JSONWhoIsResponse, nick) {
         var WhoIsResponse = JSONWhoIsResponse;
-/*
-        var WhoIsResponse;
-        if (JSONWhoIsResponse != '')
-            WhoIsResponse = JSON.parse(JSONWhoIsResponse);
-*/
         var Nick;
         if (typeof WhoIsResponse != 'undefined')
             Nick = WhoIsResponse.User.Nick;
@@ -439,7 +614,7 @@ function IRC() {
 
         document.querySelectorAll('.IRCWhois').forEach(function (elWhoisDlg) {
             if (typeof nick == 'undefined')
-                nick = this.User.Nick;
+                nick = WhoIsResponse.User.Nick;
             if (nick != elWhoisDlg.nickname)
                 return;
 
@@ -448,97 +623,16 @@ function IRC() {
                 elIRCJoinedChannels = elIRCJoinedChannels.parentElement;
                 if (elIRCJoinedChannels == null)
                     break;
-                if(elIRCJoinedChannels.id == 'IRCJoinedChannels')
+                if (elIRCJoinedChannels.id == 'IRCJoinedChannels')
                     boIRCJoinedChannelsChild = true;
             }
 
-            var elTable = elWhoisDlg.querySelector('table');
-            elTable.innerHTML = '';
-
-            function appendItem(key, value, title) {
-                var el = document.createElement("tr");
-                el.innerHTML = g_IRC.tableCells(key, value);
-                if (typeof title != 'undefined')
-                    el.title = title;
-                elTable.appendChild(el);
-            }
-            if (JSONWhoIsResponse == '') {
-                appendItem(nick, lang.IRCquit);//'has quit IRC'
-                elWhoisDlg.querySelector('.Channels').innerHTML = '';//remove wait.gif
-                return;
-            }
-
-            appendItem(lang.nick, {
-                value: g_user.nickname == this.User.Nick ?
-                    '<input class="nickInput" value="' + this.User.Nick + '" />'
-                    + '<input type="button" onclick="g_IRC.onclickNick(event)" value="⥀" title="' + lang.update + '">'//🔃
-                    : this.User.Nick,
-                className: 'nick'
-            });//Nick
-            appendItem(lang.name, this.User.User, lang.fullName);//User Name
-            appendItem(lang.realName, this.User.RealName);//'Real Name'
-            if (this.Location != null)
-                appendItem(lang.location, this.Location);//Location
-            appendItem(lang.address, this.User.Hostmask, lang.hostmask);//
-
-            //geolocation
-            var arIP = this.User.Hostmask.match(/.*@([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)/);
-            if ((arIP != null) && (arIP.length == 5)) {
-                elWhoisDlg.appendChild(myTreeView.createBranch({
-                    name: lang.geolocationPrompt,//Geolocation
-                    params:
-                    {
-                        createBranch: function () { return g_IRC.geolocation(arIP[1] + '.' + arIP[2] + '.' + arIP[3] + '.' + arIP[4]); }
-                    }
-                }));
-            }
-
-            if (this.SecondsIdle != -1)
-                appendItem(lang.IRCSecondsIdle, readableTimestamp(this.SecondsIdle)// + ' ' + lang.sec
-                    , lang.IRCSecondsIdleTitle);//Seconds since this user last interacted with IRC
-            appendItem(lang.server, this.Server + ' ' + this.ServerInfo);//Server
-            var userStatus = '';
-            if (this.IrcOp)
-                userStatus += lang.IRCOp + ' ';//Is operator.
-            if (this.RegNick)
-                userStatus += lang.IRCRegNick + ' ';//Registered nickname.
-            if (userStatus != '')
-                appendItem(lang.status, userStatus);//'User', lang.IRCOpTitle);//User is a network operator.
-            if (this.LoggedInAs != null)
-                appendItem(lang.NSLoggedInAs, this.LoggedInAs, lang.NSLoggedInAsTitle);//The nickserv account this user is logged into
-
-            //Nick traces
-            var NickTracesKeys = Object.keys(this.NickTraces);
-            if (NickTracesKeys.length > 0) {
-                var NickTraces = '';
-                for (var i = 0; i < NickTracesKeys.length; i++) {
-                    NickTraces += this.NickTraces[NickTracesKeys[i]] + '. ';
-                }
-                appendItem(lang.IRCNickTraces, NickTraces);//Nick traces
-            }
-
-            //Actually. Use irc.efnet.org IRC server for testing
-            if (this.Actually != null)
-                Object.keys(this.Actually).forEach(function (item) {
-                    appendItem(item, WhoIsResponse.Actually[item]);
-                });
-
-            //Other
-            if (this.Other != null)
-                this.Other.forEach(function (item) {
-                    appendItem('', item);
-                });
-
-            //channels
-            var elChannels = elWhoisDlg.querySelector('.Channels');
-            elChannels.innerHTML = '';
-            g_IRC.appendJoinedChannels(elChannels, WhoIsResponse);
-            if (this.User.Nick == g_user.nickname)
+            g_IRC.whoIsDlg(WhoIsResponse, elWhoisDlg);
+            if (WhoIsResponse.User.Nick == g_user.nickname)
                 setTimeout(function () { onresize() }, 0);//нужно исправить размеры страницы когда окрывается окно моего пользователя в заголовке страницы)
-            //setTimeout(function () { elWhoisDlg.scrollIntoView(); }, 0);
-        }, WhoIsResponse);
+        });
         if (!boIRCJoinedChannelsChild)
-            this.joinedChannels(WhoIsResponse);
+            g_IRC.joinedChannels(WhoIsResponse);
     }
     this.onNickChanged = function (oldNick, newNick, Hostmask) {
         consoleLog('IRC.onNickChanged(oldNick: ' + oldNick + ', newNick: ' + newNick + ')');
@@ -644,14 +738,6 @@ function IRC() {
         this.waitIRCMessageChannel(channelName);
         return true;
     }
-/*
-    this.removeMessageElement = function (channelName) {
-        var elMessage = document.getElementById('IRCMessageChannel' + channelName);
-        if (elMessage == null)
-            return;
-        elMessage.parentElement.removeChild(elMessage);
-    }
-*/
     this.partedChannel = function (channelName) {
         var IRCChannels = document.querySelectorAll('.IRCRoom');
         for (var i = 0; i < IRCChannels.length; i++) {
@@ -678,6 +764,10 @@ function IRC() {
         ircClient.allIRCReply.forEach(function (reply) { g_IRC.Reply(reply); });
         delete ircClient.allIRCReply;
         this.ircClient = ircClient;
+
+        if (g_IRC.getChaturbateUsers != undefined)
+            g_IRC.getChaturbateUsers();
+
         g_IRC.updateProfile2(ircClient);
         g_user.id = ircClient.User.id;//for file transfer
         onChannelPageReady();
@@ -731,23 +821,21 @@ function IRC() {
         var target = event.target || event.srcElement;
         target.parentElement.parentElement.querySelector('.treeView').params.branch.onOpenBranch(target);
     }
-    this.createJoin = function (IRCChannelName, noAnimate) {
+    this.createJoin = function (IRCChannelName, noAnimate, disabled) {
         //<div class="gradient_gray IRCJoin">
         var elIRCJoin = document.createElement('div');//el.cloneNode();
         elIRCJoin.className = "gradient_gray IRCJoin" + (noAnimate ? '' : ' b-toggle');
-//        elIRCJoin.childNodes = new DOMParser().parseFromString(getSynchronousResponse('IRCJoin.html'), "text/html");
         elIRCJoin.innerHTML = getSynchronousResponse('IRCJoin.html');
 
         var elIRCChannelName = elIRCJoin.querySelector(".IRCChannelName");
         if (typeof IRCChannelName == 'undefined') IRCChannelName = get_cookie("IRCChannelName");
-        else elIRCChannelName.disabled = true;
+        else elIRCChannelName.disabled = disabled == undefined ? true : disabled;
         elIRCChannelName.value = IRCChannelName;
         elIRCJoin.disabledChannelName = elIRCChannelName.disabled;
 
         elIRCJoin.querySelector(".IRCCloseJoin").title = lang.close;//Close
         elIRCJoin.querySelector(".IRCJoinHeader").innerHTML = '⎆ ' + lang.joinChannel;//Join to channel
         elIRCJoin.querySelector(".IRCChannelNameLabel").innerHTML = lang.channelName + ': ';//Channel Name
-//        elIRCJoin.querySelector(".channelToggle").href = '?IRCChannel=' + encodeURIComponent(IRCChannelName) + '&IRCServerID=' + g_IRC.IRCServerID;
 
         elIRCJoin.querySelector(".AdditionallyTree").appendChild(myTreeView.createBranch(
         {
@@ -790,9 +878,7 @@ function IRC() {
     //use in IRC Server and IRC channel and private web pages
     this.onIsJoined = function (channelName, joined) {
         consoleLog('IRC.onIsJoined(' + channelName + ', ' + joined + ')');
-//consoleLog('IRC.onIsJoined start chatusers id : ' + document.getElementById('chatusers').id + ' childNodes.length ' + document.getElementById('chatusers').childNodes.length);
         g_IRC.joinedChannel(channelName, joined);
-//consoleLog('IRC.onIsJoined 4 chatusers id : ' + document.getElementById('chatusers').id + ' childNodes.length ' + document.getElementById('chatusers').childNodes.length);
 
         //IRCRoom
         document.querySelectorAll('.IRCRoom').forEach(function (elIRCRoom) {
@@ -807,7 +893,6 @@ function IRC() {
                 IRCChannelName = '#' + IRCChannelName;
             if (IRCChannelName == channelName) {
                 var elJoin = elIRCJoin.querySelector('.join');
-//                elJoin.value = joined ? lang.part : lang.join;
                 elJoin.params.joined = joined;
                 elIRCJoin.querySelector('.wait').innerHTML = '';
                 g_IRC.JoinDisable(elIRCJoin, joined, false);
@@ -895,10 +980,8 @@ function IRC() {
             if (elInput.className == 'join') {
                 elInput.disabled = disableJoin;
                 if (disable) {
-//                    elInput.value = lang.reset;//Reset
                     elInput.params.joining = true;
                 } else {
-//                    elInput.value = lang.join;//Join
                     elInput.params.joining = false;
                 }
             }
@@ -909,28 +992,8 @@ function IRC() {
         if (!disable) {
             this.disableRememberPass(elIRCJoin);
             elIRCChannelName.disabled = typeof elIRCJoin.disabledChannelName == 'undefined' ? false : elIRCJoin.disabledChannelName;
-        }// else elIRCJoin.disabledChannelName = elIRCChannelName.disabled;
+        }
     }
-/*
-    this.displayJoinedMessage = function (channelName, noDisplayMessage) {
-        if (noDisplayMessage)
-            return;
-        displayMessage(function (elMessage) {
-            elMessage.id = 'IRCMessageChannel' + channelName;
-            elMessage.innerHTML =
-                lang.joinedChannel.replace('%s', channelName)//You has joined to "%s" channel
-                + '<hr><div align="center">'
-                    + '<a href="?IRCChannel=' + encodeURIComponent(channelName) + '&IRCServerID=' + g_IRC.IRCServerID + '"'
-                        + ' target="_blank" id="IRCJoinChannelGo" onclick="javascript: return g_IRC.onclickOpenChannelPage(\'' + channelName + '\')">'
-                        + '<input type="button" value="' + lang.open + '" >'//Open
-                    + '</a>'
-                    + '<input type="button" onclick="javascript: g_IRC.onclickPart(\'' + channelName + '\')" value="' + lang.part + '" >'//Part
-                    + '<span class="wait"></span>'
-                + '</div>'
-            ;
-        });
-    }
-*/
     this.channelResponse = function (channelName, response) {
         document.getElementById('users').querySelectorAll('.IRCJoin').forEach(function (elIRCJoin) {
             if (elIRCJoin.querySelector('.IRCChannelName').value == channelName) {
@@ -966,7 +1029,17 @@ function IRC() {
                 onclickBranch: onclickBranch,
                 onOpenBranch: function (a) {
                     a.parentElement.querySelector('.CTCP_' + name).innerHTML = getWaitIconBase();
-                    $.connection.chatHub.server.sendMessage(charCode + name + (arg == undefined ? '' : arg()) + charCode, this.User.nickname);
+                    project.CTCPcommand(this.User, a, name);
+/*
+                    switch (name) {
+                        case 'VERSION':
+                            project.CTCPversion(this.User, a);
+                            break;
+                        default:
+                            console.error('under constraction');
+                            project.sendMessage(this.User, charCode + name + (arg == undefined ? '' : arg()) + charCode, a);
+                    }
+*/
                 },
                 branch: function () {
                     var el = document.createElement("div");
@@ -999,7 +1072,7 @@ function IRC() {
                             , onclickBranch: onclickBranch
                             , onOpenBranch: function (a) {
                                 a.parentElement.querySelector('.Channels').innerHTML = getWaitIconBase();
-                                $.connection.chatHub.server.ircWhoIs(this.User.nickname);
+                                project.whoIs(this.User);
                             }
   //                        , scrollIntoView: true
                             , branch: function () {
@@ -1066,12 +1139,6 @@ function IRC() {
                 //, animate: animate
                     , User: user
                     , onclickBranch: onclickBranch
-/*
-                    , onOpenBranch: function (a) {
-                        a.parentElement.querySelector('.Channels').innerHTML = getWaitIconBase();
-//                                $.connection.chatHub.server.ircWhoIs(this.User.nickname);
-                    }
-*/
                 //                        , scrollIntoView: true
                     , branch: function () {
                         var el = document.createElement("div"), add;
@@ -1085,7 +1152,6 @@ function IRC() {
                         ;
                         if (this.User.IRCuser.Mode == null)
                             return el;
-//                        consoleLog('user: ' + this.User.nickname + ' mode: ' + this.User.IRCuser.Mode);
                         this.User.displayMode = function (el) {
                             if (!el.classList.contains('IRCMode')) {
                                 consoleError('el.className: ' + el.className);
@@ -1127,47 +1193,8 @@ function IRC() {
                                 elTr.appendChild(elTd);
                                 elTable.appendChild(elTr);
                             }
-//                        el.appendChild(elTable);
                         }
                         this.User.displayMode(el);
-/*
-                        el.querySelector("h3").innerHTML = this.User.nickname + '. ' + lang.IRC.mode//'Modes'
-                            + ': ' + this.User.IRCuser.Mode;
-                        var elTable = el.querySelector("table");
-                        for (i = 0; i < this.User.IRCuser.Mode.length; i++) {
-                            var c = this.User.IRCuser.Mode[i],
-                                elTr = document.createElement("tr"),
-                                elTd = document.createElement("td"),
-                                elB = document.createElement("b");
-                            elTd.className = 'col';
-                            elTd.style.paddingTop = '3px';
-                            elB.style = 'float:right';
-                            elB.innerHTML = c + ':';
-                            elTd.appendChild(elB);
-                            elTr.appendChild(elTd);
-                            elTd = document.createElement("td");
-                            elTd.className = 'col';
-                            elTd.style.paddingTop = '3px';
-                            switch (c) {
-                                case '+': add = true; continue;
-                                case '-': add = false; continue;
-                                case 'i':
-                                    if (add) elTd.innerHTML = lang.IRC.modes.i;//Makes you so called 'invisible'. A confusing term to mean that you're just hidden from /WHO and /NAMES if queried by someone outside the channel. Normally set by default through set::modes-on-connect (and otherwise by the users' IRC client).
-                                    break;
-                                case 'r':
-                                    if (add) elTd.innerHTML = lang.IRC.modes.r;//Indicates this is a "registered nick"
-                                    break;
-                                case 'x':
-                                    if (add) elTd.innerHTML = lang.IRC.modes.x;//Gives you a hidden / cloaked hostname.
-                                    break;
-                                default: consoleError('this.User.IRCuser.Mode[' + i + ']: ' + this.User.IRCuser.Mode[i]);
-                                    break;
-                            }
-                            elTr.appendChild(elTd);
-                            elTable.appendChild(elTr);
-                        }
-//                        el.appendChild(elTable);
-*/
                         return el;
                     }
                 });
@@ -1203,7 +1230,6 @@ function IRC() {
             + '<table></table>'
         ;
         var elTable = el.querySelector("table");
-//        var elTable = document.createElement("table");
         elTable.className = 'Geolocation';
         var geolocation = JSON.parse(getSynchronousResponse('https://ipapi.co/' + ip + '/json'));
         for (var prop in geolocation) {
@@ -1301,8 +1327,6 @@ function IRC() {
             if (user.displayMode == undefined)
                 return;
 
-//            var elMode = elIRCuser.querySelector('.IRCMode');
-//            var elMode = elIRCuser.querySelector('.treeView').branchElement.querySelector('.IRCMode');
             var branchElement = elIRCuser.querySelector('.treeView').branchElement;
             if (branchElement == undefined)
                 return;
@@ -1310,17 +1334,10 @@ function IRC() {
                 if ((el.branchElement != undefined) && el.branchElement.classList.contains('IRCMode'))
                     user.displayMode(el.branchElement);
             });
-/*
-            if (elMode == null)
-                return;
-            if (user.displayMode != undefined)
-                user.displayMode();
-*/
         });
     }
 }
-function IRCInit() {
-}
+function IRCInit() {}
 var g_IRC;
 g_IRC = new IRC();
 IRCInit();
@@ -1330,10 +1347,6 @@ function onclickIRCCommand() {
 };
 function createIRCRoom(channel) {
     consoleLog('createIRCRoom(' + JSON.stringify(channel) + ')');
-/*
-if (channel.RoomName == '#WebChat')
-    consoleDebug('#WebChat');
-*/
     return myTreeView.createBranch(
         {
             name: channel.RoomName
@@ -1409,17 +1422,7 @@ function onclickIRCJoinChannel2(IRCChannelName, pass) {
         g_IRC.channelResponse(IRCChannelName, getErrorTag(lang.IRCJoinedBefore));//You joined this channel before
         return false;
     }
-    if (typeof pass == 'undefined')
-        pass = '';
-    if (pass != '')
-        pass = ' ' + pass;
-
-    //https://tools.ietf.org/html/rfc1459#section-4.2.1
-    g_IRC.get('JOIN ' + IRCChannelName + pass);
-
-    if (typeof g_IRC.elIRCConnectResponse != 'undefined')
-        g_IRC.elIRCConnectResponse.innerHTML = getWaitIconBase(' title="' + lang.joining.replace('%s', IRCChannelName) + '"');//'Joining to "%s" channel.'
-
+    onclickIRCJoin2(document.getElementById('IRC'), IRCChannelName, pass, false);
     return true;
 }
 function onUserDisconnected(id, userName, usersCount, roomName) { }
@@ -1439,6 +1442,10 @@ function startHubIRC() {
     chat.client.onIRCChannelListRecieved = function (users, ChannelModes) { g_IRC.onChannelListRecieved(users, ChannelModes); }
     chat.client.onIRCMessageError = function (message) { g_IRC.onMessageError(message); }
     chat.client.onIRCReply = function (message) { g_IRC.Reply(stringToSpecialEntities(message)); }
+    chat.client.onIRCReplyCTCP = function (command, message, nick) {
+        g_IRC.ReplyCTCP(stringToSpecialEntities(command), stringToSpecialEntities(message),
+            stringToSpecialEntities(nick));
+    }
     chat.client.onIRCIsOpenPrivate = function (user) { g_IRC.onIsOpenPrivate(user); }
     chat.client.onIRCIsClosePrivate = function (user) { g_IRC.onIsClosePrivate(user); }
     chat.client.onIRCNickInUse = function (message) { g_IRC.onNickInUse(message); }
@@ -1447,15 +1454,14 @@ function startHubIRC() {
     chat.client.onIRCUserJoinedChannel = function (channelName, JSONIRCuser, prefix) { g_IRC.onUserJoinedChannel(channelName, JSONIRCuser, prefix); }
     chat.client.onIRCUserPartedChannel = function (channelName, userNick) { g_IRC.onUserPartedChannel(channelName, userNick); }
     chat.client.onIRCIsJoined = function (channelName, joined) { g_IRC.onIsJoined(channelName, joined); }
-//    chat.client.onIRCRemoveMessageElement = function (channelName) { g_IRC.removeMessageElement(channelName); }
     chat.client.onIRCTopic = function (message) { g_IRC.onTopic(message); }
+    chat.client.onIRCTopicTooLong = function (channel, MaxTopicLength) { g_IRC.onTopicTooLong(channel, MaxTopicLength); }
     chat.client.onIRCUserQuit = function (message) { g_IRC.onUserQuit(message); }
     chat.client.onIRCChannelTopicReceived = function (message, ChannelModes) { g_IRC.onChannelTopicReceived(message, ChannelModes); }
     chat.client.onIRCListStart = function (message) { g_IRC.onListStart(message); }
     chat.client.onIRCListReply = function (message) { g_IRC.onListReply(message); }
     chat.client.onIRCListEnd = function (message) { g_IRC.onListEnd(message); }
     chat.client.onIRCChannelMode = function (message) { g_IRC.onChannelMode(message); }
-//    chat.client.onIRCUserMode = function (message) { g_IRC.onUserMode(message); }
     chat.client.onIRCNickMode = function (nick, mode) { g_IRC.onNickMode(nick, mode); }
     chat.client.onIRCUserKicked = function (message) { g_IRC.onUserKicked(message); }
     chat.client.onIRCUserBanned = function (message) { g_IRC.onUserBanned(message); }
@@ -1468,4 +1474,4 @@ function startHubIRC() {
     chat.client.onIRCPrivatePageIsExists = function (channelName) { g_IRC.onPrivatePageIsExists(channelName); }
     chat.client.onIRCChannelPageIsExists = function (channelName) { g_IRC.onChannelPageIsExists(channelName); }
 }
-startHubIRC();
+startHubIRC(); 

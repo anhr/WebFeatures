@@ -415,7 +415,7 @@ peer = {
             // После завершения этой функции начнет срабатывать событие pc.onicecandidate
         }
         this.addPeer = function () {
-            this.setPeersCount();
+            this.setPeersCount();//вывести на экран количество зрителей или слушателей media передачи
             if (this.options.options == undefined)
                 return;
             //media broadcasting
@@ -449,6 +449,7 @@ peer = {
                 });
             } else consoleError('duplicate receiver: ' + user.nickname);
         }
+        //вывести на экран количество зрителей или слушателей media передачи
         this.setPeersCount = function () {
             var peersCount = 0;
             for (var peer in getVideoBlock(dataID).fileTransfer.peers) {
@@ -542,7 +543,7 @@ peer = {
                 delete peerBlock.fileTransfer.peers[message.userid];
                 if (myTreeView.branchLength(elReceivers) == 0)
                     elReceivers.parentElement.removeChild(elReceivers);
-                peer.setPeersCount();
+                peer.setPeersCount();//вывести на экран количество зрителей или слушателей media передачи
             } else consoleError('invalid message');
         }
         return true;

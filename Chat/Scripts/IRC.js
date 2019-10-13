@@ -42,6 +42,7 @@ function IRC() {
                 , elIRCNickname, "downarrowdivred");
             return;
         }
+
         var user = {};// = g_user;//нельзя просто приравнивать к g_user потомучто будет неправильный g_user.nickname
         user.browserID = this.browserID;
         user.nickname = elIRCNickname.value;
@@ -61,8 +62,8 @@ function IRC() {
         this.elIRCConnectResponse.innerHTML = getWaitIconBase(' title="' + lang.IRCWaitConnectipn + '"');//Waiting for IRC server connection to complete
         document.getElementById('IRCConnectError').innerHTML = '';
     }
-    this.onIsConneted = function (e) {
-        consoleLog('g_IRC.onIsConneted()');
+    this.onIsConnected = function (e) {
+        consoleLog('g_IRC.onIsConnected()');
         var elIRCURL = document.getElementById("IRCURL");
         inputKeyFilter.TextAdd(lang.IRCServerUsed//'Server in use'
             , elIRCURL, "downarrowdivred");

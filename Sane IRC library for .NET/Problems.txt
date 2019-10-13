@@ -1,0 +1,12 @@
+59
+IRC client. "irc.arcti.ca:6667"  Group: "EFnet" Name: "CA, AB," m_IRCServerIndex = 12
+81
+IRC client. "irc.esper.net:6667"  Group: "EsperNet" Name: "Random" m_IRCServerIndex = 83 идет много пингов :nova.esper.net 479 ChatSharp #MyChannel :Illegal channel name
+
+IRC client. "eu.undernet.org:6667"  Group: "Undernet" Name: "Random EU" m_IRCServerIndex = 40 Exception thrown: 'System.ObjectDisposedException' in System.dll
+
+IRC client. "irc.azzurra.org:6667"  Group: "Azzurra" Name: "Random" m_IRCServerIndex = 60 бесконечный пинг
+
+IRC client. "irc.icq.com:6667"  Group: "IrCQNet" Name: "Random" m_IRCServerIndex = 108 System.Net.Sockets.SocketError.ConnectionRefused
+
+IRC client. "irc.ircworld.nl:6667"  Group: "IrcWorld" Name: "Random" m_IRCServerIndex = 112 не соединяется и не появляется сообщение об ошибке

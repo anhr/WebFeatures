@@ -1033,5 +1033,6 @@ function privMsgFileTransfer(fileTransfer) { }
 function sendFileRequest(userInfo) { $.connection.chatHub.server.sendFileRequest(g_user.id, userInfo); }
 function fTRoomName() { return g_chatRoom.RoomName; }
 function isHelpContentSignalR() { return true; }
+//вывести на экран количество зрителей или слушателей media передачи
 function setPeersCount(dataID, peersCount) { $.connection.chatHub.server.peersCount(dataID, peersCount); }
 

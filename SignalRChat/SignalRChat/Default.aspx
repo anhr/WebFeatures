@@ -1,13 +1,25 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="SignalRChat.Default" Async="true" %>
 <%
-    //https://support.microsoft.com/ru-ru/kb/239875
-    //http://www.w3schools.com/asp/coll_servervariables.asp
-    if (Request.ServerVariables.Get("HTTPS") == "off")
+    //Receive a request from IRCBot application
+    string request = Request.Params["request"];
+    if (string.IsNullOrEmpty(request))
     {
-        string strQueryString = Request.ServerVariables.Get("QUERY_STRING");
-        if (strQueryString != "")
-            strQueryString = "?" + strQueryString;
-        Response.Redirect("https://" + Request.ServerVariables.Get("SERVER_NAME") + Request.ServerVariables.Get("URL") + strQueryString);
+        //Redirect to Secure Sockets Layer (SSL)
+        //https://support.microsoft.com/ru-ru/kb/239875
+        //http://www.w3schools.com/asp/coll_servervariables.asp
+        if (Request.ServerVariables.Get("HTTPS") == "off")
+        {
+            string strQueryString = Request.ServerVariables.Get("QUERY_STRING");
+            if (strQueryString != "")
+                strQueryString = "?" + strQueryString;
+            Response.Redirect("https://" + Request.ServerVariables.Get("SERVER_NAME") + Request.ServerVariables.Get("URL") + strQueryString);
+        }
+        //Если оставить эту строку, то не открывается веб стрвница SignalRChat
+        //return;
+    }
+    else
+    {
+        SignalRChat.Default.myResponce(Request, Response);
     }
 %>
 
@@ -265,6 +277,22 @@
             }
 
             object.innerHTML = '<img src="../../../ckeditor/plugins/smiley/images/' + image + '" alt="" title="' + title + '">';
+        }
+        //Список функций, которые в проектах IRCBot и SignalRChat имеют разные коды
+        project = {
+            whoIs: function (User) {
+                consoleLog('whoIs ' + User.ServerHostname + ' ' + User.nickname);
+                $.connection.chatHub.server.ircWhoIs(User.nickname);
+            },
+            sendMessage: function (User, message, a) { $.connection.chatHub.server.sendMessage(message, User.nickname); },
+
+            //https://en.wikipedia.org/wiki/Client-to-client_protocol
+            CTCPcommand: function (User, a, command) { $.connection.chatHub.server.ctcpCommand(User.nickname, command); },
+
+            getElementMessages: function () { return document.getElementById('messages'); },
+            getElIRCServer: function () { return document; },
+            get: function (sender, command) { g_IRC.get(command) },
+            CTCPReply: function (ServerHostname, nick, command, reply) {},
         }
     </script>
 
@@ -534,7 +562,6 @@
             </div>
         </div>
     </div>
-    <script type='text/javascript' src="Scripts/Default.js">
-    </script>
+    <script type='text/javascript' src="Scripts/Default.js"></script>
 </body>
 </html>

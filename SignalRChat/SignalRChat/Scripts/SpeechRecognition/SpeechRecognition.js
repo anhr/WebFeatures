@@ -45,6 +45,31 @@ speechRecognition = {
                 //            this.elSRSetup.querySelector('#SRHeader').innerHTML = lang.speechRecognitionSetup;//Speech recognition setup
                 speechRecognition.elSRSetup.querySelector("#checkboxSRLabel").innerHTML = lang.SRSetup.speechRecognition;//Speech Recognition
 
+                //SRAudioSource
+                speechRecognition.elSRSetup.querySelector("#SRAudioSourceLabel").innerHTML = '🎤 ' + lang.audioSource + ': ';//Audio source
+                var audioInputDevices = DetectRTC.audioInputDevices,
+                    elAudioSource = speechRecognition.elSRSetup.querySelector("#SRAudioSource");
+                elAudioSource.onchange = function (event) {
+                    consoleLog('elAudioSource.onchange');
+                    var elSelect = getElementFromEvent(event);
+                    SetCookie('SRAudioLabel', elSelect[elSelect.selectedIndex].value);
+                }
+                var curAudioLabel = get_cookie('SRAudioLabel');//selected audio device name
+                for (var i = 0; i < audioInputDevices.length; i++) {
+                    var audioInputDevice = audioInputDevices[i];
+                    var label = audioInputDevice.label;
+                    if (label == 'Please invoke getUserMedia once.')
+                        label = lang.microphone + ' ' + (i + 1);//For Opera mobile
+                    var option = document.createElement("option");
+                    option.text = label;
+                    if(audioInputDevice.label == curAudioLabel) option.selected = true;
+                    elAudioSource.add(option);
+//                    elementСameraSettingsBody += '<option value="' + audioInputDevice.deviceId + '"' + (audioInputDevice.label == curAudioLabel ? ' selected' : '') + '>' + label + '</option>';
+                    //Если не удалить audioInputDevice.toJSON то не будет работать JSON.stringify(audioInputDevice)
+                    //delete audioInputDevice.toJSON;
+                    //consoleLog('audioInputDevices[' + i + ']: ' + JSON.stringify(audioInputDevice));
+                }
+
                 //Language
                 speechRecognition.elSRSetup.querySelector("#SRLanguageLabel").innerHTML = lang.SRSetup.language + ': ';//Language
                 speechRecognition.selectLanguage = speechRecognition.elSRSetup.querySelector("#SRLanguage"); 
@@ -159,7 +184,7 @@ speechRecognition = {
                 }
             }
             speechRecognition.recognition.lang = language;//getLanguageCode();//'en-US';
-            speechRecognition.recognition.continuous = false;//true - После паузы в речи больше ничего не распознает но распозгавание не отключается.
+            speechRecognition.recognition.continuous = false;//true - После паузы в речи больше ничего не распознает но распознавание не отключается.
             speechRecognition.recognition.interimResults = false;//Контроллирует, следует ли возвращать промежуточные результаты (true) или нет (false.) Промежуточные результаты это результаты которые еще не завершены ( например SpeechRecognitionResult.isFinal свойство ложно.)
             speechRecognition.recognition.maxAlternatives = 1;
 
@@ -204,7 +229,9 @@ speechRecognition = {
                 var message = '';
                 switch (event.error) {
                     case "no-speech":
-                        consoleLog('Error occurred in speech recognition: ' + event.error);
+//                        consoleLog('Error occurred in speech recognition: ' + event.error);
+                        inputKeyFilter.TextAdd(lang.noSpeech//No speech was detected.
+                            , document.getElementById('speechRecognitionButton'), "downarrowdivred");
                         //message = lang.SRSetup.errors.noSpeech;//No speech was detected.
                         break;
                     case "aborted":
@@ -243,15 +270,38 @@ speechRecognition = {
             if (open) {
                 /*if (elSpeechRecognitionIn.innerHTML == '')*/ {
                     elSpeechRecognitionIn.innerHTML = '<meter high="0.25" max="1" value="0"></meter><span class="value"></span>';
-                    getMedia({
-                        audio: true,
-                        /*
+                    var hints = {
+                        //            audio: true,
                         //https://simpl.info/getusermedia/sources/
                         audio: {
                             optional: []
                         },
-                        */
-                    }, function (stream) {
+                    };
+                    var curAudioLabel = get_cookie('SRAudioLabel'),//selected audio device name
+                        audioSource = document.getElementById('SRAudioSource');
+                    if (audioSource != null) {//SpeechRecognition dialog is exists
+                        for (i = 0; i < audioSource.length; i++) {
+                            if (audioSource[i].selected) {
+                                curAudioLabel = audioSource[i].innerText;
+                                //                    curAudioLabel = get_cookie('curAudioLabel' + fileTransfer.options.options.sendMediaName);
+                                break;
+                            }
+                        }
+                    }
+                    if (curAudioLabel != '') {
+                        // find the selected audio device id
+                        for (i = 0; i < DetectRTC.audioInputDevices.length; i++) {
+                            var audioInputDevice = DetectRTC.audioInputDevices[i];
+                            if (audioInputDevice.label == curAudioLabel) {
+                                hints.audio.optional[0] = {
+                                    sourceId: audioInputDevice.deviceId
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    getMedia(hints,
+                    function (stream) {
                         consoleLog('getMedia success');
                         speechRecognition.setCookie(true);
                         speechRecognition.stream = stream;

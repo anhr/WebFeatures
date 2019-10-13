@@ -44,6 +44,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsQuery, Version=1.3.3.249, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -109,6 +113,10 @@
     <Content Include="Scripts\IRCCommon.js" />
     <Content Include="Scripts\IRCPrivate.js" />
     <Content Include="Scripts\IRCServer.js" />
+    <Content Include="Scripts\IRC\Chaturbate\Chaturbate.js" />
+    <Content Include="Scripts\IRC\Chaturbate\ChaturbateUser.html" />
+    <Content Include="Scripts\IRC\Chaturbate\lang\en.js" />
+    <Content Include="Scripts\IRC\Chaturbate\lang\ru.js" />
     <Content Include="Scripts\IRC\CS\CS.html" />
     <Content Include="Scripts\IRC\CS\CS.js" />
     <Content Include="Scripts\IRC\CS\lang\en.js" />
@@ -189,7 +197,9 @@
     <Content Include="Scripts\jquery.signalR-2.0.0.min.js" />
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\json2.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chat.Context.cs">
@@ -217,10 +227,31 @@
     <Compile Include="DBIRCChats.cs">
       <DependentUpon>Chat.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBIRCCS.cs">
+      <DependentUpon>Chat.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBIRCCSChannels.cs">
+      <DependentUpon>Chat.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBIRCCSTopics.cs">
+      <DependentUpon>Chat.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBIRCGroups.cs">
       <DependentUpon>Chat.tt</DependentUpon>
     </Compile>
     <Compile Include="DBIRCMessages.cs">
+      <DependentUpon>Chat.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBIRCNS.cs">
+      <DependentUpon>Chat.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBIRCNSEmails.cs">
+      <DependentUpon>Chat.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBIRCNSPasswords.cs">
+      <DependentUpon>Chat.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBIRCNSUsers.cs">
       <DependentUpon>Chat.tt</DependentUpon>
     </Compile>
     <Compile Include="DBIRCServers.cs">
@@ -246,7 +277,6 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Exception.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -270,12 +300,15 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Sane IRC library for .NET\ChatSharp\ChatSharp\ChatSharp.csproj">
+    <ProjectReference Include="..\..\MyCommon\MyCommon.csproj">
+      <Project>{6107c039-f815-4390-93c5-926b3cca16ac}</Project>
+      <Name>MyCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sane IRC library for .NET\ChatSharp\ChatSharp\ChatSharp.csproj">
       <Project>{4033affa-bea3-4bdf-84ea-59a23360fd36}</Project>
       <Name>ChatSharp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -287,15 +320,14 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>58452</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/Chat/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://pc2008/Chat/</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

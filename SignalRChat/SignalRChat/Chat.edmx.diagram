@@ -26,6 +26,22 @@
         <EntityTypeShape EntityType="Chat.ViewRoom" Width="1.5" PointX="2.75" PointY="2.75" />
         <EntityTypeShape EntityType="Chat.DBIRCGroups" Width="1.5" PointX="0.5" PointY="7.625" />
         <AssociationConnector Association="Chat.DBIRCGroupsDBIRCServers" />
+        <EntityTypeShape EntityType="Chat.DBIRCNSUser" Width="1.5" PointX="0.5" PointY="12.125" />
+        <EntityTypeShape EntityType="Chat.DBIRCNSUsers" Width="1.5" PointX="4.875" PointY="12.125" />
+        <EntityTypeShape EntityType="Chat.DBIRCNSPasswords" Width="1.75" PointX="4.875" PointY="14.25" />
+        <EntityTypeShape EntityType="Chat.DBIRCNSEmails" Width="1.5" PointX="0.5" PointY="12.25" />
+        <EntityTypeShape EntityType="Chat.DBIRCNS" Width="1.875" PointX="2.625" PointY="12.125" />
+        <AssociationConnector Association="Chat.DBIRCNSUsersDBIRCNS" />
+        <AssociationConnector Association="Chat.DBIRCNSPasswordsDBIRCNS" />
+        <AssociationConnector Association="Chat.DBIRCNSEmailsDBIRCNS" />
+        <AssociationConnector Association="Chat.DBIRCServersDBIRCNS" />
+        <EntityTypeShape EntityType="Chat.DBIRCCS" Width="1.75" PointX="0.5" PointY="14.125" />
+        <EntityTypeShape EntityType="Chat.DBIRCCSChannels" Width="1.875" PointX="2.625" PointY="16" />
+        <AssociationConnector Association="Chat.DBIRCCSChannelsDBIRCCS" />
+        <AssociationConnector Association="Chat.DBIRCNSDBIRCCS" />
+        <EntityTypeShape EntityType="Chat.DBIRCCSTopics" Width="1.5" PointX="0.5" PointY="17.375" />
+        <AssociationConnector Association="Chat.DBIRCCSTopicsDBIRCCS" />
+        <AssociationConnector Association="Chat.DBIRCNSPasswordsDBIRCCS" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

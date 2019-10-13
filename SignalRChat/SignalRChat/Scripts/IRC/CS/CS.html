@@ -7,6 +7,10 @@
     <!--http://jsfiddle.net/nwH8A/-->
     <input list="channels" class="CSChannel" onfocus="javascript: g_IRC.CS.onfocusChannel(event)">
     <datalist id="channels"></datalist>
+<div id="info" style="display:none">
+    <hr>
+    <input type="button" id="CSBtnInfo" onclick="javascript: g_IRC.CS.onclickInfo()" />
+</div>
 <hr>
 <div class="CSPassBlock" style="display:none">
     <div><label class="CSPassLabel"></label><input type="password" class="CSPass" /></div>
@@ -15,5 +19,10 @@
 <div class="CSRegisterDescriptionBlock" style="display:none"><label class="CSRegisterDescriptionLabel"></label><input class="CSRegisterDescription" /></div>
 <div class="CSRegisterParamsBlock" style="display:none"><label class="CSRegisterParamsLabel"></label><input class="CSRegisterParams" /></div>
 <input type="button" class="CSRegister" onclick="javascript: g_IRC.CS.onclickRegister()" />
+<div id="topic" style="display:none">
+    <hr>
+    <div><label id="CSTopicLabel" for="CSTopic"></label><input id="CSTopic" style="width:100%" /></div>
+    <input type="button" id="CSBtnTopic" onclick="javascript: g_IRC.CS.onclickTopic()" />
+</div>
 <hr>
 <input type="button" class="CSDrop" onclick="javascript: g_IRC.CS.onclickDrop()" />

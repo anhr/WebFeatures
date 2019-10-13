@@ -1,0 +1,9 @@
+﻿<cross-domain-policy>
+  <site-control permitted-cross-domain-policies="all"/>
+  <allow-access-from domain="*.highwebmedia.com"/>
+  <allow-access-from domain="*.chaturbate.com"/>
+  <allow-access-from domain="chaturbate.com"/>
+  <allow-http-request-headers-from domain="*.highwebmedia.com" headers="*"/>
+  <allow-http-request-headers-from domain="*.chaturbate.com" headers="*"/>
+  <allow-http-request-headers-from domain="chaturbate.com" headers="*"/>
+</cross-domain-policy>

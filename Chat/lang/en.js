@@ -77,5 +77,7 @@ var lang = {
     , IRCServerUsed: 'Server in use'
     , IRCServerUsed2: "Server %s in use. Please select another IRC server or close the server's web page or type another Nickname."
     , IRCChatHeader: 'You can connect to any <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat" target="_blank">IRC server</a>. Videoconferencing and file sharing are only available with visitors who use our site as a web-based IRC client.'
+    , maxNickLength: 'Max nick length is limited to '
+    , tooManyConnections: 'Too many connections from your host. Waiting about %s seconds for connecting again...'
 };
 
